@@ -2,7 +2,7 @@
 
 `runcode` is a LaTeX package that executes programming source codes (including all command line tools) from LaTeX, and embeds the results in the resulting pdf file. Many programming languages can be easily used and any command-line executable can be invoked when preparing the pdf file from a tex file. 
 
-It is recommended to use this package in the server mode together with the [Python](https://www.python.org/) [talk2stat](https://pypi.org/project/talk2stat/) package. Currently, the server mode supports [Julia](https://julialang.org/), [MatLab](https://www.mathworks.com/products/matlab.html) and [R](https://www.r-project.org/). More languages will be added.
+It is recommended to use this package in the server mode together with the [Python](https://www.python.org/) [talk2stat](https://pypi.org/project/talk2stat/) package. Currently, the server mode supports [Julia](https://julialang.org/), [MatLab](https://www.mathworks.com/products/matlab.html), [Python](https://www.python.org/), and [R](https://www.r-project.org/). More languages will be added.
 
 **Citing `runcode`:** *Bar, H and Wang, H. (2020). Reproducible Science with LaTeX.*
 
@@ -10,10 +10,11 @@ It is recommended to use this package in the server mode together with the [Pyth
 
 You can simply put the runcode.sty file in the LaTeX project folder.
 
-To install the [talk2stat](https://pypi.org/project/talk2stat/) package for the server mode, use:
+The server mode requires the [talk2stat](https://pypi.org/project/talk2stat/) package. To install it from the command line, use:
 ```
 pip3 install talk2stat
 ```
+
 **Note**: `runcode` requires to enable the `shell-escape` option when compiling a LaTeX document.
  <!-- From the command line, it is done like this: -->
 <!-- ``` -->
@@ -84,7 +85,6 @@ Available options are:
   - `Arg2` is the [MatLab](https://www.mathworks.com/products/matlab.html) source code to run. If the [MatLab](https://www.mathworks.com/products/matlab.html) source code is wrapped between "```" on both sides (as in the markdown grammar), then it will be implemented directly; otherwise the code will be written to a file on the disk and then be called.
   - `Arg3` has the same effect as that of the basic commend of `\inln`.
 
-  
 [R](https://www.r-project.org/)
  
 - `\runR[Arg1]{Arg2}{Arg3}[Arg4]` runs an external [R](https://www.r-project.org/) code file.
