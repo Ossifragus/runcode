@@ -4,7 +4,7 @@
 
 It is recommended to use this package in the server mode together with the [Python](https://www.python.org/) [talk2stat](https://pypi.org/project/talk2stat/) package. Currently, the server mode supports [Julia](https://julialang.org/), [MatLab](https://www.mathworks.com/products/matlab.html) and [R](https://www.r-project.org/). More languages will be added.
 
-**Citing `runcode`:** *Bar, H and Wang, H. (2017). Reproducible Science with LaTeX.*
+**Citing `runcode`:** *Bar, H and Wang, H. (2020). Reproducible Science with LaTeX.*
 
 ## Installation
 
