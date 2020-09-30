@@ -96,10 +96,6 @@ Available options are:
   - `Arg3` has the same effect as that of the basic commend of `\inln`.
 
 
-
-NOTE: `Weave.EXAMPLE_FOLDER` just points to [`examples` directory](./examples).
-
-
 ## Documentation
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)]()
