@@ -1,0 +1,29 @@
+# r artifacts
+*.RData
+
+# cache
+*.cache
+
+*.DS_Store
+*.Rhistory
+
+*.bbl
+*.blg
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.mw
+tmp
+
+Rplots.pdf
+__pycache__
+*.pyc
+*debug.txt
+
+*R.config
+*Rdebug.txt
+*julia.config
+*juliadebug.txt
+*matlab.config
+*matlabdebug.txt
