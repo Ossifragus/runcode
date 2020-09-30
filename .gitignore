@@ -14,7 +14,7 @@
 *.out
 *.synctex.gz
 *.mw
-tmp
+*tmp
 
 Rplots.pdf
 __pycache__
