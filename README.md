@@ -34,6 +34,7 @@ Available options are:
 -  `nominted`: use the [fvextra](https://ctan.org/pkg/fvextra) package instead of the [minted](https://ctan.org/pkg/minted) package to show code (this does not require the [pygments](https://pygments.org/) package, but it does not provide syntax highlights).
 -  `run`: run source code.
 -  `R`: start server for [R](https://www.r-project.org/) (requires [talk2stat](https://pypi.org/project/talk2stat/)).
+-  `stopserver`: stop the server(s) when the pdf compilation is done.
 
 ### Basic commands:
 - `\runExtCode{Arg1}{Arg2}{Arg3}[Arg4]` runs an external code.
