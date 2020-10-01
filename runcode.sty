@@ -66,6 +66,14 @@
   % \immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","matlab") if not client("./","matlab","``` ```") else print("server is already running")' &}
 }
 
+\DeclareOption{stopserver}{
+  \AtEndDocument{
+  %% stop the server when the pdf compilation is done.
+    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","R","QUIT")'}
+    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","QUIT")'}
+    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","QUIT")'}
+}}
+
 \ProcessOptions*
 
 \usepackage[many]{tcolorbox}            % to put boxes around text
@@ -226,16 +234,6 @@
       \end{tcolorbox}}
     {\unskip\input{\tmpname.tex}\unskip}}
     {\textcolor{red}{notrun}}}
-
-\AtEndDocument{
-\ifruncode
-  %% uncomment the one that is used (possibly more than one) if you want to stop
-  %% the server when the pdf compilation is done.
-%     \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","R","QUIT")'}
-%     \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","QUIT")'}
-     \fi
-} 
-
 
 \NewDocumentCommand{\runR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m m O{}}
 { 
