@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <STYLE>
+        .center {
+            margin: auto;
+            width: 25%;
+            border: 3px solid pink;
+            padding: 10px;
+        }
+        h1{
+            color: grey;
+            font-size: 24;
+            text-align: center;
+        }
+        P{
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-right: 150px;
+            margin-left: 80px;
+            color: grey;
+            text-align: justify;
+          }
+        </STYLE>
+      </head>
+   <body>
+       <h1>Demonstrating how to use the talk2stat package with NodeJS</h1>
+       <P>The <a href="https://pypi.org/project/talk2stat/">talk2stat</a> package allows programs such as
+       pdflatex, Node JS, etc. to communicate with statistical software tools (such as R, Julia, Matlab, etc.)<br>
+       This is a very simple demonstration which shows that it is easy to create a web-based garphic user interface
+       to perform statistical analysis. Here, we created a form which allows a user to try how different classification
+       tools perform in terms of predicting a binary outcome. The user can choose one of 7 classifiers, 4 in R and 3
+       in Julia, and select the percentage of samples to be used for training. The results are provided in the form
+       of a 'confusion matrix'.<BR>
+       In this demonstration the web-based GUI is implemented using Node JS, and the back-end statistical engines are R and Julia. However,
+       the set-up is up to the user. For example, a user may prefer to use React JS for the front-end, and Matlab
+       for the back-end. The structure and functionality of the form is also entirely up to the user, and developing 
+       elaborate dashboards is possible.
+      <P>The Wisconsin Breast Cancer dataset is available as a comma-delimited text file on the
+        UCI Machine Learning Server (http://archive.ics.uci.edu/ml). 
+        The dataset contains 699 fine-needle aspirate samples, where 458 (65.5%) are benign and 241 (34.5%) are
+        malignant. 
+        The dataset contains a total of 11 variables and doesn’t include the variable names in the file. 
+        Sixteen samples have missing data and are coded in the text file with a question mark (?).
+        The variables are: <!--<span style="color:blue">-->ID, Clump thickness, Uniformity of cell size,
+        Uniformity of cell shape, Marginal adhesion, Single epithelial cell size, Bare nuclei, Bland chromatin, 
+        Normal nucleoli, Mitoses, Class<!--</span>-->
+        Class is the outcome variable (coded as 2=benign, 4=malignant).
+        In this example we will try different methods for predicting whether a patient has breast cancer from the characteristics of a 
+        fine-needle tissue aspiration (a tissue sample taken with a thin hollow needle from a lump or mass just under the skin).
+        </P>
+        <P>Choose the type of classifier fromt he four available options, and the percentage of the data to be used for training.</P>
+        <div class="center">
+        <form action = "/process_post" method = "POST">
+            <label for="method">Classifier:</label>
+            <select name="method" id="method"> 
+                <option value="logreg" selected>R - Logistic regression </option> 
+                <option value="svm">R - Support vector machine</option> 
+                <option value="dtree">R - Decision tree</option> 
+                <option value="rf">R - Random forest</option> 
+                <option value="juliaXGBoost">Julia - XGBoost</option> 
+                <option value="julialinearSVM">Julia - linear SVM</option> 
+                <option value="juliakernelSVM">Julia - kernel SVM</option> 
+            </select> <br>
+            <label for="percentTraining">Fraction of data training (0.1-0.9):</label>
+            <input type="number" id="percentTraining" name="percentTraining" size="3" value="0.7" min="0.1" max="0.9" step="0.1" ><br><br>
+         <input type = "submit" value = "Submit">
+      </form>
+    </div>
+   </body>
+</html>
