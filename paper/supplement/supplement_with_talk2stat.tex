@@ -1,0 +1,138 @@
+\documentclass[12pt]{amsart}
+\usepackage[top=1.5in,bottom=1.5in,left=1in,right=1in]{geometry}
+% Remember to install runcode.sty, or copy runcode.sty to the same folder of this file.
+\usepackage[R]{runcode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Minimum working examples for\\ Reproducible Science with \LaTeX\space (`server mode')}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\author{Haim Bar and HaiYing Wang\\ University of Connecticut}\\
+\today
+\end{center}
+
+This supplement provides minimum working examples in R for the procedure proposed in the main paper using the ``server mode'' provided by the Python \textit{talk2stat} package. Please make sure you have Python3 available on your computer. Install the \textit{talk2stat} package by the following command line.
+\begin{verbatim}
+  pip3 install talk2stat
+\end{verbatim}
+If the Python package \textit{pygments} (for grammar highlighting) is not available on your computer please install it,  or declare the `nominted' option, namely, use
+\begin{verbatim}
+  \usepackage[nominted,R]{runcode}
+\end{verbatim}
+to load the \textit{runcode} package. This will use the \textit{fvextra} package which does not provide syntax highlights. If \textit{pygments} is available, use
+\begin{verbatim}
+  \usepackage[R]{runcode}
+\end{verbatim}
+to load the \textit{runcode} package. The `R' option will start an R server.\\
+
+The program Code/code1.R generates a vector \texttt{x} by drawing a random sample of size 100 from a standard normal distribution, and generates \texttt{y} as \texttt{1+x+$\epsilon$}, where the error term \texttt{$\epsilon$}
+is also drawn from a standard normal distribution.
+Then, we fit a linear model, \texttt{y$\sim$x}. To show the source file's contents, we include the following in the tex document:
+\begin{verbatim}
+  \showCode{R}{Code/code1.R}
+\end{verbatim}
+which produces the following:
+\showCode{R}{Code/code1.R}
+To show only lines 2-5 of the source code, we use
+\begin{verbatim}
+  \showCode{R}{Code/code1.R}[2][5]
+\end{verbatim}
+which produces the following:
+\showCode{R}{Code/code1.R}[2][5]
+\vspace{2mm}
+% \section{Run source code and include output}
+
+To execute the source code in Code/code1.R, we put the following in the tex file:
+\begin{verbatim}
+  \runR{Code/code1.R}{fitLinear}
+\end{verbatim}
+\runR{Code/code1.R}{fitLinear}
+We include the output by using
+\begin{verbatim}
+  \includeOutput{fitLinear}
+\end{verbatim}
+and we obtain the following result:
+\includeOutput{fitLinear}
+
+In the above example, if the second argument in \verb|\runR| is empty, then the second argument in \verb|\includeOutput| should also be empty, namely, use
+\begin{verbatim}
+  \runR{Code/code1.R}{}
+  \includeOutput{}
+\end{verbatim}
+to include the above output. We recommend avoiding this type of usage because \verb|\includeOutput| shows the results from the latest execution of \verb|\runR| with empty third argument, and this may make referencing harder to manage.\\
+
+With the server mode, the R server is continuously running and all variables are always available, so we can use new codes for continuous calculations. For example, we want to use the variable \verb|fit| to create an ANOVA table and calculate the mean squared error (MSE) using the code in Code/code2.R:
+\showCode{R}{Code/code2.R}
+We use
+\begin{verbatim}
+  \runR{Code/code2.R}{linearANOVA}
+  \includeOutput{linearANOVA}[tex]
+\end{verbatim}
+to obtain:
+\runR{Code/code2.R}{linearANOVA}
+\includeOutput{linearANOVA}[tex]\\
+Here the code produces pure latex output, so we use the assign the value `tex' to the optional second argument of \verb|\includeOutput| to include the output as-is. \\
+
+\begin{filecontents*}{tmp/linearMSE.R}
+cat(format(sum(fit$residuals^2)/fit$df.residual, digit=2))
+\end{filecontents*}
+\runExtCode{Rscript --save --restore}{tmp/linearMSE.R}{linearMSE}{}
+To embed R code in tex file and include the output in line, we use the \verb|\inlnR| command. For example, we use the following in the tex file to obtain the result: ``The MSE is \inlnR{```cat(MSE)```}''.
+\begin{verbatim}
+  The MSE is \inlnR{```cat(MSE)```}
+\end{verbatim}
+The \verb|\inlnR| command is also useful to show other types of output from previous calculations. As an example, we use 
+\begin{verbatim}
+  \inlnR{```aov(fit)```}[vbox]
+\end{verbatim}
+to obtain the following result.
+\inlnR{```aov(fit)```}[vbox]
+
+We can embed more complicated R code in tex file using \LaTeX\space \textit{filecontents} environment. For instance, the following code in a tex file will create an R script file plot.R in the tmp folder, and then implement it to create a pdf figure tmp/linearScatter.pdf.
+\begin{verbatim}
+ \begin{filecontents*}{tmp/plot.R}
+  pdf("tmp/linearScatter.pdf", width=6, height=4)
+  plot(x, y, pch=19, col="red" ,cex=0.8)
+  dev.off()
+ \end{filecontents*}
+ \runR{tmp/plot.R}{linearScatter}
+\end{verbatim}
+\begin{filecontents*}{tmp/plot.R}
+  pdf("tmp/linearScatter.pdf", width=6, height=4)
+  plot(x, y, pch=19, col="red" ,cex=0.8)
+  dev.off()
+\end{filecontents*}
+\runR{tmp/plot.R}{linearScatter}
+We can include the resulting figure using \verb|\includegraphics{}| and the \textit{figure} environment in the usual way, e.g., with
+\begin{verbatim}
+  \begin{figure}
+  \centering
+  \includegraphics[scale=0.7]{tmp/linearScatter.pdf}
+  \caption{A scatter plot of the simulated data}
+  \end{figure}
+\end{verbatim}
+This produces Figure~\ref{fig:1}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{tmp/linearScatter.pdf}
+\caption{A scatter plot of the simulated data}\label{fig:1}
+\end{figure}
+
+Note that the working directory of the R server section is the same as that of the main tex file, so in the above example we can use relative directory for the pdf figure (\verb|"tmp/linearScatter.pdf"|). If the file locations are changed after the R server section starts, one needs to use an absolute directory for the pdf figure, or one needs to end the R server section using the following command.
+\begin{verbatim}
+python3 -c 'from talk2stat.talk2stat import client; client("./","R","QUIT")'
+\end{verbatim}
+After that, a compilation of the tex file in the new location will stat an R server section with the working directory as the new location.
+
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+\end{document}  
