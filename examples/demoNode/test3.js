@@ -34,7 +34,7 @@ app.post('/process_post', urlencodedParser, function (req, res) {
     var lang = response.method.substring(0,5);
     if (lang == "julia") {
 	//console.log(lang, response.method.substring(5),"\n\n")
-        const initfile = 'from talk2stat.talk2stat import client;client("./","julia","```include(\'classifiers.jl\')```")';
+        const initfile = 'from talk2stat.talk2stat import client;client("./","julia","```include(\"classifiers.jl\")```")';
         var ls = spawn('python3', ['-c',initfile]);
 	const strexe = 'tableAsHtml(classifyCancer(\\\"' + response.method.substring(5) + '\\\",' + response.trainpct +'))';
         var sendstr =  'from talk2stat.talk2stat import client;client("./","julia","```' + strexe + '```")';
