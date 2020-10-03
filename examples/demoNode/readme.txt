@@ -38,10 +38,11 @@ Prerequisites
 		- talk2stat https://pypi.org/project/talk2stat/
 	  The syntax to install packages (from a command-line shell) is:
 		pip3 install PackageName
-	  Specifically,
-		pip3 install talk2stat
 
 	Julia
+		- DelimitedFiles
+		- Random
+		- Statistics
 		- XGBoost
 		- LIBLINEAR
 		- LIBSVM
@@ -49,10 +50,7 @@ Prerequisites
 		- Suppressor
 	  The syntax to install packages (from a Julia session) is:
 		using Pkg
-		pkg"add PackageName"
-	  Specifically,
-		using Pkg
-		pkg"add XGBoost LIBLINEAR LIBSVM FreqTables Suppressor"
+		Pkg.add("PackageName")
 
 	R
 		- rpart
@@ -61,16 +59,12 @@ Prerequisites
 		- kableExtra
 	  The syntax to install packages (from an R session) is:
 		install.packages("PackageName")
-	  Specifically,
-		install.packages(c("rpart", "randomForest", "e1071", "kableExtra"))
 
 	Node.js
 		- express
 		- body-parser
 	  The syntax to install packages (from a command-ine shell) is:
 		npm install PackageName
-	  Specifically,
-		npm install express body-parser
 
 
 Starting the demo
@@ -89,10 +83,20 @@ on your computer.
      R: Ready
      Listening to port: 65432
 
-2. Similarly, from the command-line shell, start the Julia server 
+2. Execute the following to load the data to R:
+
+    python3 -c 'from talk2stat.talk2stat import client; client("./","R","```source(\"classifiers.R\");dfAll <- loadData()```")'
+
+
+3. Similarly, from the command-line shell, start the Julia server 
 	python3 -c 'from talk2stat.talk2stat import server,client; server("./","julia")'
 
-3. To start the web server, run the following:
+4. Execute the following to load the data to Julia:
+
+    python3 -c 'from talk2stat.talk2stat import client;client("./","julia","```include(\"classifiers.jl\")```")';
+
+
+5. To start the web server, run the following:
 	 node test3.js
 
    This should give the following output:
@@ -101,7 +105,7 @@ on your computer.
    Note: if you want to keep the web server running and get back the 
    command-line prompt, you can execute the following: nohup node test3.js &
 
-4. Start a web browser, and enter the following URL:
+6. Start a web browser, and enter the following URL:
      http://127.0.0.1:8081/
    Choose a classifier from the menu, and choose the fraction of data
    training (0.1-0.9), and click Submit
