@@ -38,11 +38,10 @@ Prerequisites
 		- talk2stat https://pypi.org/project/talk2stat/
 	  The syntax to install packages (from a command-line shell) is:
 		pip3 install PackageName
+	  Specifically,
+		pip3 install talk2stat
 
 	Julia
-		- DelimitedFiles
-		- Random
-		- Statistics
 		- XGBoost
 		- LIBLINEAR
 		- LIBSVM
@@ -50,7 +49,10 @@ Prerequisites
 		- Suppressor
 	  The syntax to install packages (from a Julia session) is:
 		using Pkg
-		Pkg.add("PackageName")
+		pkg"add PackageName"
+	  Specifically,
+		using Pkg
+		pkg"add XGBoost LIBLINEAR LIBSVM FreqTables Suppressor"
 
 	R
 		- rpart
@@ -59,12 +61,16 @@ Prerequisites
 		- kableExtra
 	  The syntax to install packages (from an R session) is:
 		install.packages("PackageName")
+	  Specifically,
+		install.packages(c("rpart", "randomForest", "e1071", "kableExtra"))
 
 	Node.js
 		- express
 		- body-parser
 	  The syntax to install packages (from a command-ine shell) is:
 		npm install PackageName
+	  Specifically,
+		npm install express body-parser
 
 
 Starting the demo
