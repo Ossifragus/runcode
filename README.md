@@ -73,7 +73,7 @@ Available options are:
 - `\inlnJulia[Arg1]{Arg2}[Arg3]` runs [Julia](https://julialang.org/) source code (`Arg2`) and displays the output in line.
   - `Arg1` is optional and uses the [Julia](https://julialang.org/) server by default.
   - `Arg2` is the [Julia](https://julialang.org/) source code to run. If the [Julia](https://julialang.org/) source code is wrapped between "```" on both sides (as in the markdown grammar), then it will be implemented directly; otherwise the code will be written to a file on the disk and then be called.
-  - `Arg3` has the same effect as that of the basic commend of `\inln`.
+  - `Arg3` has the same effect as that of the basic command `\inln`.
 
 [MatLab](https://www.mathworks.com/products/matlab.html)
 
@@ -84,7 +84,7 @@ Available options are:
 - `\inlnMatLab[Arg1]{Arg2}[Arg3]` runs [MatLab](https://www.mathworks.com/products/matlab.html) source code (`Arg2`) and displays the output in line.
   - `Arg1` is optional and uses the [MatLab](https://www.mathworks.com/products/matlab.html) server by default.
   - `Arg2` is the [MatLab](https://www.mathworks.com/products/matlab.html) source code to run. If the [MatLab](https://www.mathworks.com/products/matlab.html) source code is wrapped between "```" on both sides (as in the markdown grammar), then it will be implemented directly; otherwise the code will be written to a file on the disk and then be called.
-  - `Arg3` has the same effect as that of the basic commend of `\inln`.
+  - `Arg3` has the same effect as that of the basic command `\inln`.
 
 [R](https://www.r-project.org/)
  
@@ -94,7 +94,7 @@ Available options are:
 - `\inlnR[Arg1]{Arg2}[Arg3]` runs [R](https://www.r-project.org/) source code (`Arg2`) and displays the output in line.
   - `Arg1` is optional and uses the [R](https://www.r-project.org/) server by default.
   - `Arg2` is the [R](https://www.r-project.org/) source code to run. If the [R](https://www.r-project.org/) source code is wrapped between "```" on both sides (as in the markdown grammar), then it will be implemented directly; otherwise the code will be written to a file on the disk and then be called.
-  - `Arg3` has the same effect as that of the basic commend of `\inln`.
+  - `Arg3` has the same effect as that of the basic command `\inln`.
 
 
 ## Documentation
