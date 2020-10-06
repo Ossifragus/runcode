@@ -1,10 +1,10 @@
 # runcode
 
-`runcode` is a LaTeX package that executes programming source codes (including all command line tools) from LaTeX, and embeds the results in the resulting pdf file. Many programming languages can be easily used and any command-line executable can be invoked when preparing the pdf file from a tex file. 
+`runcode` is a LaTeX package that executes programming source codes (including all command line tools) from LaTeX, and embeds the results in the resulting pdf file. Many programming languages can be easily used and any command-line executable can be invoked when preparing the pdf file from a tex file. `runcode` is also available on [CTAN](https://ctan.org/pkg/runcode).
 
 It is recommended to use this package in the server mode together with the [Python](https://www.python.org/) [talk2stat](https://pypi.org/project/talk2stat/) package. Currently, the server mode supports [Julia](https://julialang.org/), [MatLab](https://www.mathworks.com/products/matlab.html), [Python](https://www.python.org/), and [R](https://www.r-project.org/). More languages will be added.
 
-**Citing `runcode`:** *Bar, H and Wang, H. (2020). Reproducible Science with LaTeX.*
+**Citing `runcode`:** *Haim Bar and HaiYing Wang (2020). Reproducible Science with LaTeX, [https://arxiv.org/abs/2010.01482](https://arxiv.org/abs/2010.01482)*
 
 ## Installation
 
