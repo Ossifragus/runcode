@@ -14,6 +14,11 @@
 \mintedtrue
 \DeclareOption{nominted}{\mintedfalse}
 
+% Some editors terminate all child processes after LaTeX compiling such as Emacs with Auctex. For this case, use the nohup option. It set the variable notnohup to be false, and the server will not be terminated by the parent process.
+\newif\ifnotnohup
+\notnohuptrue
+\DeclareOption{nohup}{\notnohupfalse}
+
 \DeclareOption{R}{
   % create a configuration file for R server if it does not exist.
   \IfFileExists{R.config}{}{
@@ -27,9 +32,11 @@
   }
   % Start the server. Need to run just once. Can comment out after the first
   % compilation, but remember to terminate the server
-  \immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","R") if not client("./","R","``` ```") else print("server is already running")'}
-  % Some editors terminate all child processes after LaTeX compiling such as Emacs with Auctex. For this case, use the following line instead of the above line.
-  % \immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","R") if not client("./","R","``` ```") else print("server is already running")' &}
+  \ifnotnohup
+  {\immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","R") if not client("./","R","``` ```") else print("server is already running")'}}
+  \else
+  {\immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","R") if not client("./","R","``` ```") else print("server is already running")' &}}
+  \fi  
 }
 
 \DeclareOption{julia}{
@@ -45,8 +52,11 @@
   }
   % Start the server. Need to run just once. Can comment out after the first
   % compilation, but remember to terminate the server
-  \immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","julia") if not client("./","julia","``` ```") else print("server is already running")'}
-  % \immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","julia") if not client("./","julia","``` ```") else print("server is already running")' &}
+  \ifnotnohup
+  {\immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","julia") if not client("./","julia","``` ```") else print("server is already running")'}}
+  \else
+  {\immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","julia") if not client("./","julia","``` ```") else print("server is already running")' &}}
+  \fi  
 }
 
 \DeclareOption{matlab}{
@@ -62,8 +72,11 @@
   }
   % Start the server. Need to run just once. Can comment out after the first
   % compilation, but remember to terminate the server
-  \immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","matlab") if not client("./","matlab","``` ```") else print("server is already running")'}
-  % \immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","matlab") if not client("./","matlab","``` ```") else print("server is already running")' &}
+  \ifnotnohup
+  {\immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","matlab") if not client("./","matlab","``` ```") else print("server is already running")'}}
+  \else
+  {\immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","matlab") if not client("./","matlab","``` ```") else print("server is already running")' &}}
+  \fi  
 }
 
 \DeclareOption{stopserver}{
