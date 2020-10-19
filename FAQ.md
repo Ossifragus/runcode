@@ -7,7 +7,7 @@
 - Forking on Windows: the talk2stat package has an option to run the server in the background by forking a child process. This works transparently on Linux and Mac, but on Windows you would get an error:
   AttributeError: module 'os' has no attribute 'fork'
 The reason for the error is that talk2stat relies on two UNIX-based functions, namely, fork and spawn. However, Windows 10 users can still use talk2stat, thanks to the 'Windows Subsystem for Linux' app which is freely available from the MicroSoft Store. Detailed installation instructions are available [here.](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-It is convenient to use the [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started) in order to access the Linux subsystem (e.g. Ubuntu 20.04 LTS). Once all the installation steps are complete, open the Windows Terminal and access your Linux subsystem. When you use it for the first time, you have to update the operating system, and install a few components.\
+It is convenient to use the [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started) in order to access the Linux subsystem (e.g. Ubuntu 20.04 LTS). Once all the installation steps are complete, open the Windows Terminal and access your Linux subsystem. When you use it for the first time, you have to update the operating system, and install a few components.
 > sudo apt update\
 > sudo apt install python3\
 > sudo apt install python3-pip\
