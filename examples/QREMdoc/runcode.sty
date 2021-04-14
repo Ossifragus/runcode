@@ -1,0 +1,282 @@
+%
+%  Haim Bar      haim.bar@uconn.edu
+%  HaiYing Wang  haiying.wang@uconn.edu
+%
+%  This package is based on an ongoing work by Haim Bar and HaiYing Wang, and comments and questions are welcome!
+
+\newif\ifruncode
+% Change to \runcodefalse if you want to suspend code execution
+\runcodetrue
+\DeclareOption{run}{\runcodetrue}
+\DeclareOption{cache}{\runcodefalse}
+
+\newif\ifminted
+\mintedtrue
+\DeclareOption{nominted}{\mintedfalse}
+
+% Some editors terminate all child processes after LaTeX compiling such as Emacs with Auctex. For this case, use the nohup option. It set the variable notnohup to be false, and the server will not be terminated by the parent process.
+\newif\ifnotnohup
+\notnohuptrue
+\DeclareOption{nohup}{\notnohupfalse}
+
+\DeclareOption{R}{
+  % create a configuration file for R server if it does not exist.
+  \IfFileExists{R.config}{}{
+    \newwrite\tempfile
+    \immediate\openout\tempfile=R.config
+    \immediate\write\tempfile{[SERVERCONFIG]}
+    \immediate\write\tempfile{PORT = 65432}
+    \immediate\write\tempfile{DEBUGFILE = Rdebug.txt}
+    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\closeout\tempfile
+  }
+  % Start the server. Need to run just once. Can comment out after the first
+  % compilation, but remember to terminate the server
+  \ifnotnohup
+  {\immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","R") if not client("./","R","``` ```") else print("server is already running")'}}
+  \else
+  {\immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","R") if not client("./","R","``` ```") else print("server is already running")' &}}
+  \fi  
+}
+
+\DeclareOption{julia}{
+  % create a configuration file for R server if it does not exist.
+  \IfFileExists{julia.config}{}{
+    \newwrite\tempfile
+    \immediate\openout\tempfile=julia.config
+    \immediate\write\tempfile{[SERVERCONFIG]}
+    \immediate\write\tempfile{PORT = 65431}
+    \immediate\write\tempfile{DEBUGFILE = juliadebug.txt}
+    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\closeout\tempfile
+  }
+  % Start the server. Need to run just once. Can comment out after the first
+  % compilation, but remember to terminate the server
+  \ifnotnohup
+  {\immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","julia") if not client("./","julia","``` ```") else print("server is already running")'}}
+  \else
+  {\immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","julia") if not client("./","julia","``` ```") else print("server is already running")' &}}
+  \fi  
+}
+
+\DeclareOption{matlab}{
+  % create a configuration file for R server if it does not exist.
+  \IfFileExists{matlab.config}{}{
+    \newwrite\tempfile
+    \immediate\openout\tempfile=matlab.config
+    \immediate\write\tempfile{[SERVERCONFIG]}
+    \immediate\write\tempfile{PORT = 65430}
+    \immediate\write\tempfile{DEBUGFILE = matlabdebug.txt}
+    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\closeout\tempfile
+  }
+  % Start the server. Need to run just once. Can comment out after the first
+  % compilation, but remember to terminate the server
+  \ifnotnohup
+  {\immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","matlab") if not client("./","matlab","``` ```") else print("server is already running")'}}
+  \else
+  {\immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","matlab") if not client("./","matlab","``` ```") else print("server is already running")' &}}
+  \fi  
+}
+
+\DeclareOption{stopserver}{
+  \AtEndDocument{
+  %% stop the server when the pdf compilation is done.
+    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","R","QUIT")'}
+    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","QUIT")'}
+    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","QUIT")'}
+}}
+
+\ProcessOptions*
+
+\usepackage{morewrites}               % allow more than 16 \write
+\usepackage[many]{tcolorbox}            % to put boxes around text
+\usepackage{xcolor}               % for highlighting
+\usepackage[utf8x]{inputenc}
+\usepackage{textgreek}
+\usepackage{filecontents}
+\usepackage{xifthen}
+\usepackage{xparse}
+\usepackage{xstring}
+
+% Use minted if it is loaded; otherwise use fvextra
+\ifminted
+\usepackage[cache=false]{minted}
+\else
+\usepackage{fvextra}
+\fi
+
+\immediate\write18{mkdir tmp}
+
+\definecolor{bg}{rgb}{0.95,0.95,0.95} % code block background color
+
+\newcounter{codelisting}
+\renewcommand{\thecodelisting}{\arabic{codelisting}}
+\newenvironment{codelisting}[1][]{
+ \par\vspace{\baselineskip}\noindent
+  \refstepcounter{codelisting}
+  \begin{ttfamily}
+   \noindent \textbf{Listing~\thecodelisting. #1}
+}
+{
+ \end{ttfamily}
+  \noindent\ignorespacesafterend
+ }  
+
+% counter for code output temporary file names
+\newcounter{codeOutput}
+\setcounter{codeOutput}{0}
+
+% a command to set the temporary file name for code output
+\newcommand{\setvalue}[2]{
+    \ifdefined #1
+        \renewcommand{#1}{#2}
+    \else
+        \newcommand{#1}{#2}
+    \fi
+}
+\setvalue{\tmpname}{} % initialize with a blank
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% \showCode prints the source code, using minted for a pretty layout
+% Arg #1 is the programming language,
+% Arg #2 is the source file name,
+% Args #3 and #4 are the first and last line to show (optional).
+
+\NewDocumentCommand{\showCode}{m m O{} O{}}{% \-\\
+  \ifthenelse{\isempty{#3}}{
+    \ifminted
+    \inputminted[fontsize=\footnotesize,linenos, frame=single, bgcolor=bg, breaklines=true]{#1}{#2}
+    \else
+    \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines]{#2}
+    \fi
+  }{
+    \ifminted
+    \inputminted[fontsize=\footnotesize,linenos,frame=single, bgcolor=bg, breaklines=true, firstline=#3, lastline=#4, firstnumber=1]{#1}{#2}
+    \else
+    \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines, firstline=#3, lastline=#4, firstnumber=1]{#2}
+    \fi
+  }
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \runExtCode runs an external code.
+% Arg #1 is the executable program,
+% Arg #2 is the source file name,
+% Arg #3 is the output file name (optional - if not given, the counter 
+%        codeOutput is used).
+% Arg #4 controls when to run the code (optional - if not given, it listens
+%        to \runcode; run = force the code to run; cache or anything else =
+%        use cache)
+\NewDocumentCommand{\runExtCode}{m m m O{}}{
+  \stepcounter{codeOutput}
+  \ifthenelse{\isempty{#3}}
+    { \setvalue{\tmpname}{tmp/\jobname_tmp\thecodeOutput.tex} }
+    { \setvalue{\tmpname}{tmp/#3.tex} }
+  % toggle \runcode above if you want to enable/disable code execution
+    \ifthenelse{\isempty{#4}}
+      { \ifruncode
+        \immediate\write18{#1 #2 > \tmpname }
+        \fi
+      }{
+        \ifstrequal{#4}{run}{\immediate\write18{#1 #2 > \tmpname }}{}
+      }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \includeOutput[Arg #1]{Arg #2} is used to embed the output from executed code.
+% Arg #1 is the output file name (optional - if not given, the counter 
+%        codeOutput is used).
+% Arg #2 is the optional type output with default "vbox"
+%         (vbox = verbatim in a box, tex = pure latex, or inline)
+
+\NewDocumentCommand{\includeOutput}{m O{vbox}}{\-
+  \ifthenelse{\isempty{#1}}
+  {\setvalue{\tmpname}{tmp/\jobname_tmp\thecodeOutput.tex}}
+  {\unskip\setvalue{\tmpname}{tmp/#1.tex}\unskip}\unskip
+  % even if the code is not executed, but we ran it before, we can use a 
+  % cached version if it exists.
+  \IfFileExists{\tmpname}
+  {
+    \ifstrequal{#2}{vbox}
+    {\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black]
+        \ifminted\unskip
+ \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname}\unskip
+        \else\unskip
+        \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname}\unskip
+        \fi
+      \end{tcolorbox}}
+    {\unskip\ifstrequal{#2}{inline}
+      {\unskip\input{\tmpname}\unskip}
+      {\input{\tmpname}}}}
+  % if code execution disabled, and no cache:
+  {\begin{tcolorbox}
+      Code execution disabled (cache not available).
+    \end{tcolorbox}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \inln{Arg #1}{Arg #2}[Arg #3] is used to execute short source code
+% and embed resulting output.
+% Arg #1 is the executable program;
+% Arg #2 is the source code
+% Arg #3 is the type output (if skipped or with empty value the default type is
+%        inline; vbox = verbatim in a box);
+
+\NewDocumentCommand{\inln}{m m O{inline}}{\-
+  \stepcounter{codeOutput}\unskip
+  \unskip\setvalue{\tmpname}{tmp/\jobname_inln\thecodeOutput}\unskip\unskip\unskip
+  \IfBeginWith{#2}{```}{\ifruncode\immediate\write18{#1 > \tmpname.tex}\unskip\fi}
+  {\newwrite\tempfile
+    \immediate\openout\tempfile=\tmpname.txt
+    \immediate\write\tempfile{#2}
+    \immediate\closeout\tempfile
+    \ifruncode
+    \immediate\write18{#1 \tmpname.txt > \tmpname.tex}\unskip
+    \fi}
+  \IfFileExists{\tmpname.tex}
+  {\unskip
+    \ifstrequal{#3}{vbox}
+        {\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black]
+        \ifminted\unskip
+ \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname.tex}\unskip
+        \else\unskip
+        \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname.tex}\unskip
+        \fi
+      \end{tcolorbox}}
+    {\unskip\input{\tmpname.tex}\unskip}}
+    {\textcolor{red}{notrun}}}
+
+\NewDocumentCommand{\runR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m m O{}}
+{ 
+  \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'}
+  \ifstrequal{#1}{\runcmd}
+  {\runExtCode{#1}{}{#3}[#4]}
+  {\runExtCode{#1}{#2}{#3}[#4]}
+}
+
+\NewDocumentCommand{\inlnR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","R","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+
+\NewDocumentCommand{\runJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'} m m O{}}
+{ 
+  \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'}
+  \ifstrequal{#1}{\runcmd}
+  {\runExtCode{#1}{}{#3}[#4]}
+  {\runExtCode{#1}{#2}{#3}[#4]}
+}
+
+\NewDocumentCommand{\inlnJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","julia","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+
+\NewDocumentCommand{\runMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'} m m O{}}
+{ 
+  \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'}
+  \ifstrequal{#1}{\runcmd}
+  {\runExtCode{#1}{}{#3}[#4]}
+  {\runExtCode{#1}{#2}{#3}[#4]}
+}
+
+\NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","matlab","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+
+\endinput

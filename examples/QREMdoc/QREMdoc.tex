@@ -1,0 +1,159 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[a4paper, total={6in, 10in}]{geometry}
+%\usepackage[square,sort,comma]{natbib}
+\usepackage[R]{runcode}
+
+
+% to compile it from scratch, create a tmp subfolder and comment out the [cache] options below.
+% Keep in mind that some steps take a few minutes to complete (to run the bootstrap)
+
+
+\usepackage{caption}
+%\usepackage{subcaption}
+\usepackage{subfig}
+
+% Title Page
+\title{Quantile Regression via the EM algorithm: \\the QREM package}
+\author{Haim Bar}
+
+
+\begin{document}
+\maketitle
+
+\section{Simulated Data}
+\subsection{Assessing Goodness of Fit}
+The following code shows a simulation scenario\footnote{In the examples in this documentation, the simulation numbers refer to Tables A3 and A4 in our paper} in which the relationship between $x$ and $y$ is quadratic, and the error variance increases with $x$. The model is specified in line 14.
+We use QREM to fit the data twice -- once with the correct model (line 22) and once with an incorrect model, where only a linear relationship is assumed (line 28).
+ 
+\showCode{R}{Sim23.R}
+
+We use this example to demonstrate two diagnostics functions in the package. \texttt{QRdiagnostics} is used to assess goodness of fit for one variable, at one selected quantile. For continuous variables it produces Q-Q plots, such that an appropriate model will results in the residual quantiles to lie along the main diagonal. For categorical variables it produces a spinogram, so that if the model is appropriate the percentage of points below the regression line is the chosen quantile for each level of the factor.
+The function \texttt{flatQQplot} can be used to plot a heatmap which represents the Q-Q plots for multiple quantiles in one graph. This can reveal whether a model fits well in all quantiles, or if it is misspecified in some.
+
+\runExtCode{R}{Sim23.R}{tmp/sim23.tex}[cache]
+
+In lines 23 and 29 we generate the diagnostic plot for the linear term, $x$, at $q=0.1$ for the correct and incorrect models, respectively. We see in Figure \ref{sim23} (a) that the points lie along the diagonal, indicating a good fit of the quadratic model, while in Figure \ref{sim23} (b) there is substantial deviation from the diagonal, suggesting that the linear model is inadequate.
+
+\begin{figure}
+\centering
+\subfloat[\centering correct (quadratic) model]{\includegraphics[width=.4\linewidth]{tmp/sim23q10correct.pdf}}
+\subfloat[\centering incorrect (linear) model]{\includegraphics[width=.4\linewidth]{tmp/sim23q10incorrect.pdf}}
+\caption{Simulation 23 -- Diagnostic plot using the \texttt{QRdiagnostics} function. The true model is $y \sim N(6x^2 + x +120, (0.1+0.5x)^2))$}\label{sim23}
+\end{figure}
+
+In lines 35-36 we generate the `flat Q-Q plot' for the linear term, for all the quantiles in our analysis. Figure \ref{sim23flatqq} (a) shows a near-ideal situation. The heatmap represents the average ratio between the x and y axes in the Q-Q plot. The green color represents a value close to 1, which means that the points are almost exactly along the main diagonal. Figure \ref{sim23flatqq} (b) shows that for all quantiles, the linear model is inadequate, since each column contains cells which represents ratios which are quite different from 1.
+
+\begin{figure}[b!]
+\centering
+\subfloat[\centering correct (quadratic) model]{\includegraphics[width=.5\linewidth]{tmp/flatQQsim23q10correct.pdf}}
+\subfloat[\centering correct (quadratic) model]{\includegraphics[width=.5\linewidth]{tmp/flatQQsim23q10incorrect.pdf}}
+\caption{Simulation 23 -- Diagnostic plot using the \texttt{flatQQplot} function.}\label{sim23flatqq}
+\end{figure}
+
+
+\subsection{Estimation of Standard Deviation of Regression Estimates}
+
+A second example is provided in the code below. In this case, the true model (line 12) involves an interaction between two continuous variables, and a variance which increases with the first variable. The dataset also contains a categorical variables with levels C, T1 and T2. 
+
+\showCode{R}{Sim24.R}[1][12]
+
+QREM provides two methods to estimate the standard deviation of regression parameters in fixed effects models -- one is based on the bootstrap (line 2, and the apply statement in line 3), and the other is based on an asymptotic approximation (Bahadur-type estimate, through the bcov function in line 3.) The following code is used to generate both:
+\showCode{R}{Sim24.R}[41][45]
+
+\runR{Sim24.R}{sim24}[cache]
+
+As can be seen in the following table, the estimates of the quantile regression ($q=0.2$) model are accurate, and the standard deviation estimates from the two methods are similar. The Bahadur-type estimates are slightly more conservative:
+ \includeOutput{sim24}[tex]	
+
+\subsection{Mixed Models}
+QREM also allows to fit mixed models (as well as generalized additive models, or `gam'). The following code shows how we generate the data and fit the quantile regression model. 
+
+\showCode{R}{Sim25.R}[1][15]
+
+The sample size is $n=100$ and each subject is observed at four time points. The subjects are independent, but observations within subject are correlated (via the variable $u$ in lines 11 and 13).
+To fit the quantile regression model we use the code below. Notice that the only difference, compared with the previous examples, is that we use the \texttt{lmer} function and the appropriate formula to specify the model to be fitted.
+
+\showCode{R}{Sim25.R}[16][23]
+
+The bootstrap is the only valid estimation approach for the standard deviations for mixed models (and it may take a couple of minutes to complete the previous code segment). The results are shown in the following table.
+\runR{Sim25.R}{sim25}[cache]
+ \includeOutput{sim25}[tex]	
+
+\subsection{Quantile Regression with Variable Selection}
+It is also possible to perform variable selection in quantile regression by combining functionality from QREM with the \texttt{fitSEMMS} function in the SEMMS package \cite{SEMMS}. In the following code, we generate data according to scenario 5 in Table A4. The response is a function of five variables, but the total number of predictors is 500. The additional 495 variables are added in line 13 below. Note also that the variance of errors is not constant. It increases with the first predictor.
+
+\showCode{R}{SimA4_5.R}[1][14]
+
+We then use the \texttt{QREM\_vs} function in the QREM package to select variables associated with the $q$th quantile.
+The first argument to the function is a data set that can be read by the SEMMS package via the \texttt{readInputFile} function. It may be a simple csv file, or an Rdata file which contains a data frame with variables in the columns and observations in rows, as in the code above. See the SEMMS documentation for more details.
+
+The second argument is the column number in the data where the response is stored. The third argument is a vector of column number containing the putative predictors, and the forth one is the quantile.
+
+The \texttt{QREM\_vs} function starts by obtaining an initial set of candidates from the putative variables. Then, it iteratively alternates between the variable selection step, and the quantile regression step using only the selected predictors.
+
+The result (the variable res below) contains the output from SEMMS from the last iteration of the variable selection  algorithm, and the QREM output for the final model. We then extract the selected variables (line 3) by using the variable containing the columns of the non-null predictors from the complete data set (by using \texttt{1+res\$fittedSEMMS\$gam.out\$nn}).
+In line 4, we fit the QR model with the selected variables, and proceed as before (e.g. estimating the standard errors of the estimates, or producing a diagnostic plot).
+
+\showCode{R}{SimA4_5.R}[16][25]
+
+The following table shows the parameter estimates. The five predictors were selected by SEMMS, and no false predictors were chosen in the process, and Figure \ref{sim5vsqq} shows the Q-Q plot for the first predictor (note that column 1 in the dfsemms matrix is the response). The model fits well. The points lie approximately along the diagonal, and the deviation of the points in the middle could be due to the relatively small sample size (although $n=200$, since $q=0.25$ the effective sample size for this diagram is 50.)
+\runR{SimA4_5.R}{}[cache]
+ \includeOutput{SimA4_5}[tex]	
+
+\begin{figure}[b!]
+\centering
+\includegraphics[scale=0.5]{tmp/simVS5.pdf}
+\caption{Simulation 5 in Table A4 -- Diagnostic plot for the first predictor using the \texttt{flatQQplot} function.}\label{sim5vsqq}
+\end{figure}
+     
+\section{Case Study -- Daily Temperature Data}
+We demonstrate fitting a quantile regression mixed-model using our approach to daily temperature data from Las Vegas, NV. Minimum and maximum temperatures (in Fahrenheit) from January 1, 1960 to December 31, 2010 were obtained from the National Oceanic and Atmospheric Administration website (https://www.noaa.gov/).
+We fit a  model which allows for the temperature characteristics to change linearly over time, while accounting for the cyclical nature of temperatures. To allow for extra variability in the data in addition to between-days variability, we include a random intercept for each month of the year.
+
+Let $y_{ijk}$ denote the daily maximum (minimum) temperature in month $j$ and day $k$ of year $i$ and define $S_k=\sin(2\pi(k-11)/365-\pi/2)$, for $k=1,\ldots,365$ (or $366$), to represent the annual sinusoidal variation of daily temperatures, with a minimum at (approximately) the  shortest day of the year in the northern hemisphere,  December 21, and a maximum at around June 21. Our main objective is to estimate linear trends in temperatures over the 50 year period. We fit six models with linear predictors of the form 
+$$ \eta_{ijk}=\mu+\beta_1i+\beta_2S_k + v_j \,.$$
+for the 10-th percentile, the mean, or the 90-th percentile of the daily minimum or maximum temperature, and where $v_j$, $j=1,\ldots,12$ is a (random) effect of month $j$. 
+
+First, we load the data:
+\showCode{R}{temperatures.R}[1][9]
+
+Here, we only show the change in terms of the coefficient  $\beta_1$  for  two reponses:
+\begin{itemize}
+\item The 10-th percentile of the minimum temperature, and
+\item The 90-th percentile of the maximum temperature.
+\end{itemize}
+The models are specified and fitted as follows:
+\showCode{R}{temperatures.R}[11][18]
+
+\runR{temperatures.R}{}[cache]
+
+The 10-th percentile of the minimum daily temperature  increased by almost 9 degrees ($\hat\beta_1=$ \inlnR{```cat(format(qremFit10min$coef$beta[3],digit=3))```}), while  the 90-th percentile of the maximum daily temperature increased by only 1 degree, ($\hat\beta_1=$ \inlnR{```cat(format(qremFit90max$coef$beta[3],digit=3))```}).
+This means that the 10\% `cooler than usual for the time of year' days were quite warmer in 2010 than in 1960, but there was no significant change in the 10\% `warmer than usual for the time of year' days (the 90th percentile.)
+
+Figure \ref{temps} shows the diagnostic plot for the two responses. Both look excellent, and in fact, this is the case for all quantiles for both the maximum and minimum temperatures.
+
+\begin{figure}[t!]
+\centering
+\subfloat[\centering 10th percentile of the minimum temperature]{\includegraphics[width=.5\linewidth]{tmp/LVmintemp.pdf}}
+\subfloat[\centering 90th percentile of the maximum temperature]{\includegraphics[width=.5\linewidth]{tmp/LVmaxtemp.pdf}}
+\caption{Diagnostic plot for the Las Vegas temperature data.}\label{temps}
+\end{figure}
+
+We can also use the generalized additive model (gam), as in the following example. The results in this case is similar to the mixed-model above, but gam takes considerably longer to run.
+\showCode{R}{temperatures.R}[38][38]
+
+
+%\clearpage
+
+\bibliographystyle{abbrvnat}
+
+\begin{thebibliography}{99}
+\bibitem{SEMMS}
+{\rm Bar, H.~Y., Booth, J.~G., {\rm and} Wells, M.~T.} (2020).
+\newblock {A Scalable Empirical Bayes Approach to Variable Selection in
+  Generalized Linear Models}.
+\newblock \emph{Journal of Computational and Graphical Statistics}, {\bf  0}\penalty0 (0), \penalty0 1--12.
+\end{thebibliography}
+
+\end{document}          
+
