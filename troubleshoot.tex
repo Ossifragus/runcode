@@ -185,6 +185,10 @@ Will look better: A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}[vbox].
 We mentioned that code being sent to the software must be syntactically valid. In addition, keep in mind that the server waits for complete commands. So, for example, if we try\\
 \verb|The factorial of 6 is \inlnR{```cat(factorial(6)```}.|\\
 it will cause the server to hang because it awaits the closing parenthesis. Eventually, it will time out but the code cannot be executed, so the desired output will not be produced. The timeout interval is set in the config files for R, Julia, and Matlab.
+For example, in the following the cat statement is missing a closing parenthesis.\\
+\verb|The factorial of 6 is \inlnR{```cat(factorial(6)```}.|\\
+The factorial of 6 is \inlnR{```cat(factorial(6)```}.
+
 
 
 % texcount -char -1 -sum tmp/testruncode_inln4.tex 
