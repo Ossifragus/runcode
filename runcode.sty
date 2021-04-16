@@ -146,7 +146,8 @@
 % Args #3 and #4 are the first and last line to show (optional).
 
 \NewDocumentCommand{\showCode}{m m O{} O{}}{% \-\\
-  \ifthenelse{\isempty{#3}}{
+  \IfFileExists{#2}{
+    \ifthenelse{\isempty{#3}}{
     \ifminted
     \inputminted[fontsize=\footnotesize,linenos, frame=single, bgcolor=bg, breaklines=true]{#1}{#2}
     \else
@@ -158,7 +159,11 @@
     \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines, firstline=#3, lastline=#4, firstnumber=1]{#2}
     \fi
+  } 
+  }{
+    \textcolor{red}{\textbf{showCode: File #2 does not exist!}}
   }
+
 }
 
 
@@ -172,6 +177,7 @@
 %        to \runcode; run = force the code to run; cache or anything else =
 %        use cache)
 \NewDocumentCommand{\runExtCode}{m m m O{}}{
+  \IfFileExists{#2}{
   \stepcounter{codeOutput}
   \ifthenelse{\isempty{#3}}
     { \setvalue{\tmpname}{tmp/\jobname_tmp\thecodeOutput.tex} }
@@ -184,6 +190,9 @@
       }{
         \ifstrequal{#4}{run}{\immediate\write18{#1 #2 > \tmpname }}{}
       }
+  }{
+    \textcolor{red}{\textbf{runExtCode: File #2 does not exist!}}
+  }
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,8 +223,15 @@
       {\input{\tmpname}}}}
   % if code execution disabled, and no cache:
   {\begin{tcolorbox}
-      Code execution disabled (cache not available).
+      \textbf{Output file \tmpname~ not found}. Check the file name (it may be that the file name was given with the suffix .tex. If so, remove it). If the file name is correct the problem may be because code execution is disabled and no cache is available. If so, force the code to run again (using the [run] option).
     \end{tcolorbox}}}
+
+
+\NewDocumentCommand{\checkZeroBytes}{m}{
+  \immediate\write18{python3 -c 'import os; print("ZERO BYTES IN OUTPUT", file=open("#1", "a")) if os.path.getsize("#1") == 0 else True'}
+}
+%import os; python3 -c 'import os; print("Zero bytes in") if (os.path.getsize("tmp/testruncode_inln3.tex") == 0) else True
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \inln{Arg #1}{Arg #2}[Arg #3] is used to execute short source code
@@ -237,7 +253,7 @@
     \immediate\write18{#1 \tmpname.txt > \tmpname.tex}\unskip
     \fi}
   \IfFileExists{\tmpname.tex}
-  {\unskip
+  {\checkZeroBytes{\tmpname.tex}\unskip
     \ifstrequal{#3}{vbox}
         {\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black]
         \ifminted\unskip
@@ -247,7 +263,7 @@
         \fi
       \end{tcolorbox}}
     {\unskip\input{\tmpname.tex}\unskip}}
-    {\textcolor{red}{notrun}}}
+    {\textcolor{red}{\textbf{Output file \tmpname~ not found}}}}
 
 \NewDocumentCommand{\runR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m m O{}}
 { 
