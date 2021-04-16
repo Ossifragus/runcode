@@ -165,16 +165,29 @@ In some cases it is perfectly fine if embedded code does not produce output, but
 \verb|The number of columns is \inlnR{```dat <- read.csv("file.csv"); cat(ncol(dat))```}.|\\
 This will result in:\\
 The number of columns is  \inlnR{```dat <- read.csv("file.csv"); cat(ncol(dat))```}.
-%
 
-%\item timeout
-%\item runextcode Arg4 possible problem [run] vs. [cache]
-%\item missing software (R, matlab, julia) - get from talk2stat and also check in batch mode
-%\item install from CTAN
+The \verb|\inln| command is designed to put a single string in a line, so the code which produces the output should not include a new line. For example, the correct way is:\\
+\verb|The factorial of 6 is \inlnR{```cat(factorial(6))```}.|
+The factorial of 6 is \inlnR{```cat(factorial(6))```}.\\
+The following is incorrect:\\
+\verb|The factorial of 6 is \inlnR{```cat(factorial(6),"\\n")```}.|\\
+The factorial of 6 is \inlnR{```cat(factorial(6),"\\n")```}.
+
+Similarly, if we want to print more than a one-line string, we should use the vbox option (or use \verb|\includeOutput|.) For example,
+
+\verb|A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}.|\\
+Will appear like this: A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}.
+
+\verb|A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}[vbox].|\\
+Will look better: A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}[vbox].
+
+\subsection*{Other potential errors}
+We mentioned that code being sent to the software must be syntactically valid. In addition, keep in mind that the server waits for complete commands. So, for example, if we try\\
+\verb|The factorial of 6 is \inlnR{```cat(factorial(6)```}.|\\
+it will cause the server to hang because it awaits the closing parenthesis. Eventually, it will time out but the code cannot be executed, so the desired output will not be produced. The timeout interval is set in the config files for R, Julia, and Matlab.
 
 
 % texcount -char -1 -sum tmp/testruncode_inln4.tex 
-
 
 \end{document}          
 

@@ -230,7 +230,6 @@
 \NewDocumentCommand{\checkZeroBytes}{m}{
   \immediate\write18{python3 -c 'import os; print("ZERO BYTES IN OUTPUT", file=open("#1", "a")) if os.path.getsize("#1") == 0 else True'}
 }
-%import os; python3 -c 'import os; print("Zero bytes in") if (os.path.getsize("tmp/testruncode_inln3.tex") == 0) else True
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
