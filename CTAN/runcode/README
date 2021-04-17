@@ -1,0 +1,32 @@
+LaTeX Package: runcode 2020/10/04 v1.0
+----------------------------------------
+The runcode package enables the execution of source code (e.g., R, 
+Julia, Matlab, shell, etc.) and embed the results in the pdf file
+when compiling the LaTeX file. To use this package the shell-escape 
+option must be enabled.
+
+Copyright (C) 2020
+Haim Bar and HaiYing Wang https://github.com/Ossifragus/runcode
+
+Files:
+  * README -  this file
+  * runcode.sty -  package source
+  * runcode.tex -  documentation (source)
+  * runcode.pdf -  documentation (pdf format)
+
+Installation: 
+[manual installation]
+  Put the runcode.sty file in the proper directory - tex/latex/runcode/
+     and the documentation runcode.pdf under  doc/latex/runcode/
+  Or, simply put the runcode.sty file in your project's folder.
+
+[MikTeX]
+  * Use the MikTeX Update Wizard to update runcode package.
+
+License:
+  This work may be distributed and/or modified under the conditions
+  of the LaTeX Project Public License, either version 1.3c of this
+  license or (at your option) any later version. The latest version
+  of this license is in http://www.latex-project.org/lppl.txt
+  and version 1.3c or later is part of all distributions of LaTeX
+  version 2005/12/01 or later.
