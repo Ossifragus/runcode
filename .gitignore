@@ -27,5 +27,6 @@ __pycache__
 *juliadebug.txt
 *matlab.config
 *matlabdebug.txt
+serverPID*.txt
 
 FAQ.html

@@ -12,25 +12,13 @@ qns <- seq(0.05,0.95,by=0.05)
 x <- seq(0,3,length.out = n)
 L <- 20
 y <- 6*x^2 + x +120 + rnorm(n, 0, 0.1+0.5*x)
-qrdg <- matrix(0,nrow=n, ncol=length(qns))
-xqs <- quantile(x, probs = (1:(L-1))/L)
-names(xqs) <- c()
-qqp  <- matrix(0, nrow=length(xqs), ncol=length(qns))
-qqp2 <- matrix(0, nrow=length(xqs), ncol=length(qns))
-i <- 1
-for (qn in qns) {
-  qremFit <- QREM(lm, linmod=y~x+I(x^2), df=data.frame(y,x,x^2), qn=qn)
-  qrdg <- QRdiagnostics(x, "x",qremFit$ui, qn,  plot.it = ifelse(abs(qn-0.1) < 1e-6, TRUE, FALSE), filename="tmp/sim23q10correct.pdf")
-  for (j in 1:(L-1)) {
-    qqp[j,i] <- length(which(qrdg$y < xqs[j])) / length(which(qrdg$x < xqs[j]))
-  }
-  
-  qremFit <- QREM(lm, linmod=y~x, df=data.frame(y,x,x^2), qn=qn)
-  qrdg <- QRdiagnostics(x, "x",qremFit$ui, qn, plot.it = ifelse(abs(qn-0.1) < 1e-6, TRUE, FALSE), filename="tmp/sim23q10incorrect.pdf")
-  for (j in 1:(L-1)) {
-    qqp2[j,i] <- length(which(qrdg$y < xqs[j])) / length(which(qrdg$x < xqs[j]))
-  }
-  i <- i+1
+qrfits1 <- qrfits2 <- list()
+dat <- data.frame(y,x,x^2)
+for (i in 1:length(qns)) {
+  qrfits1[[i]] <- QREM(lm, linmod=y~x+I(x^2), df=dat, qn=qns[i])
+  qrfits2[[i]] <- QREM(lm, linmod=y~x, df=dat, qn=qns[i])
 }
-flatQQplot(x,xqs,qqp,qns, L=21, filename = "tmp/flatQQsim23q10correct.pdf")
-flatQQplot(x,xqs,qqp2,qns, L=21, filename = "tmp/flatQQsim23q10incorrect.pdf")
+qrdg10c <- QRdiagnostics(dat$x, "x", qrfits1[[2]]$ui, qn=0.1, plot.it=TRUE, filename = "tmp/sim23q10correct.pdf")
+qrdg10i <- QRdiagnostics(dat$x, "x", qrfits2[[2]]$ui, qn=0.1, plot.it=TRUE, filename = "tmp/sim23q10incorrect.pdf")
+pvals <- flatQQplot(dat=dat, cnum = 2, qrfits=qrfits1, qns=qns, maxm = 20, plot.it = TRUE, filename = "tmp/flatQQsim23q10correct.pdf")
+pvals <- flatQQplot(dat=dat, cnum = 2, qrfits=qrfits2, qns=qns, maxm = 20, plot.it = TRUE, filename = "tmp/flatQQsim23q10incorrect.pdf")
