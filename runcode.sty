@@ -79,12 +79,33 @@
   \fi  
 }
 
+\DeclareOption{python}{
+  % create a configuration file for Python server if it does not exist.
+  \IfFileExists{python.config}{}{
+    \newwrite\tempfile
+    \immediate\openout\tempfile=python.config
+    \immediate\write\tempfile{[SERVERCONFIG]}
+    \immediate\write\tempfile{PORT = 65433}
+    \immediate\write\tempfile{DEBUGFILE = pythondebug.txt}
+    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\closeout\tempfile
+  }
+  % Start the server. Need to run just once. Can comment out after the first
+  % compilation, but remember to terminate the server
+  \ifnotnohup
+  {\immediate\write18{python3 -c 'from talk2stat.talk2stat import server,client; server("./","python") if not client("./","python","``` ```") else print("server is already running")'}}
+  \else
+  {\immediate\write18{nohup python3 -c 'from talk2stat.talk2stat import server,client; server("./","python") if not client("./","python","``` ```") else print("server is already running")' &}}
+  \fi  
+}
+
 \DeclareOption{stopserver}{
   \AtEndDocument{
   %% stop the server when the pdf compilation is done.
     \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","R","QUIT")'}
     \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","QUIT")'}
     \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","QUIT")'}
+    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","python","QUIT")'}
 }}
 
 \ProcessOptions*
@@ -293,5 +314,59 @@
 }
 
 \NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","matlab","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+
+
+\NewDocumentCommand{\runPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'} m m O{}}
+{ 
+  \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'}
+  \ifstrequal{#1}{\runcmd}
+  {\runExtCode{#1}{}{#3}[#4]}
+  {\runExtCode{#1}{#2}{#3}[#4]}
+}
+
+\NewDocumentCommand{\inlnPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","python","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+
+
+%%%%%%%%
+% For Python batch mode, implement saving and restoring session
+% Arg #1 is the source file name,
+% Arg #2 is the output file name
+
+\NewDocumentCommand{\runPythonBatch}{m m}{%\-\\
+   \stepcounter{codeOutput}
+   \ifthenelse{\isempty{#2}} % set the output file name
+        { \setvalue{\tmpname}{tmp/\jobname_tmp\thecodeOutput.tex} }
+        { \setvalue{\tmpname}{tmp/#2.tex} }
+
+   \IfFileExists{#1}{
+     \ifruncode
+          \newwrite\tempfile
+          \immediate\openout\tempfile=tmp/\jobname_#1
+          \immediate\write\tempfile{import dill}
+          \immediate\write\tempfile{from os.path import exists}
+          \immediate\write\tempfile{if exists('tmp/session'):}
+          \immediate\write\tempfile{    dill.load_session('tmp/session')}
+          \immediate\write\tempfile{}
+          \newread\infile
+          \openin\infile=#1
+          \begingroup\endlinechar=-1
+          \loop\unless\ifeof\infile
+             \read\infile to\fileline  % Read one line and store it into \fileline
+             \immediate\write\tempfile{\unexpanded\expandafter{\fileline}}  % print the content to copy.txt
+          \repeat
+          \endgroup
+          \closein\infile
+          \immediate\write\tempfile{dill.dump_session('tmp/session')}
+          \immediate\write\tempfile{}
+          \immediate\closeout\tempfile
+          \immediate\write18{python3  tmp/\jobname_#1 > \tmpname}
+       \fi
+     }
+     {
+        \immediate\write18{cat /dev/null > \tmpname}
+        \textcolor{red}{\textbf{runPythonBatch: File #1 does not exist!}}
+     }
+}
+
 
 \endinput
