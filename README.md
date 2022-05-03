@@ -127,7 +127,7 @@ Available options are:
 [Julia](https://julialang.org/) 
 
 - `\runJulia[Arg1]{Arg2}{Arg3}[Arg4]` runs an external
-  [Julia](https://julialang.org/)[Julia](https://julialang.org/) code file.
+  [Julia](https://julialang.org/) code file.
   - `Arg1` is optional and uses
     [talk2stat](https://pypi.org/project/talk2stat/)'s
     [Julia](https://julialang.org/) server by default.
@@ -183,6 +183,38 @@ Available options are:
     sides (as in the markdown grammar), then it will be implemented directly;
     otherwise the code will be written to a file on the disk and then be called.
   - `Arg3` has the same effect as that of the basic command `\inln`.
+
+
+[Python](https://www.python.org/) 
+
+- `\runPython[Arg1]{Arg2}{Arg3}[Arg4]` runs an external
+  [Python](https://www.python.org/) code file.
+  - `Arg1` is optional and uses
+    [talk2stat](https://pypi.org/project/talk2stat/)'s
+    [Julia](https://julialang.org/) server by default.
+  - `Arg2`, `Arg3`, and `Arg4` have the same effects as those of the basic
+    command `\runExtCode`.
+- `\inlnPython[Arg1]{Arg2}[Arg3]` runs [Python](https://www.python.org/) source
+  code (`Arg2`) and displays the output in line.
+  - `Arg1` is optional and uses the [Python](https://www.python.org/) server by
+    default.
+  - `Arg2` is the [Julia](https://julialang.org/) source code to run. If the
+    [Python](https://www.python.org/) source code is wrapped between "```" on both
+    sides (as in the markdown grammar), then it will be implemented directly;
+    otherwise the code will be written to a file on the disk and then be called.
+  - `Arg3` has the same effect as that of the basic command `\inln`.
+
+- \runPythonBatch[Arg1][Arg2] runs an external
+  [Python](https://www.python.org/) code file in batch mode (without a server running).
+  Python (at least currently), unlike the other languages we use, does not have an option
+  to save and restore a session, which means that once a Python session ends, the
+  working environement (variable, functions) is deleted. In order to allow a batch-mode
+  in Python, we implemented such capability. It requires the 
+  [dill](https://pypi.org/project/dill/) module, which has to be installed via
+  `pip3 install dill`.
+  - `Arg1` is the [Python](https://www.python.org/) source file name,
+  - `Arg2` is the output file name.
+
 
 <!-- ## Documentation -->
 

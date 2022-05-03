@@ -21,6 +21,8 @@ __pycache__
 *.pyc
 *debug.txt
 
+.gitignore
+
 *R.config
 *Rdebug.txt
 *julia.config
