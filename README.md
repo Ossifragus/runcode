@@ -204,7 +204,7 @@ Available options are:
     otherwise the code will be written to a file on the disk and then be called.
   - `Arg3` has the same effect as that of the basic command `\inln`.
 
-- \runPythonBatch[Arg1][Arg2] runs an external
+- `\runPythonBatch[Arg1][Arg2]` runs an external
   [Python](https://www.python.org/) code file in batch mode (without a server running).
   Python (at least currently), unlike the other languages we use, does not have an option
   to save and restore a session, which means that once a Python session ends, the
