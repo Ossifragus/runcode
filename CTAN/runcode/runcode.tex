@@ -15,9 +15,9 @@
 \documentclass{ltxdoc}
 \usepackage[hyphens]{url}
 %\usepackage{runcode}
-\ProvidesPackage{runcode}[2021/04/17 runcode v1.1]
+\ProvidesPackage{runcode}[2022/05/03 runcode v1.1]
 \begin{document}
-    \title{The \textsf{runcode} package\thanks{This document  corresponds to \textsf{runcode}~v1.1, dated~2021/04/17.}}
+    \title{The \textsf{runcode} package\thanks{This document  corresponds to \textsf{runcode}~v1.2, dated~2022/05/03.}}
     \author{Haim Bar and HaiYing Wang \\ \texttt{haim.bar@uconn.edu}, \texttt{haiying.wang@uconn.edu}}
     \maketitle
 
@@ -141,8 +141,32 @@ Available options are:
 \end{itemize}
 
 
+\bigskip
+\noindent \verb|\runPython[Arg1]{Arg2}{Arg3}[Arg4]| runs an external Python code file.
+\begin{itemize}
+\item \texttt{Arg1} is optional and uses \textit{talk2stat]}'s Python server by default.
+\item \texttt{Arg2}, \texttt{Arg3}, and \texttt{Arg4} have the same effects as those of the basic command \verb|\runExtCode|. 
+\end{itemize}
+
+\noindent \verb|\inlnPython[Arg1]{Arg2}[Arg3]| runs Python source code (\texttt{Arg2}) and displays the output in line.
+\begin{itemize}
+\item \texttt{Arg1} is optional and uses the Python server by default.
+\item \texttt{Arg2} is the R source code to run. If the Python  source code is wrapped between \verb|```| on both sides (as in the markdown grammar), then it will be implemented directly; otherwise the code will be written to a file on the disk and then be called.
+\item \texttt{Arg3} has the same effect as that of the basic command  \verb|\inln|.
+\end{itemize}
+
+\noindent \verb|\runPythonBatch[Arg1][Arg2]| runs an external Python source code (\texttt{Arg1}) in batch mode (without a server running). Python (at least currently), unlike the other languages we use, does not have an option to save and restore a session, which means that once a Python session ends, the working environment (variable, functions) is deleted. In order to allow a batch-mode in Python, we implemented such capability. It requires the dill module (https://pypi.org/project/dill/) module, which has to be installed via  `pip3 install dill`.
+\begin{itemize}
+\item \texttt{Arg1} is the Python source code to run.
+\item \texttt{Arg2} is the output file name.
+\end{itemize}
+
+ 
+
+
 \section{Revisions}
 \begin{itemize}
+\item v1.2, May 3, 2022: Added python options (server and batch).
 \item v1.1, April 17, 2021: Added a nohup option; improved error handling (missing code files, zero bytes in output files.)
 \end{itemize}
 
