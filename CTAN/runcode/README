@@ -1,7 +1,7 @@
 LaTeX Package: runcode 2022/05/03 v1.2
 ----------------------------------------
 The runcode package enables the execution of source code (e.g., R, 
-Julia, Matlab, shell, etc.) and embed the results in the pdf file
+Julia, Matlab, shell, Python, etc.) and embed the results in the pdf file
 when compiling the LaTeX file. To use this package the shell-escape 
 option must be enabled.
 
