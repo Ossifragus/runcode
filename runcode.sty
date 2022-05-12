@@ -170,13 +170,13 @@
   \IfFileExists{#2}{
     \ifthenelse{\isempty{#3}}{
     \ifminted
-    \inputminted[fontsize=\footnotesize,linenos, frame=single, bgcolor=bg, breaklines=true]{#1}{#2}
+    \inputminted{#1}{#2}
     \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines]{#2}
     \fi
   }{
     \ifminted
-    \inputminted[fontsize=\footnotesize,linenos,frame=single, bgcolor=bg, breaklines=true, firstline=#3, lastline=#4, firstnumber=1]{#1}{#2}
+    \inputminted[firstline=#3, lastline=#4, firstnumber=1]{#1}{#2}
     \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines, firstline=#3, lastline=#4, firstnumber=1]{#2}
     \fi
