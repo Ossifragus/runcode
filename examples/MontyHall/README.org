@@ -7,7 +7,7 @@ The font /Symbola/ is used for /XeLaTeX/, and the fonts /DejaVu Sans Mono/ and /
 
 The following results are from /LuaLaTeX/:
 
-- With *R* on and *Julia* off, the resulting file is [[./MontyHall_R.pdf][MontyHall_R.pdf]]
-- With *R* off and *Julia* on, the resulting file is [[./MontyHall_J.pdf][MontyHall_J.pdf]]
-- With both *R* and *Julia* one, the resulting file is [[./MontyHall_JR.pdf][MontyHall_JR.pdf]]
+- With *R* on and *Julia* off, the resulting file looks like [[./MontyHall_R.pdf][MontyHall_R.pdf]]
+- With *R* off and *Julia* on, the resulting file looks like [[./MontyHall_J.pdf][MontyHall_J.pdf]]
+- With both *R* and *Julia* one, the resulting file looks like [[./MontyHall_JR.pdf][MontyHall_JR.pdf]]
  
