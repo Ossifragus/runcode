@@ -1,0 +1,89 @@
+\documentclass[12pt]{article}
+\usepackage[nohup,run,julia,R]{runcode}
+\setminted[julia]{linenos, frame=single, bgcolor=bg, breaklines=true}
+\setminted[R]{linenos, frame=single, bgcolor=lightgray, breaklines=true}
+\usepackage[margin=1in]{geometry}
+\usepackage{unicode-math}
+\usepackage{fontspec}
+\usepackage{ifxetex,ifluatex}
+\ifxetex
+  \setmainfont{Symbola}
+  \setmonofont[Mapping=tex-ansi,Scale=0.9]{Symbola}% {DejaVu Sans Mono} %
+  \newfontfamily\notoemoji{Symbola}
+\else
+  \ifluatex
+    \newfontfamily\notoemoji{Noto Color Emoji}[Renderer=HarfBuzz]
+    \directlua{luaotfload.add_fallback
+      ("emojifallback", {"NotoColorEmoji:mode=harf;"})}
+    % \setmainfont{Symbola}[RawFeature={fallback=emojifallback}]
+    \setmonofont{DejaVu Sans Mono}[RawFeature={fallback=emojifallback}]
+  \fi
+\fi
+
+\newif\ifuseR\useRfalse
+\ifuseR
+  \NewDocumentCommand{\showR}{m O{} O{}}{\showCode{R}{#1}[#2][#3]}
+  \NewDocumentCommand{\includeR}{m O{vbox}}{\includeOutput{#1}[#2]}
+\else
+  \NewDocumentCommand{\showR}{m O{} O{}}{}
+  \renewcommand{\runR}[2]{}
+  \newcommand{\includeR}[1]{}
+  \renewcommand{\inlnR}[1]{}
+\fi
+
+\newif\ifuseJulia\useJuliatrue
+\ifuseJulia
+  \NewDocumentCommand{\showJulia}{m O{} O{}}{\showCode{julia}{#1}[#2][#3]}
+  \NewDocumentCommand{\includeJulia}{m O{vbox}}{\includeOutput{#1}[#2]}
+  \renewcommand{\inlnR}[1]{}
+\else
+  \NewDocumentCommand{\showJulia}{m O{} O{}}{}
+  \renewcommand{\runJulia}[2]{}
+  \newcommand{\includeJulia}[1]{}
+  \renewcommand{\inlnJulia}[1]{}
+\fi
+%%%% ------------------------------------------------
+
+\begin{document}
+\title{The Monty Hall problem}
+\maketitle
+
+Suppose you're on a game show, and you're given the choice of three doors:
+Behind one door is a car; behind the others, goats. You pick a door, say No. 1,
+and the host, who knows what's behind the doors, opens another door, say No. 3,
+which has a goat. He then says to you, ``Do you want to pick door No. 2?'' Is it
+to your advantage to switch your choice?
+
+We use a simulation to find the answer. First, we define a function to simulate
+a game:
+\showJulia{code/MontyHall_1.jl}
+\runJulia{code/MontyHall_1.jl}{montyhall-J1}
+
+\showR{code/MontyHall_1.R}
+\runR{code/MontyHall_1.R}{montyhall-R1}
+
+Here are the results for the ten games:
+\includeJulia{montyhall-J1}
+\includeR{montyhall-R1}
+
+Now let's define a function to count the frequency from a larger number of the
+simulated games.
+\showJulia{code/MontyHall_2.jl}
+\runJulia{code/MontyHall_2.jl}{montyhall-J2}
+% \includeOutput{montyhall-J2}
+
+\showR{code/MontyHall_2.R}
+\runR{code/MontyHall_2.R}{montyhall-R2}
+% \includeOutput{montyhall-R2}
+
+The approximate probabilities of keeping the original choice and switching are \inlnR{```cat(probabilities)```}\inlnJulia{```print(probabilities)```}.
+
+\end{document}
+
+%%% Local Variables:
+%%% coding: utf-8
+%%% TeX-command-extra-options: "--shell-escape"
+%%% TeX-engine: luatex
+%%% End:
+
+%%% TeX-engine: xetex

@@ -1,0 +1,13 @@
+This is an example of using multiple languages within one /LaTeX/ file.
+
+The font /Symbola/ is used for /XeLaTeX/, and the fonts /DejaVu Sans Mono/ and /Noto Color Emoji/ are used for /LuaLaTeX/ to display codes.
+
+- Set /useR/ to be true (~\useRtrue~) to turn on *R* or false (~\useRfalse~) to turn off *R*. 
+- Set /useJulia/ to be true (~\useJuliatrue~) to turn on *Julia* or false (~\useJuliafalse~) to turn off *Julia*. 
+
+The following results are from /LuaLaTeX/:
+
+- With *R* on and *Julia* off, the resulting file is [[./MontyHall_R.pdf][MontyHall_R.pdf]]
+- With *R* off and *Julia* on, the resulting file is [[./MontyHall_J.pdf][MontyHall_J.pdf]]
+- With both *R* and *Julia* one, the resulting file is [[./MontyHall_JR.pdf][MontyHall_JR.pdf]]
+ 
