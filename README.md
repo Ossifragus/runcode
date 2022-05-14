@@ -70,12 +70,25 @@ Available options are:
   has to be declared before declaring any language**, e.g., `[nohup, R]` works
   but `[R, nohup]` does not work.
 
+- `python`: start server for [Python](https://www.python.org/) (requires
+  [talk2stat](https://pypi.org/project/talk2stat/)).
+
 - `run`: run source code.
 
 - `R`: start server for [R](https://www.r-project.org/) (requires
   [talk2stat](https://pypi.org/project/talk2stat/)).
 
 - `stopserver`: stop the server(s) when the pdf compilation is done.
+
+**Note**: If [minted](https://ctan.org/pkg/minted) is used, the style of the code block is controlled through the minted package,  [e.g.:](https://github.com/Ossifragus/runcode/blob/master/examples/MontyHall/MontyHall.tex#L3-L4)
+```latex
+\setminted[julia]{linenos, frame=single, bgcolor=bg, breaklines=true}
+\setminted[R]{linenos, frame=single, bgcolor=lightgray, breaklines=true}
+```
+The outputs from executing codes are displayed in [tcolorbox](https://ctan.org/pkg/tcolorbox?lang=en), so the style can be customized with `\tcbset`, [e.g.:](https://github.com/Ossifragus/runcode/blob/master/examples/MontyHall/MontyHall.tex#L5)
+```latex
+\tcbset{breakable,colback=red!5!white,colframe=red!75!black}
+```
 
 ### Basic commands:
 

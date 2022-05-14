@@ -232,7 +232,7 @@
   \IfFileExists{\tmpname}
   {
     \ifstrequal{#2}{vbox}
-    {\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black]
+    {\begin{tcolorbox}
         \ifminted\unskip
  \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname}\unskip
         \else\unskip
@@ -275,7 +275,7 @@
   \IfFileExists{\tmpname.tex}
   {\checkZeroBytes{\tmpname.tex}\unskip
     \ifstrequal{#3}{vbox}
-        {\begin{tcolorbox}[breakable,colback=red!5!white,colframe=red!75!black]
+        {\begin{tcolorbox}
         \ifminted\unskip
  \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname.tex}\unskip
         \else\unskip
