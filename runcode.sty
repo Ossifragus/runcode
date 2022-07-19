@@ -171,12 +171,16 @@
     \ifthenelse{\isempty{#3}}{
     \ifminted
     \inputminted{#1}{#2}
+    \vspace{-\medskipamount}
+    \vspace{-\baselineskip}
     \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines]{#2}
     \fi
   }{
     \ifminted
     \inputminted[firstline=#3, lastline=#4, firstnumber=1]{#1}{#2}
+    \vspace{-\medskipamount}
+    \vspace{-\baselineskip}
     \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines, firstline=#3, lastline=#4, firstnumber=1]{#2}
     \fi
@@ -232,7 +236,7 @@
   \IfFileExists{\tmpname}
   {
     \ifstrequal{#2}{vbox}
-    {\begin{tcolorbox}
+    {\begin{tcolorbox}[colframe=blue!25,colback=blue!10]
         \ifminted\unskip
  \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname}\unskip
         \else\unskip
@@ -264,18 +268,20 @@
 \NewDocumentCommand{\inln}{m m O{inline}}{\-
   \stepcounter{codeOutput}\unskip
   \unskip\setvalue{\tmpname}{tmp/\jobname_inln\thecodeOutput}\unskip\unskip\unskip
-  \IfBeginWith{#2}{```}{\ifruncode\immediate\write18{#1 > \tmpname.tex}\unskip\fi}
-  {\newwrite\tempfile
-    \immediate\openout\tempfile=\tmpname.txt
-    \immediate\write\tempfile{#2}
-    \immediate\closeout\tempfile
-    \ifruncode
-    \immediate\write18{#1 \tmpname.txt > \tmpname.tex}\unskip
+  \ifruncode % cache mode - don't try to run the code, just get the previous results
+    \IfBeginWith{#2}{```}{\ifruncode\immediate\write18{#1 > \tmpname.tex}\unskip\fi}
+    {\newwrite\tempfile
+      \immediate\openout\tempfile=\tmpname.txt
+      \immediate\write\tempfile{#2}
+      \immediate\closeout\tempfile
+      \ifruncode
+      \immediate\write18{#1 \tmpname.txt > \tmpname.tex}\unskip
     \fi}
+  \fi % end cache mode
   \IfFileExists{\tmpname.tex}
   {\checkZeroBytes{\tmpname.tex}\unskip
     \ifstrequal{#3}{vbox}
-        {\begin{tcolorbox}
+        {\begin{tcolorbox}[colframe=blue!25,colback=blue!10]
         \ifminted\unskip
  \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname.tex}\unskip
         \else\unskip
