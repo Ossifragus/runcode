@@ -112,6 +112,7 @@
 
 \usepackage{morewrites}               % allow more than 16 \write
 \usepackage[many]{tcolorbox}            % to put boxes around text
+\tcbset{colframe=blue!25,colback=blue!10} % default colors for box output
 \usepackage{xcolor}               % for highlighting
 \usepackage[utf8x]{inputenc}
 \usepackage{textgreek}
@@ -123,6 +124,7 @@
 % Use minted if it is loaded; otherwise use fvextra
 \ifminted
 \usepackage[cache=false]{minted}
+\setminted{fontsize=\footnotesize,breaklines=true} % minted default
 \else
 \usepackage{fvextra}
 \fi
@@ -236,9 +238,9 @@
   \IfFileExists{\tmpname}
   {
     \ifstrequal{#2}{vbox}
-    {\begin{tcolorbox}[colframe=blue!25,colback=blue!10]
+    {\begin{tcolorbox}
         \ifminted\unskip
- \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname}\unskip
+          \inputminted{text}{\tmpname}\unskip
         \else\unskip
         \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname}\unskip
         \fi
@@ -281,9 +283,9 @@
   \IfFileExists{\tmpname.tex}
   {\checkZeroBytes{\tmpname.tex}\unskip
     \ifstrequal{#3}{vbox}
-        {\begin{tcolorbox}[colframe=blue!25,colback=blue!10]
+        {\begin{tcolorbox}
         \ifminted\unskip
- \inputminted[fontsize=\footnotesize,breaklines=true]{text}{\tmpname.tex}\unskip
+          \inputminted{text}{\tmpname.tex}\unskip
         \else\unskip
         \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname.tex}\unskip
         \fi
