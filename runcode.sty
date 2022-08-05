@@ -14,6 +14,11 @@
 \mintedtrue
 \DeclareOption{nominted}{\mintedfalse}
 
+\newif\ifreducedspace
+\reducedspacefalse
+\DeclareOption{reducedspace}{\reducedspacetrue}
+
+
 % Some editors terminate all child processes after LaTeX compiling such as Emacs with Auctex. For this case, use the nohup option. It set the variable notnohup to be false, and the server will not be terminated by the parent process.
 \newif\ifnotnohup
 \notnohuptrue
@@ -27,7 +32,7 @@
     \immediate\write\tempfile{[SERVERCONFIG]}
     \immediate\write\tempfile{PORT = 65432}
     \immediate\write\tempfile{DEBUGFILE = Rdebug.txt}
-    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\write\tempfile{PIPETIMEOUT = 60}
     \immediate\closeout\tempfile
   }
   % Start the server. Need to run just once. Can comment out after the first
@@ -47,7 +52,7 @@
     \immediate\write\tempfile{[SERVERCONFIG]}
     \immediate\write\tempfile{PORT = 65431}
     \immediate\write\tempfile{DEBUGFILE = juliadebug.txt}
-    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\write\tempfile{PIPETIMEOUT = 60}
     \immediate\closeout\tempfile
   }
   % Start the server. Need to run just once. Can comment out after the first
@@ -67,7 +72,7 @@
     \immediate\write\tempfile{[SERVERCONFIG]}
     \immediate\write\tempfile{PORT = 65430}
     \immediate\write\tempfile{DEBUGFILE = matlabdebug.txt}
-    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\write\tempfile{PIPETIMEOUT = 60}
     \immediate\closeout\tempfile
   }
   % Start the server. Need to run just once. Can comment out after the first
@@ -87,7 +92,7 @@
     \immediate\write\tempfile{[SERVERCONFIG]}
     \immediate\write\tempfile{PORT = 65433}
     \immediate\write\tempfile{DEBUGFILE = pythondebug.txt}
-    \immediate\write\tempfile{PIPETIMEOUT = 300}
+    \immediate\write\tempfile{PIPETIMEOUT = 60}
     \immediate\closeout\tempfile
   }
   % Start the server. Need to run just once. Can comment out after the first
@@ -102,10 +107,18 @@
 \DeclareOption{stopserver}{
   \AtEndDocument{
   %% stop the server when the pdf compilation is done.
-    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","R","QUIT")'}
-    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","QUIT")'}
-    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","QUIT")'}
-    \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","python","QUIT")'}
+  \IfFileExists{R.config}{
+      \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","R","QUIT")'}
+    }{}
+    \IfFileExists{julia.config}{
+      \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","QUIT")'}
+    }{}
+    \IfFileExists{matlab.config}{
+      \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","QUIT")'}
+    }{}
+    \IfFileExists{python.config}{
+      \immediate\write18{python3 -c 'from talk2stat.talk2stat import client; client("./","python","QUIT")'}
+    }{}
 }}
 
 \ProcessOptions*
@@ -129,7 +142,7 @@
 \usepackage{fvextra}
 \fi
 
-\immediate\write18{mkdir tmp}
+\immediate\write18{mkdir -p tmp}
 
 \definecolor{bg}{rgb}{0.95,0.95,0.95} % code block background color
 
@@ -173,16 +186,20 @@
     \ifthenelse{\isempty{#3}}{
     \ifminted
     \inputminted{#1}{#2}
-    \vspace{-\medskipamount}
-    \vspace{-\baselineskip}
+    \ifreducedspace
+      \vspace{-\medskipamount}
+      \vspace{-\baselineskip}
+    \fi
     \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines]{#2}
     \fi
   }{
     \ifminted
     \inputminted[firstline=#3, lastline=#4, firstnumber=1]{#1}{#2}
-    \vspace{-\medskipamount}
-    \vspace{-\baselineskip}
+    \ifreducedspace
+      \vspace{-\medskipamount}
+      \vspace{-\baselineskip}
+    \fi
     \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines, firstline=#3, lastline=#4, firstnumber=1]{#2}
     \fi
@@ -249,13 +266,13 @@
       {\unskip\input{\tmpname}\unskip}
       {\input{\tmpname}}}}
   % if code execution disabled, and no cache:
-  {\begin{tcolorbox}
+  {\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
       \textbf{Output file \tmpname~ not found}. Check the file name (it may be that the file name was given with the suffix .tex. If so, remove it). If the file name is correct the problem may be because code execution is disabled and no cache is available. If so, force the code to run again (using the [run] option).
     \end{tcolorbox}}}
 
 
 \NewDocumentCommand{\checkZeroBytes}{m}{
-  \immediate\write18{python3 -c 'import os; print("ZERO BYTES IN OUTPUT", file=open("#1", "a")) if os.path.getsize("#1") == 0 else True'}
+  \immediate\write18{python3 -c 'import os; print("**ZERO BYTES IN OUTPUT**", file=open("#1", "a")) if os.path.getsize("#1") == 0 else True'}
 }
 
 
