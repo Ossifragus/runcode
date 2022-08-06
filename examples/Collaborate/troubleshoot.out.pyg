@@ -1,7 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n+nf}{set.seed}\PYG{p}{(}\PYG{l+m}{0}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}\PYGZsh{} fix the random number}
-\PYG{n}{x} \PYG{o}{=} \PYG{n+nf}{rnorm}\PYG{p}{(}\PYG{l+m}{100}\PYG{p}{)}
-\PYG{n}{y} \PYG{o}{=} \PYG{l+m}{1}\PYG{o}{+}\PYG{n}{x}\PYG{o}{+}\PYG{n+nf}{rnorm}\PYG{p}{(}\PYG{l+m}{100}\PYG{p}{)}
-\PYG{n}{fit} \PYG{o}{=} \PYG{n+nf}{lm}\PYG{p}{(}\PYG{n}{y}\PYG{o}{\PYGZti{}}\PYG{n}{x}\PYG{p}{)}
-\PYG{n+nf}{print}\PYG{p}{(}\PYG{n+nf}{summary}\PYG{p}{(}\PYG{n}{fit}\PYG{p}{))}
-\end{Verbatim}
