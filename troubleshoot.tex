@@ -94,8 +94,9 @@ If the programming language is misspecified or not recognized by minted or fvext
 If the line number in Arg \#3 exceeds the actual number of lines in the code, the code box will be empty, and the \LaTeX~ compiler will show an error message in its log file (`Empty verbatim environment'). For example:
 \begin{verbatim}\showCode{R}{paper/supplement/Code/code1.R}[6][8]
 \end{verbatim}
-\showCode{R}{paper/supplement/Code/code1.R}[6][8]
-\vspace{-2em}\noindent Some \LaTeX~ compilers will stop the compilation when they encounter `Empty verbatim environment' but will allow you to manually continue the compilation (and the generated pdf will contain an empty box with no code in it.)
+% \showCode{R}{paper/supplement/Code/code1.R}[6][8]
+% \vspace{-2em}
+\noindent Some \LaTeX~ compilers will stop the compilation when they encounter `Empty verbatim environment' but will allow you to manually continue the compilation (and the generated pdf will contain an empty box with no code in it.)
 
 \noindent If the number in Arg. \#4 is greater than the number of lines in the file, minted will show the code up to the last line (so this misspecification is harmless).
 \begin{verbatim}\showCode{R}{paper/supplement/Code/code1.R}[4][8]
