@@ -1,0 +1,55 @@
+%%% Local Variables:
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:
+
+\documentclass[12pt]{article}
+
+
+\edef\TeXjobname{\jobname} % keep a copy (not essential)
+\edef\jobname{\detokenize{sidsmain}}
+\IfFileExists{ForceCache}{
+\usepackage[cache]{runcode} 
+}
+{
+\usepackage[nohup,run,julia,R]{runcode} % can still add/remove the cache option here
+}
+
+\begin{document}
+\title{Working with collaborators (including through Overleaf)}
+\maketitle
+
+You may work with a group of co-authors and share your project's folder using GitHub, Dropbox, or a similar file sharing system.
+It is possible that the work is divided in such a way that some collaborators work only on the text, and are not involved in, or just cannot run the code. For example, they may not have Python, R, Julia, or Matlab on their computer, or they may be subject-matter experts with no programming experience.
+It is possible for them to change into cache mode every time they compile the document, but it is cumbersome, and since the files are shared it means that they change the run/cache setting for all other collaborators. In this document we describe how such a group can work efficiently so that the coders can compile in server-mode, and the non-coders will always compile in cache mode.
+
+% lsof -a -d cwd -p  36797
+% pwdx 36797
+% ifplatform package provides \ifwindows, \iflinux, \ifmacosx and \ifcygwin
+
+We use a simulation to find the answer. First, we define a function to simulate
+a game:
+\showCode{julia}{code/MontyHall_1.jl}
+\runJulia{code/MontyHall_1.jl}{montyhall-J1}
+
+\showCode{R}{code/MontyHall_1.R}
+\runR{code/MontyHall_1.R}{montyhall-R1}
+
+Here are the results for the ten games:
+\includeJulia{montyhall-J1}
+\includeR{montyhall-R1}
+
+Now let's define a function to count the frequency from a larger number of the
+simulated games.
+\showCode{Julia}{code/MontyHall_2.jl}
+\runJulia{code/MontyHall_2.jl}{montyhall-J2}
+% \includeOutput{montyhall-J2}
+
+\showCode{R}{code/MontyHall_2.R}
+\runR{code/MontyHall_2.R}{montyhall-R2}
+% \includeOutput{montyhall-R2}
+
+The approximate probabilities of keeping the original choice and switching are \inlnR{```cat(probabilities)```}\inlnJulia{```print(probabilities)```}.
+
+\end{document}
+
+

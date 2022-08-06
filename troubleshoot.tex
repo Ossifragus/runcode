@@ -95,7 +95,9 @@ If the line number in Arg \#3 exceeds the actual number of lines in the code, th
 \begin{verbatim}\showCode{R}{paper/supplement/Code/code1.R}[6][8]
 \end{verbatim}
 \showCode{R}{paper/supplement/Code/code1.R}[6][8]
-\vspace{-2em}\noindent If the number in Arg. \#4 is greater than the number of lines in the file, minted will show the code up to the last line (so this misspecification is harmless).
+\vspace{-2em}\noindent Some \LaTeX~ compilers will stop the compilation when they encounter `Empty verbatim environment' but will allow you to manually continue the compilation (and the generated pdf will contain an empty box with no code in it.)
+
+\noindent If the number in Arg. \#4 is greater than the number of lines in the file, minted will show the code up to the last line (so this misspecification is harmless).
 \begin{verbatim}\showCode{R}{paper/supplement/Code/code1.R}[4][8]
 \end{verbatim}
 \showCode{R}{paper/supplement/Code/code1.R}[4][8]
@@ -123,11 +125,12 @@ If the source code file doesn't exist, we get an error message as with \verb|\ru
 \egroup
 
 \cause\bgroup
-Check that the correct executuable is used, since \verb|\runExtCode| requires the specific program and command line arguments. For example, using R as the executable will not work in the following example:\\
+Check that the correct executable is used, since \verb|\runExtCode| requires the specific program and command line arguments. For example, using R as the executable will not work in the following example:\\
 \verb|\runExtCode{R}{paper/supplement/Code/code1.R}{testWithR}|\\
-\runExtCode{R}{paper/supplement/Code/code1.R}{testWithR}
+%\runExtCode{R}{paper/supplement/Code/code1.R}{testWithR}
 It will create the file tmp/testWithR.tex, and in it you will see\\
 \verb|ARGUMENT 'paper/supplement/Code/code1.R' __ignored__|\\
+This is a fatal error -- the compiler will get stuck because it will wait for the code to finish, and the compilation process will have to be terminated by the user.
 \noindent
 The correct way to use \verb|\runExtCode| with R in batch-mode is\\
 \verb|\runExtCode{Rscript --save --restore}{paper/supplement/Code/code1.R}{test}|\\
@@ -224,7 +227,7 @@ Will look better: A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}[vbox].
 
 
 \cause\bgroup
-This type of problem can also be due to invalid output in the cache files. If for some reason, the cache files contain special characters or an underscore in text-mode, then the output will be corrupted. It is recommended to clear the cache, and if server-mode is used to also restart the server. For examplem, suppose that the directory of the project is called proj, and we're using Python in server-mode. From the command line, run the following:
+This type of problem can also be due to invalid output in the cache files. If for some reason, the cache files contain special characters or an underscore in text-mode, then the output will be corrupted. It is recommended to clear the cache, and if server-mode is used to also restart the server. For example, suppose that the directory of the project is called proj, and we're using Python in server-mode. From the command line, run the following:
 \begin{Verbatim}
 cd proj
 rm -f proj.aux tmp/*.txt nohup.out proj.synctex.gz
