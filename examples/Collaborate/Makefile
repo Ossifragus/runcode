@@ -4,7 +4,7 @@ overleaf:
 	xelatex -shell-escape runcodeOL.tex
 
 clean:
-	rm -f runcodeOL.synctex.gz runcodeOL.aux tmp/*.txt
+	rm -f runcodeOL.synctex.gz runcodeOL.aux tmp/*.txt runcodeOL.mw runcodeOL.log
 
 # stop the talk2stat server, but don't compile the book:
 stopserver: clean

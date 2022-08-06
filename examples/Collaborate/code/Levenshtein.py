@@ -18,4 +18,6 @@ def Levenshtein(s1, s2):
                          d[i+1][j] + 1,              # insertion
                          d[i][j] + substitutionCost) # substitution
     return(d[n][m])
-print(Levenshtein('sibling', 'setting'))
+
+str1 = "sibling"
+str2 = "setting"

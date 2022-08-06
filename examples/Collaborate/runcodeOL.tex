@@ -12,7 +12,7 @@
 \usepackage[cache]{../../runcode} 
 }
 {
-\usepackage[nohup,run,python]{../../runcode} % can still add/remove the cache option here
+\usepackage[nohup,run,python,stopserver]{../../runcode} % can still add/remove the cache option here
 }
 
 \tcbset{colback=blue!5!white,colframe=blue!75!black}
@@ -93,15 +93,15 @@ Here is a detailed explanation of the steps:
 \end{enumerate}
 
 
-% \subsection*{Example}
-% Try compiling this file with the aforementioned steps, and see that after the first compilation the files under the tmp folder are updated, but after running \verb|make overleaf| only the main pdf file is updated.
-% 
-% In this example we demonstrate execution of Python code (which computes the Levenshtein distance between two words.)
-% 
-% \showCode{python}{code/Levenshtein.py}
-% \runPython{code/Levenshtein.py}{levdist}
-% 
-% \inlnPython{```print(Levenshtein('sibling', 'setting'))```}
+\subsection*{Example}
+Try compiling this file with the aforementioned steps, and see that after the first compilation the files under the tmp folder are updated, but after running \verb|make overleaf| only the main pdf file is updated.
+
+In this example we demonstrate execution of Python code (which computes the Levenshtein distance between two words.)
+
+\showCode{python}{code/Levenshtein.py}
+\runPython{code/Levenshtein.py}{levdist}
+
+The Levenshtein distance between the words \inlnPython{```print(str1)```} and \inlnPython{```print(str2)```} is \inlnPython{```print(Levenshtein(str1, str2))```}.
 
 \end{document}
 
