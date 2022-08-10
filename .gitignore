@@ -22,8 +22,6 @@ __pycache__
 *.pyc
 *debug.txt
 
-.gitignore
-
 *R.config
 *Rdebug.txt
 *julia.config
@@ -33,3 +31,6 @@ __pycache__
 serverPID*.txt
 
 FAQ.html
+
+# Exceptions
+!examples/Collaborate/tmp
