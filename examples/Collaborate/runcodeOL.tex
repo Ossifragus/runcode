@@ -50,7 +50,7 @@ The nohup option is only used because Emacs (for example) always stops all child
 Note that we used the run option here, but we can still manually change it to cache if needed, or override individual invocations of code within the document to be in cache mode.
 
 \bigskip
-We also  found that when Overleaf compiles the document, temporary files names do not get the main file's prefix. For example, the main file for this example is runcodeOL.tex so normally a temporary file created by \LaTeX~ will have runcodeOL as a prefix, but this is not the case with Overleaf. To force the prefix to be the mai file's name, which is requires so that runcode can embed code and results in the pdf, we add the following lines to the preamble of runcodeOL.tex:
+We also  found that when Overleaf compiles the document, temporary files names do not get the main file's prefix. For example, the main file for this example is runcodeOL.tex so normally a temporary file created by \LaTeX~ will have runcodeOL as a prefix, but this is not the case with Overleaf. To force the prefix to be the main file's name, which is requires so that runcode can embed code and results in the pdf, we add the following lines to the preamble of runcodeOL.tex:
 \begin{tcolorbox}
 \begin{Verbatim}
 \edef\TeXjobname{\jobname} % (not really essential)
@@ -84,8 +84,8 @@ If GitHub is used, we then commit the changes and push to the GitHub server. Wit
 
 Here is a detailed explanation of the steps:
 \begin{enumerate}
- \item \verb|make stopserver| is used to first remove the .aux file and any code files created by runcode. It's possible to add to the clean option the following suffixes: .bbl, .idx, .mw, .tbc, .toc, .mw, or the cache files, \verb|tmp/*|\\
- Then, it stops the talk2stat server, and cleans the files associated with it.
+ \item \verb|make stopserver| is used to first remove the .aux file and any code files created by runcode. It's possible to add to the clean option the following suffixes: .bbl, .idx, .mw, .tbc, .toc,, or the cache files, \verb|tmp/*|\\
+ Then, it stops the talk2stat server, and deletes the files associated with it.
  \item \verb|make build| removes the file ForceCache in order to ensure that the next compliation will be in server-mode (no cache).\\
  Then, the project is compiled (with the mandatory \verb|shell-escape| option).
  \item \verb|make overleaf| first creates the ForceCache file, so that the next compliation will not invoke the python code.\\
