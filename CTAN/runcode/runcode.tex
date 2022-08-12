@@ -1,4 +1,4 @@
-    % LaTeX Package: runcode  v1.5 2022/07/23
+    % LaTeX Package: runcode  v1.6 2022/08/10
     %
     % Copyright (C) 2021 by Haim Bar and HaiYing Wang
     %
@@ -14,10 +14,9 @@
 
 \documentclass{ltxdoc}
 \usepackage[hyphens]{url}
-%\usepackage{runcode}
-\ProvidesPackage{runcode}[2022/07/23 runcode v1.5]
+\usepackage{runcode}
 \begin{document}
-    \title{The \textsf{runcode} package\thanks{This document  corresponds to \textsf{runcode}~v1.5, dated~2022/07/23.}}
+    \title{The \textsf{runcode} package\thanks{This document  corresponds to \textsf{runcode}~v1.6, dated~2022/08/10.}}
     \author{Haim Bar and HaiYing Wang \\ \texttt{haim.bar@uconn.edu}, \texttt{haiying.wang@uconn.edu}}
     \maketitle
 
@@ -51,6 +50,7 @@ Available options are:
 \item  \texttt{stopserver}: stop the \textit{talk2stat} server(s) when the pdf compilation is done.
 \item  \texttt{nohup}:  when using the server-mode, some editors terminate all child processes after LaTeX compiling such as Emacs with Auctex. For this case, use the nohup option. It set the variable notnohup to be false, and the server will not be terminated by the parent process.
 \item  \texttt{nominted}: use the \textit{fvextra} package [\url{https://ctan.org/pkg/fvextra}] instead of the \textit{minted}  package [\url{https://ctan.org/pkg/minted}] to show code (\textit{fvextra} does not require Python's pygments package [\url{https://pygments.org/}], but it does not provide syntax highlights).
+\item \texttt{reducedspace}: with some document classes minted puts too much space after an embedded block of code. Use this option to remove the extra space. 
 \end{itemize}
 * Requires the Python package \textit{talk2stat} to be installed.
 
@@ -166,12 +166,14 @@ Available options are:
 
 \section{Revisions}
 \begin{itemize}
+\item v1.6, August 10, 2022: stop only configured/running servers; a new reducedspace option - some document classes put more space after the code box; changed the default timeout of servers to 60 seconds; expanded the troubleshooting document. New examples are now available on GitHub, including how to collaborate with people who use Overleaf.
 \item v1.5, July 23, 2022: Removed the utf8x option when loading inputenc due to a conflict with hyperref.
 \item v1.4, July 18, 2022: Fixed a bug in the cache mode.
 \item v1.3, May 14, 2022: Removed the hard-coded minted options.
 \item v1.2, May 3, 2022: Added python options (server and batch).
 \item v1.1, April 17, 2021: Added a nohup option; improved error handling (missing code files, zero bytes in output files.)
 \end{itemize}
+
 
 %
 \section{Contributing}
