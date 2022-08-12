@@ -142,7 +142,8 @@
 \usepackage{fvextra}
 \fi
 
-\immediate\write18{mkdir -p tmp}
+\newcommand{\generated}{generated}
+\immediate\write18{mkdir -p \generated}
 
 \definecolor{bg}{rgb}{0.95,0.95,0.95} % code block background color
 
@@ -224,8 +225,8 @@
   \IfFileExists{#2}{
   \stepcounter{codeOutput}
   \ifthenelse{\isempty{#3}}
-    { \setvalue{\tmpname}{tmp/\jobname_tmp\thecodeOutput.tex} }
-    { \setvalue{\tmpname}{tmp/#3.tex} }
+    { \setvalue{\tmpname}{\generated/\jobname_tmp\thecodeOutput.tex} }
+    { \setvalue{\tmpname}{\generated/#3.tex} }
   % toggle \runcode above if you want to enable/disable code execution
     \ifthenelse{\isempty{#4}}
       { \ifruncode
@@ -248,8 +249,8 @@
 
 \NewDocumentCommand{\includeOutput}{m O{vbox}}{\-
   \ifthenelse{\isempty{#1}}
-  {\setvalue{\tmpname}{tmp/\jobname_tmp\thecodeOutput.tex}}
-  {\unskip\setvalue{\tmpname}{tmp/#1.tex}\unskip}\unskip
+  {\setvalue{\tmpname}{\generated/\jobname_tmp\thecodeOutput.tex}}
+  {\unskip\setvalue{\tmpname}{\generated/#1.tex}\unskip}\unskip
   % even if the code is not executed, but we ran it before, we can use a 
   % cached version if it exists.
   \IfFileExists{\tmpname}
@@ -286,7 +287,7 @@
 
 \NewDocumentCommand{\inln}{m m O{inline}}{\-
   \stepcounter{codeOutput}\unskip
-  \unskip\setvalue{\tmpname}{tmp/\jobname_inln\thecodeOutput}\unskip\unskip\unskip
+  \unskip\setvalue{\tmpname}{\generated/\jobname_inln\thecodeOutput}\unskip\unskip\unskip
   \ifruncode % cache mode - don't try to run the code, just get the previous results
     \IfBeginWith{#2}{```}{\ifruncode\immediate\write18{#1 > \tmpname.tex}\unskip\fi}
     {\newwrite\tempfile
@@ -360,17 +361,17 @@
 \NewDocumentCommand{\runPythonBatch}{m m}{%\-\\
    \stepcounter{codeOutput}
    \ifthenelse{\isempty{#2}} % set the output file name
-        { \setvalue{\tmpname}{tmp/\jobname_tmp\thecodeOutput.tex} }
-        { \setvalue{\tmpname}{tmp/#2.tex} }
+        { \setvalue{\tmpname}{\generated/\jobname_tmp\thecodeOutput.tex} }
+        { \setvalue{\tmpname}{\generated/#2.tex} }
 
    \IfFileExists{#1}{
      \ifruncode
           \newwrite\tempfile
-          \immediate\openout\tempfile=tmp/\jobname_#1
+          \immediate\openout\tempfile=\generated/\jobname_#1
           \immediate\write\tempfile{import dill}
           \immediate\write\tempfile{from os.path import exists}
-          \immediate\write\tempfile{if exists('tmp/session'):}
-          \immediate\write\tempfile{    dill.load_session('tmp/session')}
+          \immediate\write\tempfile{if exists('\generated/session'):}
+          \immediate\write\tempfile{    dill.load_session('\generated/session')}
           \immediate\write\tempfile{}
           \newread\infile
           \openin\infile=#1
@@ -381,10 +382,10 @@
           \repeat
           \endgroup
           \closein\infile
-          \immediate\write\tempfile{dill.dump_session('tmp/session')}
+          \immediate\write\tempfile{dill.dump_session('\generated/session')}
           \immediate\write\tempfile{}
           \immediate\closeout\tempfile
-          \immediate\write18{python3  tmp/\jobname_#1 > \tmpname}
+          \immediate\write18{python3  \generated/\jobname_#1 > \tmpname}
        \fi
      }
      {
