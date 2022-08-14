@@ -63,7 +63,7 @@ We also  found that when Overleaf compiles the document, temporary files names d
 In order to allow us to compile the book and run the code, but allow our publisher to compile the \LaTeX~ file without having to run the code, we created a file called Makefile with four options:
 \begin{itemize}
  \item \textbf{build}: build the book and use the server-mode.
- \item \textbf{overleaf}: use the cache, compile from tmp files (this must be done after make build, or else the tmp files will not be up to date).
+ \item \textbf{overleaf}: use the cache, compile from generated files (this must be done after make build, or else the generated files will not be up to date).
  \item \textbf{clean}: as the name suggests.
  \item \textbf{stopserver}: runs clean, and then stops the talk2stat server.
 \end{itemize}
@@ -84,7 +84,7 @@ If GitHub is used, we then commit the changes and push to the GitHub server. Wit
 
 Here is a detailed explanation of the steps:
 \begin{enumerate}
- \item \verb|make stopserver| is used to first remove the .aux file and any code files created by runcode. It's possible to add to the clean option the following suffixes: .bbl, .idx, .mw, .tbc, .toc,, or the cache files, \verb|tmp/*|\\
+ \item \verb|make stopserver| is used to first remove the .aux file and any code files created by runcode. It's possible to add to the clean option the following suffixes: .bbl, .idx, .mw, .tbc, .toc,, or the cache files, \verb|generated/*|\\
  Then, it stops the talk2stat server, and deletes the files associated with it.
  \item \verb|make build| removes the file ForceCache in order to ensure that the next compliation will be in server-mode (no cache).\\
  Then, the project is compiled (with the mandatory \verb|shell-escape| option).
@@ -94,7 +94,7 @@ Here is a detailed explanation of the steps:
 
 
 \subsection*{Example}
-Try compiling this file with the aforementioned steps, and see that after the first compilation the files under the tmp folder are updated, but after running \verb|make overleaf| only the main pdf file is updated.
+Try compiling this file with the aforementioned steps, and see that after the first compilation the files under the generated folder are updated, but after running \verb|make overleaf| only the main pdf file is updated.
 
 In this example we demonstrate execution of Python code (which computes the Levenshtein distance between two words.)
 

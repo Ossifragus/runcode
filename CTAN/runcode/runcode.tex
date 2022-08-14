@@ -1,6 +1,6 @@
-    % LaTeX Package: runcode  v1.6 2022/08/10
+    % LaTeX Package: runcode  v1.7 2022/08/14
     %
-    % Copyright (C) 2021 by Haim Bar and HaiYing Wang
+    % Copyright (C) 2020-2022 by Haim Bar and HaiYing Wang
     %
     % This file may be distributed and/or modified under the
     % conditions of the LaTeX Project Public License, either
@@ -16,7 +16,7 @@
 \usepackage[hyphens]{url}
 \usepackage{runcode}
 \begin{document}
-    \title{The \textsf{runcode} package\thanks{This document  corresponds to \textsf{runcode}~v1.6, dated~2022/08/10.}}
+    \title{The \textsf{runcode} package\thanks{This document  corresponds to \textsf{runcode}~v1.7, dated~2022/08/14.}}
     \author{Haim Bar and HaiYing Wang \\ \texttt{haim.bar@uconn.edu}, \texttt{haiying.wang@uconn.edu}}
     \maketitle
 
@@ -166,6 +166,7 @@ Available options are:
 
 \section{Revisions}
 \begin{itemize}
+\item v1.7, August 14, 2022: changed the tmp/ folder to generated/ in order to conform with CTAN suggestions; renamed the troubleshooting file.
 \item v1.6, August 10, 2022: stop only configured/running servers; a new reducedspace option - some document classes put more space after the code box; changed the default timeout of servers to 60 seconds; expanded the troubleshooting document. New examples are now available on GitHub, including how to collaborate with people who use Overleaf.
 \item v1.5, July 23, 2022: Removed the utf8x option when loading inputenc due to a conflict with hyperref.
 \item v1.4, July 18, 2022: Fixed a bug in the cache mode.

@@ -130,7 +130,7 @@ If the source code file doesn't exist, we get an error message as with \verb|\ru
 Check that the correct executable is used, since \verb|\runExtCode| requires the specific program and command line arguments. For example, using R as the executable will not work in the following example:\\
 \verb|\runExtCode{R}{paper/supplement/Code/code1.R}{testWithR}|\\
 %\runExtCode{R}{paper/supplement/Code/code1.R}{testWithR}
-It will create the file tmp/testWithR.tex, and in it you will see\\
+It will create the file generated/testWithR.tex, and in it you will see\\
 \verb|ARGUMENT 'paper/supplement/Code/code1.R' __ignored__|\\
 This is a fatal error -- the compiler will get stuck because it will wait for the code to finish, and the compilation process will have to be terminated by the user.
 \noindent
@@ -168,7 +168,7 @@ Arg \#4 controls when to run the code (optional - if not given, it listens
 The first argument can be \textit{any} command-line executable, including user-defined program names (compiled code, aliases, etc.). Because of that, we do not perform validity check before trying to execute it.
 For example, the following will not produce any error message:\\
 \verb|\runExtCode{C}{test.R}{}|\\
-but it will be possible to see an empty file in the tmp folder. This will be obvious to the user once the \verb|\includeOutput| command is executed in order to embed results in the compiled pdf document.
+but it will be possible to see an empty file in the generated folder. This will be obvious to the user once the \verb|\includeOutput| command is executed in order to embed results in the compiled pdf document.
 \egroup
 
 
@@ -188,7 +188,7 @@ Then to see the output, the correct usage is\\
 \verb|\includeOutput{testWithrunR}[vbox]|\\
 \includeOutput{testWithrunR}[vbox]
 
-\noindent Although the physical file is named tmp/testWithrunR.tex, we drop the tmp/ prefix and the .tex suffix. If we do include them, the file will not be found and we'll get an error message:\\
+\noindent Although the physical file is named generated/testWithrunR.tex, we drop the generated/ prefix and the .tex suffix. If we do include them, the file will not be found and we'll get an error message:\\
 \verb|\includeOutput{testWithrunR.tex}[vbox]|
 \includeOutput{testWithrunR.tex}[vbox]
 \egroup
@@ -232,7 +232,7 @@ Will look better: A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}[vbox].
 This type of problem can also be due to invalid output in the cache files. If for some reason, the cache files contain special characters or an underscore in text-mode, then the output will be corrupted. It is recommended to clear the cache, and if server-mode is used to also restart the server. For example, suppose that the directory of the project is called proj, and we're using Python in server-mode. From the command line, run the following:
 \begin{Verbatim}
 cd proj
-rm -f proj.aux tmp/*.txt nohup.out proj.synctex.gz
+rm -f proj.aux generated/*.txt nohup.out proj.synctex.gz
 python3 -c 'from talk2stat.talk2stat import client; client("./","python","QUIT")'
 rm -f serverPIDpython.txt pythondebug.txt talk2stat.log
 \end{Verbatim}
@@ -268,7 +268,7 @@ rm -f serverPIDjulia.txt juliadebug.txt talk2stat.log
 
 
 \cause\bgroup
-If the correct output is in the files in tmp directory, but it's not showing in the pdf file, it can be due to the \LaTeX~ compiler's naming of temporary files. Usually, the auto-generated file names start with the main tex file name (e.g. if the main tex file is called troubleshoot.tex then runcode will create files such as \verb|troubleshoot_inln5.tex|). However, working with Overleaf we noticed that their compiler uses another convention for temporary file names. To prevent such problems, you can add the following in the preamble of the main document:
+If the correct output is in the files in generated directory, but it's not showing in the pdf file, it can be due to the \LaTeX~ compiler's naming of temporary files. Usually, the auto-generated file names start with the main tex file name (e.g. if the main tex file is called troubleshoot.tex then runcode will create files such as \verb|troubleshoot_inln5.tex|). However, working with Overleaf we noticed that their compiler uses another convention for temporary file names. To prevent such problems, you can add the following in the preamble of the main document:
 \begin{Verbatim}
 \edef\TeXjobname{\jobname} % (this line is not really essential.)
 \edef\jobname{\detokenize{troubleshoot}}
