@@ -16,6 +16,7 @@
 *.synctex.gz
 *.mw
 *generated
+*tmp
 
 Rplots.pdf
 __pycache__
