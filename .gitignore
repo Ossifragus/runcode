@@ -15,7 +15,7 @@
 *.out
 *.synctex.gz
 *.mw
-*tmp
+*generated
 
 Rplots.pdf
 __pycache__
@@ -33,4 +33,4 @@ serverPID*.txt
 FAQ.html
 
 # Exceptions
-!examples/Collaborate/tmp
+!examples/Collaborate/generated
