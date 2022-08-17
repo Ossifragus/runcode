@@ -1,0 +1,35 @@
+name: Release for CTAN
+
+on:
+  push:
+    tags:
+      - "v*.*"
+jobs:
+  create_tarball:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 1
+    - name: seupEmacs
+      uses: purcell/setup-emacs@master
+      with:
+        version: 28.1
+
+    - name: generate runcode.tex
+      run: ./.org2tex.sh
+
+    - name: Compile LaTeX document
+      uses: xu-cheng/latex-action@v2
+      with:
+        root_file: runcode.tex
+        latexmk_shell_escape: true
+
+    - name: create CTAN tarball 
+      run: ./.ctan.sh
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          runcode.tar.gz

@@ -1,0 +1,299 @@
+# -*- org-latex-hyperref-template: ""; org-latex-prefer-user-labels: t -*-
+# LaTeX Package: runcode 2022/08/10 v1.8
+
+
+#+startup: content hideblocks
+#+options: H:2 timestamp:nil tex:t toc:nil author:nil
+#+EXPORT_FILE_NAME: runcode.tex
+
+#+LaTeX_CLASS: ltxdoc
+#+latex_header: \author{Haim Bar and HaiYing Wang \\haim.bar@uconn.edu, haiying.wang@uconn.edu}
+
+#+TITLE: The *runcode* package
+
+#+begin_export latex
+\begin{abstract}
+#+end_export
+
+=runcode= is a LaTeX package that executes programming source codes (including
+all command line tools) from LaTeX, and embeds the results in the resulting pdf
+file. Many programming languages can be easily used and any command-line
+executable can be invoked when preparing the pdf file from a tex file. =runcode=
+is also available on [[https://ctan.org/pkg/runcode][CTAN]].
+
+It is recommended to use this package in the server mode together with the
+[[https://www.python.org/][Python]] [[https://pypi.org/project/talk2stat/][talk2stat]] package. Currently, the server mode supports [[https://julialang.org/][Julia]], [[https://www.mathworks.com/products/matlab.html][MatLab]],
+[[https://www.python.org/][Python]], and [[https://www.r-project.org/][R]]. More languages will be added.
+
+#+begin_export latex
+For more details and usage examples and troubleshooting, refer to the
+package’s github repository, at \url{https://github.com/Ossifragus/runcode}.
+
+\end{abstract}
+#+end_export
+
+** Installation
+:PROPERTIES:
+:CUSTOM_ID: installation
+:END:
+You can simply put the runcode.sty file in the LaTeX project folder.
+
+The server mode requires the
+[[https://pypi.org/project/talk2stat/][talk2stat]] package. To install
+it from the command line, use:
+
+#+begin_example
+pip3 install talk2stat
+#+end_example
+
+*Note*: =runcode= requires to enable the =shell-escape= option when
+compiling a LaTeX document.
+
+
+** Usage
+:PROPERTIES:
+:CUSTOM_ID: usage
+:END:
+*** Load the package:
+:PROPERTIES:
+:CUSTOM_ID: load-the-package
+:END:
+#+begin_src latex :exports code
+\usepackage[options]{runcode}
+#+end_src
+
+Available options are:
+
+- =cache=: use cached results.
+
+- =julia=: start server for [[https://julialang.org/][Julia]] (requires
+  [[https://pypi.org/project/talk2stat/][talk2stat]]).
+
+- =matlab=: start server for
+  [[https://www.mathworks.com/products/matlab.html][MatLab]] (requires
+  [[https://pypi.org/project/talk2stat/][talk2stat]]).
+
+- =nominted=: use the [[https://ctan.org/pkg/fvextra][fvextra]] package
+  instead of the [[https://ctan.org/pkg/minted][minted]] package to show
+  code (this does not require the [[https://pygments.org/][pygments]]
+  package, but it does not provide syntax highlights).
+
+- =nohup=: use the =nohup= command when starting a server. When using
+  the server-mode, some editors terminate all child processes after
+  LaTeX compiling such as Emacs with Auctex. This option set the
+  variable notnohup to be false, and the server will not be terminated
+  by the parent process. *This option has to be declared before
+  declaring any language*, e.g., =[nohup, R]= works but =[R, nohup]=
+  does not work.
+
+- =python=: start server for [[https://www.python.org/][Python]]
+  (requires [[https://pypi.org/project/talk2stat/][talk2stat]]).
+
+- =run=: run source code.
+
+- =R=: start server for [[https://www.r-project.org/][R]] (requires
+  [[https://pypi.org/project/talk2stat/][talk2stat]]).
+
+- =stopserver=: stop the server(s) when the pdf compilation is done.
+
+*Note*: If [[https://ctan.org/pkg/minted][minted]] is used, the style of
+the code block is controlled through the minted package,
+[[https://github.com/Ossifragus/runcode/blob/master/examples/MontyHall/MontyHall.tex#L3-L4][e.g.:]]
+
+#+begin_src latex :exports code
+\setminted[julia]{linenos, frame=single, bgcolor=bg, breaklines=true}
+\setminted[R]{linenos, frame=single, bgcolor=lightgray, breaklines=true}
+#+end_src
+
+The outputs from executing codes are displayed in
+[[https://ctan.org/pkg/tcolorbox?lang=en][tcolorbox]], so the style can
+be customized with =\tcbset=,
+[[https://github.com/Ossifragus/runcode/blob/master/examples/MontyHall/MontyHall.tex#L5][e.g.:]]
+
+#+begin_src latex :exports code
+\tcbset{breakable,colback=red!5!white,colframe=red!75!black}
+#+end_src
+
+*** Basic commands:
+:PROPERTIES:
+:CUSTOM_ID: basic-commands
+:END:
+- =\runExtCode{Arg1}{Arg2}{Arg3}[Arg4]= runs an external code.
+
+  - =Arg1= is the executable program.
+  - =Arg2= is the source file name.
+  - =Arg3= is the output file name (with an empty value, the counter
+    =codeOutput= is used).
+  - =Arg4= controls whether to run the code. =Arg4= is optional with
+    three possible values: if skipped or with empty value, the value of
+    the global Boolean variable =runcode= is used; if the value is set
+    to =run=, the code will be executed; if set to =cache= (or anything
+    else), use cached results (see more about the cache below).
+
+- =\showCode{Arg1}{Arg2}[Arg3][Arg4]= shows the source code, using
+  [[https://ctan.org/pkg/minted][minted]] for a pretty layout or
+  [[https://ctan.org/pkg/fvextra][fvextra]] (if
+  [[https://pygments.org/][pygments]] is not installed).
+
+  - =Arg1= is the programming language.
+  - =Arg2= is the source file name.
+  - =Arg3= is the first line to show (optional with a default value 1).
+  - =Arg4= is the last line to show (optional with a default value of
+    the last line).
+
+- =\includeOutput{Arg1}[Arg2]= is used to embed the output from executed
+  code.
+
+  - =Arg1= is the output file name, and it needs to have the same value
+    as that of =Arg3= in =\runExtCode=. If an empty value is given to
+    =Arg1=, the counter =codeOutput= is used.
+  - =Arg2= is optional and it controls the type of output with a default
+    value =vbox=
+    - =vbox= (or skipped) = verbatim in a box.
+    - =tex= = pure latex.
+    - =inline= = embed result in text.
+
+- =\inln{Arg1}{Arg2}[Arg3]= is designed for simple calculations; it runs
+  one command (or a short batch) and displays the output within the
+  text.
+
+  - =Arg1= is the executable program or programming language.
+  - =Arg2= is the source code.
+  - =Arg3= is the output type.
+    - =inline= (or skipped or with empty value) = embed result in text.
+    - =vbox= = verbatim in a box.
+
+*** Language specific shortcuts:
+:PROPERTIES:
+:CUSTOM_ID: language-specific-shortcuts
+:END:
+
+[[https://julialang.org/][Julia]]
+
+- =\runJulia[Arg1]{Arg2}{Arg3}[Arg4]= runs an external
+  [[https://julialang.org/][Julia]] code file.
+  - =Arg1= is optional and uses
+    [[https://pypi.org/project/talk2stat/][talk2stat]]'s
+    [[https://julialang.org/][Julia]] server by default.
+  - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
+    basic command =\runExtCode=.
+- =\inlnJulia[Arg1]{Arg2}[Arg3]= runs [[https://julialang.org/][Julia]]
+  source code (=Arg2=) and displays the output in line.
+  - =Arg1= is optional and uses the [[https://julialang.org/][Julia]]
+    server by default.
+  - =Arg2= is the [[https://julialang.org/][Julia]] source code to run.
+    If the [[https://julialang.org/][Julia]] source code is wrapped
+    between "=```=" on both sides (as in the markdown grammar), then it
+    will be implemented directly; otherwise the code will be written to
+    a file on the disk and then be called.
+  - =Arg3= has the same effect as that of the basic command =\inln=.
+
+[[https://www.mathworks.com/products/matlab.html][MatLab]]
+
+- =\runMatLab[Arg1]{Arg2}{Arg3}[Arg4]= runs an external
+  [[https://www.mathworks.com/products/matlab.html][MatLab]] code file.
+  - =Arg1= is optional and uses
+    [[https://pypi.org/project/talk2stat/][talk2stat]]'s
+    [[https://www.mathworks.com/products/matlab.html][MatLab]] server by
+    default.
+  - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
+    basic command =\runExtCode=.
+- =\inlnMatLab[Arg1]{Arg2}[Arg3]= runs
+  [[https://www.mathworks.com/products/matlab.html][MatLab]] source code
+  (=Arg2=) and displays the output in line.
+  - =Arg1= is optional and uses the
+    [[https://www.mathworks.com/products/matlab.html][MatLab]] server by
+    default.
+  - =Arg2= is the
+    [[https://www.mathworks.com/products/matlab.html][MatLab]] source
+    code to run. If the
+    [[https://www.mathworks.com/products/matlab.html][MatLab]] source
+    code is wrapped between "```" on both sides (as in the markdown
+    grammar), then it will be implemented directly; otherwise the code
+    will be written to a file on the disk and then be called.
+  - =Arg3= has the same effect as that of the basic command =\inln=.
+
+[[https://www.python.org/][Python]]
+
+- =\runPython[Arg1]{Arg2}{Arg3}[Arg4]= runs an external
+  [[https://www.python.org/][Python]] code file.
+  - =Arg1= is optional and uses
+    [[https://pypi.org/project/talk2stat/][talk2stat]]'s
+    [[https://julialang.org/][Julia]] server by default.
+  - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
+    basic command =\runExtCode=.
+- =\inlnPython[Arg1]{Arg2}[Arg3]= runs
+  [[https://www.python.org/][Python]] source code (=Arg2=) and displays
+  the output in line.
+  - =Arg1= is optional and uses the [[https://www.python.org/][Python]]
+    server by default.
+  - =Arg2= is the [[https://julialang.org/][Julia]] source code to run.
+    If the [[https://www.python.org/][Python]] source code is wrapped
+    between "```" on both sides (as in the markdown grammar), then it
+    will be implemented directly; otherwise the code will be written to
+    a file on the disk and then be called.
+  - =Arg3= has the same effect as that of the basic command =\inln=.
+- =\runPythonBatch[Arg1][Arg2]= runs an external
+  [[https://www.python.org/][Python]] code file in batch mode (without a
+  server running). Python (at least currently), unlike the other
+  languages we use, does not have an option to save and restore a
+  session, which means that once a Python session ends, the working
+  environement (variable, functions) is deleted. In order to allow a
+  batch-mode in Python, we implemented such capability. It requires the
+  [[https://pypi.org/project/dill/][dill]] module, which has to be
+  installed via =pip3 install dill=.
+  - =Arg1= is the [[https://www.python.org/][Python]] source file name,
+  - =Arg2= is the output file name.
+
+[[https://www.r-project.org/][R]]
+
+- =\runR[Arg1]{Arg2}{Arg3}[Arg4]= runs an external
+  [[https://www.r-project.org/][R]] code file.
+  - =Arg1= is optional and uses
+    [[https://pypi.org/project/talk2stat/][talk2stat]]'s
+    [[https://www.r-project.org/][R]] server by default.
+  - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
+    basic command =\runExtCode=.
+- =\inlnR[Arg1]{Arg2}[Arg3]= runs [[https://www.r-project.org/][R]]
+  source code (=Arg2=) and displays the output in line.
+  - =Arg1= is optional and uses the [[https://www.r-project.org/][R]]
+    server by default.
+  - =Arg2= is the [[https://www.r-project.org/][R]] source code to run.
+    If the [[https://www.r-project.org/][R]] source code is wrapped
+    between "```" on both sides (as in the markdown grammar), then it
+    will be implemented directly; otherwise the code will be written to
+    a file on the disk and then be called.
+  - =Arg3= has the same effect as that of the basic command =\inln=.
+
+
+** Revisions
+- v1.8, 
+- v1.7, August 14, 2022: changed the tmp/ folder to generated/ in order to
+  conform with CTAN suggestions; renamed the troubleshooting file.
+- v1.6, August 10, 2022: stop only configured/running servers; a new
+  reducedspace option - some document classes put more space after the code box;
+  changed the default timeout of servers to 60 seconds; expanded the
+  troubleshooting document. New examples are now available on GitHub, including
+  how to collaborate with people who use Overleaf.
+- v1.5, July 23, 2022: Removed the utf8x option when loading inputenc due to a
+  conflict with hyperref.
+- v1.4, July 18, 2022: Fixed a bug in the cache mode.
+- v1.3, May 14, 2022: Removed the hard-coded minted options.
+- v1.2, May 3, 2022: Added python options (server and batch).
+- v1.1, April 17, 2021: Added a nohup option; improved error handling (missing
+  code files, zero bytes in output files.)
+
+** Contributing
+:PROPERTIES:
+:CUSTOM_ID: contributing
+:END:
+We welcome your contributions to this package by opening issues on
+GitHub and/or making a pull request. We also appreciate more example
+documents written using =runcode=.
+
+
+*Citing* =runcode=:
+Haim Bar and HaiYing Wang (2021). [[https://jds-online.org/journal/JDS/article/103/info][Reproducible Science with LaTeX]],
+/Journal of Data Science/ 2021; 19, no. 1, 111-125, DOI 10.6339/21-JDS998
+
+* Footnotes
