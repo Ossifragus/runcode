@@ -296,4 +296,3 @@ documents written using =runcode=.
 Haim Bar and HaiYing Wang (2021). [[https://jds-online.org/journal/JDS/article/103/info][Reproducible Science with LaTeX]],
 /Journal of Data Science/ 2021; 19, no. 1, 111-125, DOI 10.6339/21-JDS998
 
-* Footnotes

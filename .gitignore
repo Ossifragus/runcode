@@ -31,11 +31,14 @@ __pycache__
 *matlabdebug.txt
 serverPID*.txt
 
+_minted-runcode/
 FAQ.html
 README
 header.tex
 runcode.tar.gz
 runcode.tex
+runcode.hd
+runcode.pdf
 
 # Exceptions
 !examples/Collaborate/generated
