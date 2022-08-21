@@ -39,6 +39,7 @@ runcode.tar.gz
 runcode.tex
 runcode.hd
 runcode.pdf
+runcode.tex~
 
 # Exceptions
 !examples/Collaborate/generated
