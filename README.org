@@ -1,5 +1,9 @@
 # -*- org-latex-hyperref-template: ""; org-latex-prefer-user-labels: t -*-
+<<<<<<< HEAD
 # LaTeX Package: runcode 2022/08/20 v1.7
+=======
+# LaTeX Package: runcode 2022/08/10 v1.7
+>>>>>>> 1c0dbc7fdbd0c056b6a548655c4fff5ce5fb348a
 
 
 #+startup: content hideblocks
