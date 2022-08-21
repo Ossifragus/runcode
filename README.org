@@ -267,7 +267,7 @@ be customized with =\tcbset=,
 
 
 ** Revisions
-- v1.7, August 14, 2022: changed the tmp/ folder to generated/ in order to
+- v1.7, August 20, 2022: changed the tmp/ folder to generated/ in order to
   conform with CTAN suggestions; renamed the troubleshooting file.
 - v1.6, August 10, 2022: stop only configured/running servers; a new
   reducedspace option - some document classes put more space after the code box;
