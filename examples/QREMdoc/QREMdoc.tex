@@ -2,6 +2,7 @@
 \usepackage[a4paper, total={6in, 10in}]{geometry}
 %\usepackage[square,sort,comma]{natbib}
 \usepackage[R,stopserver]{../../runcode}
+%\usepackage[cache]{../../runcode}
 \setminted[R]{fontsize=\footnotesize,linenos, frame=single, bgcolor=bg, breaklines=true}
 
 % to compile it from scratch, create a generated subfolder and comment out the [cache] options below.
@@ -30,7 +31,7 @@ We use QREM to fit the data twice -- once with the correct model (line 18) and o
 We use this example to demonstrate two diagnostics functions in the package. \texttt{QRdiagnostics} is used to assess goodness of fit for one variable, at one selected quantile. For continuous variables it produces Q-Q plots, such that an appropriate model will results in the residual quantiles to lie along the main diagonal. For categorical variables it produces a spinogram, so that if the model is appropriate the percentage of points below the regression line is the chosen quantile for each level of the factor.
 The function \texttt{flatQQplot} can be used to plot a heatmap which represents the Q-Q plots for multiple quantiles in one graph. This can reveal whether a model fits well in all quantiles, or if it is misspecified in some.
 
-\runExtCode{R}{Sim23.R}{generated/sim23.tex}[cache]
+\runR{Sim23.R}{sim23}[cache]
 
 In lines 21 and 22 we generate the diagnostic plot for the linear term, $x$, at $q=0.1$ for the correct and incorrect models, respectively. We see in Figure \ref{sim23} (a) that the points lie along the diagonal, indicating a good fit of the quadratic model, while in Figure \ref{sim23} (b) there is substantial deviation from the diagonal, suggesting that the linear model is inadequate.
 
@@ -46,7 +47,7 @@ In lines 23-24 we generate the `flat Q-Q plot' for the linear term, for all the 
 \begin{figure}[t!]
 \centering
 \subfloat[\centering correct (quadratic) model]{\includegraphics[width=.5\linewidth]{generated/flatQQsim23q10correct.pdf}}
-\subfloat[\centering correct (quadratic) model]{\includegraphics[width=.5\linewidth]{generated/flatQQsim23q10incorrect.pdf}}
+\subfloat[\centering incorrect (linear) model]{\includegraphics[width=.5\linewidth]{generated/flatQQsim23q10incorrect.pdf}}
 \caption{Simulation 23 -- Diagnostic plot using the \texttt{flatQQplot} function.}\label{sim23flatqq}
 \end{figure}
 

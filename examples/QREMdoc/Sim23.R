@@ -18,7 +18,7 @@ for (i in 1:length(qns)) {
   qrfits1[[i]] <- QREM(lm, linmod=y~x+I(x^2), df=dat, qn=qns[i])
   qrfits2[[i]] <- QREM(lm, linmod=y~x, df=dat, qn=qns[i])
 }
-qrdg10c <- QRdiagnostics(dat$x, "x", qrfits1[[2]]$ui, qn=0.1, plot.it=TRUE, filename = "tmp/sim23q10correct.pdf")
-qrdg10i <- QRdiagnostics(dat$x, "x", qrfits2[[2]]$ui, qn=0.1, plot.it=TRUE, filename = "tmp/sim23q10incorrect.pdf")
-pvals <- flatQQplot(dat=dat, cnum = 2, qrfits=qrfits1, qns=qns, maxm = 20, plot.it = TRUE, filename = "tmp/flatQQsim23q10correct.pdf")
-pvals <- flatQQplot(dat=dat, cnum = 2, qrfits=qrfits2, qns=qns, maxm = 20, plot.it = TRUE, filename = "tmp/flatQQsim23q10incorrect.pdf")
+qrdg10c <- QRdiagnostics(dat$x, "x", qrfits1[[2]]$ui, qn=0.1, plot.it=TRUE, filename = "generated/sim23q10correct.pdf")
+qrdg10i <- QRdiagnostics(dat$x, "x", qrfits2[[2]]$ui, qn=0.1, plot.it=TRUE, filename = "generated/sim23q10incorrect.pdf")
+pvals <- flatQQplot(dat=dat, cnum = 2, qrfits=qrfits1, qns=qns, maxm = 20, plot.it = TRUE, filename = "generated/flatQQsim23q10correct.pdf")
+pvals <- flatQQplot(dat=dat, cnum = 2, qrfits=qrfits2, qns=qns, maxm = 20, plot.it = TRUE, filename = "generated/flatQQsim23q10incorrect.pdf")
