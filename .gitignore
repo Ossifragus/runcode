@@ -40,6 +40,7 @@ runcode.tex
 runcode.hd
 runcode.pdf
 runcode.tex~
+runcode/
 
 # Exceptions
 !examples/Collaborate/generated
