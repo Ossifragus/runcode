@@ -2,8 +2,9 @@
 
 emacs README.org --batch --no-init-file --load .org2tex.el -f org-latex-export-to-latex --kill -f toggle-debug-on-error
 
-rl=`sed -n '2p' README.org`
-rl=`echo $rl | sed 's/# LaTeX Package: runcode//'`
+rl=`sed -n '7p' runcode.sty`
+rl=`echo $rl | sed 's/.*\[\(.*\)\]/\1/'`
+rl=`echo $rl | sed 's/runcode //'`
 VersionDate=$(echo $rl | sed 's/\//\\\//g')
 
 sed "s/XXX-Date Version-XXX/$VersionDate/" CTAN/README  > README

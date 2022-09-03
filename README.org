@@ -1,6 +1,4 @@
 # -*- org-latex-hyperref-template: ""; org-latex-prefer-user-labels: t -*-
-# LaTeX Package: runcode 2022/08/20 v1.7
-
 
 #+startup: content hideblocks
 #+options: H:2 timestamp:nil tex:t toc:nil author:nil
