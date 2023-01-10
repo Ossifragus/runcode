@@ -341,7 +341,8 @@
         \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname.tex}\unskip
         \fi
       \end{tcolorbox}}
-    {\ifstrequal{#3}{inline}{\unskip{\input{\tmpname.tex}}\unskip}{\unskip{#3{\input{\tmpname.tex}}}\unskip}}}
+%    {\ifstrequal{#3}{inline}{\unskip{\input{\tmpname.tex}}\unskip}{\unskip{#3{\input{\tmpname.tex}}}\unskip}}
+    \unskip{\input{\tmpname.tex}}\unskip}
     {\textcolor{red}{\textbf{Output file \tmpname~ not found}}}}
 
 \NewDocumentCommand{\runR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m m O{}}
