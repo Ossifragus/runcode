@@ -4,7 +4,7 @@
 %
 %  This package is based on an ongoing work by Haim Bar and HaiYing Wang, and comments and questions are welcome!
 
-\ProvidesPackage{runcode}[2022/08/20 runcode v1.7]
+\ProvidesPackage{runcode}[2023/01/10 runcode v1.8]
 
 \newif\ifruncode
 % Change to \runcodefalse if you want to suspend code execution
@@ -12,9 +12,22 @@
 \DeclareOption{run}{\runcodetrue}
 \DeclareOption{cache}{\runcodefalse}
 
+% Choose the package for code typesetting. The default is minted.
+% The other two options are listings and fvextra. For backward compatibility,
+% it is possible to use nominted, in which case fvextra is used.
 \newif\ifminted
 \mintedtrue
-\DeclareOption{nominted}{\mintedfalse}
+\DeclareOption{nominted}{\mintedfalse} 
+\DeclareOption{minted}{\mintedtrue}
+
+\newif\iflistings
+\listingsfalse
+\DeclareOption{listings}{\listingstrue\mintedfalse}
+
+\newif\iffvextra
+\fvextrafalse
+\DeclareOption{fvextra}{\fvextratrue\mintedfalse}
+
 
 \newif\ifreducedspace
 \reducedspacefalse
@@ -136,12 +149,17 @@
 \usepackage{xparse}
 \usepackage{xstring}
 
-% Use minted if it is loaded; otherwise use fvextra
+% Use minted by default; but the user can change to listings or fvextra.
 \ifminted
 \usepackage[cache=false]{minted}
 \setminted{fontsize=\footnotesize,breaklines=true} % minted default
 \else
+\iflistings
+\usepackage{listings}
+\lstset{escapeinside=`',columns=fixed, extendedchars=true, basicstyle=\ttfamily\small, frame = lines}
+\else
 \usepackage{fvextra}
+\fi
 \fi
 
 \newcommand{\generated}{generated}
@@ -179,7 +197,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% \showCode prints the source code, using minted for a pretty layout
+% \showCode prints the source code, using minted or listings for a pretty layout
 % Arg #1 is the programming language,
 % Arg #2 is the source file name,
 % Args #3 and #4 are the first and last line to show (optional).
@@ -194,7 +212,11 @@
       \vspace{-\baselineskip}
     \fi
     \else
+      \iflistings
+        \lstinputlisting[language=#1]{#2}
+      \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines]{#2}
+    \fi
     \fi
   }{
     \ifminted
@@ -204,7 +226,11 @@
       \vspace{-\baselineskip}
     \fi
     \else
+      \iflistings
+      \lstinputlisting[language=#1,firstline=#3, lastline=#4]{#2}
+      \else
     \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines, firstline=#3, lastline=#4, firstnumber=1]{#2}
+    \fi
     \fi
   } 
   }{
@@ -261,8 +287,11 @@
     {\begin{tcolorbox}
         \ifminted\unskip
           \inputminted{text}{\tmpname}\unskip
+        \else\iflistings\unskip
+          \lstinputlisting{\tmpname}\unskip
         \else\unskip
-        \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname}\unskip
+        \VerbatimInput{\tmpname}\unskip
+        \fi
         \fi
       \end{tcolorbox}}
     {\unskip\ifstrequal{#2}{inline}
@@ -306,11 +335,13 @@
         {\begin{tcolorbox}
         \ifminted\unskip
           \inputminted{text}{\tmpname.tex}\unskip
+        \else\iflistings\unskip
+          \lstinputlisting{\tmpname.tex}\unskip
         \else\unskip
         \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname.tex}\unskip
         \fi
       \end{tcolorbox}}
-    {\unskip\input{\tmpname.tex}\unskip}}
+    {\ifstrequal{#3}{inline}{\unskip{\input{\tmpname.tex}}\unskip}{\unskip{#3{\input{\tmpname.tex}}}\unskip}}}
     {\textcolor{red}{\textbf{Output file \tmpname~ not found}}}}
 
 \NewDocumentCommand{\runR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m m O{}}
@@ -321,7 +352,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","R","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+\NewDocumentCommand{\inlnR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","R",f"```{rc0}```")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
 
 \NewDocumentCommand{\runJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'} m m O{}}
 { 
@@ -331,7 +362,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","julia","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+\NewDocumentCommand{\inlnJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","julia",f"```{rc0}```")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
 
 \NewDocumentCommand{\runMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'} m m O{}}
 { 
@@ -341,7 +372,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","matlab","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+\NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","matlab",f"```{rc0}```")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
 
 
 \NewDocumentCommand{\runPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'} m m O{}}
@@ -352,7 +383,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;client("./","python","#2")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
+\NewDocumentCommand{\inlnPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","python",f"```{rc0}```")'}{#2}[#3]}{\inln{#1}{#2}[#3]}}
 
 
 %%%%%%%%
