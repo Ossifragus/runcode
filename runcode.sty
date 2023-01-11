@@ -18,15 +18,15 @@
 \newif\ifminted
 \mintedtrue
 \DeclareOption{nominted}{\mintedfalse} 
-\DeclareOption{minted}{\mintedtrue}
+\DeclareOption{minted}{\mintedtrue\fvextrafalse\listingsfalse}
 
 \newif\iflistings
 \listingsfalse
-\DeclareOption{listings}{\listingstrue\mintedfalse}
+\DeclareOption{listings}{\listingstrue\mintedfalse\fvextrafalse}
 
 \newif\iffvextra
 \fvextrafalse
-\DeclareOption{fvextra}{\fvextratrue\mintedfalse}
+\DeclareOption{fvextra}{\fvextratrue\mintedfalse\listingsfalse}
 
 
 \newif\ifreducedspace
@@ -335,14 +335,14 @@
         {\begin{tcolorbox}
         \ifminted\unskip
           \inputminted{text}{\tmpname.tex}\unskip
-        \else\iflistings\unskip
+        \else\unskip\iflistings\unskip
           \lstinputlisting{\tmpname.tex}\unskip
         \else\unskip
         \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname.tex}\unskip
         \fi
+        \fi
       \end{tcolorbox}}
-%    {\ifstrequal{#3}{inline}{\unskip{\input{\tmpname.tex}}\unskip}{\unskip{#3{\input{\tmpname.tex}}}\unskip}}
-    \unskip{\input{\tmpname.tex}}\unskip}
+    {\unskip{\input{\tmpname.tex}}\unskip}}
     {\textcolor{red}{\textbf{Output file \tmpname~ not found}}}}
 
 \NewDocumentCommand{\runR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m m O{}}
