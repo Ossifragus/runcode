@@ -64,12 +64,16 @@ Available options are:
 
 - =cache=: use cached results.
 
-- =julia=: start server for [[https://julialang.org/][Julia]] (requires
-  [[https://pypi.org/project/talk2stat/][talk2stat]]).
+- =fvextra=: use the [[https://ctan.org/pkg/fvextra][fvextra]] package to show code.
+  
+- =julia=: start server for [[https://julialang.org/][Julia]] (requires [[https://pypi.org/project/talk2stat/][talk2stat]]).
 
-- =matlab=: start server for
-  [[https://www.mathworks.com/products/matlab.html][MatLab]] (requires
-  [[https://pypi.org/project/talk2stat/][talk2stat]]).
+- =listings=: use the [[https://ctan.org/pkg/listings?lang=en][listings]] package to show code.
+
+- =matlab=: start server for [[https://www.mathworks.com/products/matlab.html][MatLab]] (requires [[https://pypi.org/project/talk2stat/][talk2stat]]).
+
+- =minted=: use the [[https://ctan.org/pkg/minted][minted]] package to show code (requires the [[https://pygments.org/][pygments]] package).
+  This is the default option.
 
 - =nominted=: use the [[https://ctan.org/pkg/fvextra][fvextra]] package
   instead of the [[https://ctan.org/pkg/minted][minted]] package to show
@@ -265,6 +269,7 @@ be customized with =\tcbset=,
 
 
 ** Revisions
+- v1.8, January 10, 2023, add support to [[https://ctan.org/pkg/listings?lang=en][listings.]]
 - v1.7, August 20, 2022: changed the tmp/ folder to generated/ in order to
   conform with CTAN suggestions; renamed the troubleshooting file.
 - v1.6, August 10, 2022: stop only configured/running servers; a new
