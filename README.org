@@ -107,6 +107,14 @@ the code block is controlled through the minted package,
 \setminted[R]{linenos, frame=single, bgcolor=lightgray, breaklines=true}
 #+end_src
 
+Similarly, [[https://ctan.org/pkg/fvextra][fvextra]] and [[https://ctan.org/pkg/listings?lang=en][listings]] packages can be customized through the =\lstset=
+and =\fvset= commands, respectively, e.g.: 
+
+#+begin_src latex :exports code
+\lstset{basicstyle=\large, frame=single}
+\fvset{fontsize=\small, linenos=true, frame=single}
+#+end_src
+
 The outputs from executing codes are displayed in
 [[https://ctan.org/pkg/tcolorbox?lang=en][tcolorbox]], so the style can
 be customized with =\tcbset=,
@@ -133,9 +141,7 @@ be customized with =\tcbset=,
     else), use cached results (see more about the cache below).
 
 - =\showCode{Arg1}{Arg2}[Arg3][Arg4]= shows the source code, using
-  [[https://ctan.org/pkg/minted][minted]] for a pretty layout or
-  [[https://ctan.org/pkg/fvextra][fvextra]] (if
-  [[https://pygments.org/][pygments]] is not installed).
+  [[https://ctan.org/pkg/minted][minted]] (requires [[https://pygments.org/][pygments]]), [[https://ctan.org/pkg/fvextra][fvextra]], or [[https://ctan.org/pkg/listings?lang=en][listings]].
 
   - =Arg1= is the programming language.
   - =Arg2= is the source file name.
@@ -269,7 +275,7 @@ be customized with =\tcbset=,
 
 
 ** Revisions
-- v1.8, January 10, 2023, add support to [[https://ctan.org/pkg/listings?lang=en][listings.]]
+- v1.8, January 18, 2023, add support to [[https://ctan.org/pkg/listings?lang=en][listings.]]
 - v1.7, August 20, 2022: changed the tmp/ folder to generated/ in order to
   conform with CTAN suggestions; renamed the troubleshooting file.
 - v1.6, August 10, 2022: stop only configured/running servers; a new

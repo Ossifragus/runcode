@@ -4,7 +4,7 @@
 %
 %  This package is based on an ongoing work by Haim Bar and HaiYing Wang, and comments and questions are welcome!
 
-\ProvidesPackage{runcode}[2023/01/10 runcode v1.8]
+\ProvidesPackage{runcode}[2023/01/18 runcode v1.8]
 
 \newif\ifruncode
 % Change to \runcodefalse if you want to suspend code execution
@@ -159,6 +159,7 @@
 \lstset{escapeinside=`',columns=fixed, extendedchars=true, basicstyle=\ttfamily\small, frame = lines}
 \else
 \usepackage{fvextra}
+\fvset{fontsize=\footnotesize, breaklines}
 \fi
 \fi
 
@@ -215,7 +216,7 @@
       \iflistings
         \lstinputlisting[language=#1]{#2}
       \else
-    \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines]{#2}
+    \VerbatimInput{#2}
     \fi
     \fi
   }{
@@ -229,7 +230,7 @@
       \iflistings
       \lstinputlisting[language=#1,firstline=#3, lastline=#4]{#2}
       \else
-    \VerbatimInput[fontsize=\footnotesize,linenos=true,frame=single,breaklines, firstline=#3, lastline=#4, firstnumber=1]{#2}
+    \VerbatimInput[firstline=#3, lastline=#4, firstnumber=1]{#2}
     \fi
     \fi
   } 
@@ -338,7 +339,7 @@
         \else\unskip\iflistings\unskip
           \lstinputlisting{\tmpname.tex}\unskip
         \else\unskip
-        \VerbatimInput[fontsize=\footnotesize,breaklines]{\tmpname.tex}\unskip
+        \VerbatimInput{\tmpname.tex}\unskip
         \fi
         \fi
       \end{tcolorbox}}
