@@ -161,13 +161,14 @@ be customized with =\tcbset=,
     - =tex= = pure latex.
     - =inline= = embed result in text.
 
-- =\inln{Arg1}{Arg2}[Arg3]= is designed for simple calculations; it runs
+- =\inln{Arg1}{Arg2}[Arg3][Arg4]= is designed for simple calculations; it runs
   one command (or a short batch) and displays the output within the
   text.
 
   - =Arg1= is the executable program or programming language.
   - =Arg2= is the source code.
-  - =Arg3= is the output type.
+  - =Arg3= is the output file name (optional);
+  - =Arg4= is the output type.
     - =inline= (or skipped or with empty value) = embed result in text.
     - =vbox= = verbatim in a box.
 
@@ -185,7 +186,7 @@ be customized with =\tcbset=,
     [[https://julialang.org/][Julia]] server by default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
     basic command =\runExtCode=.
-- =\inlnJulia[Arg1]{Arg2}[Arg3]= runs [[https://julialang.org/][Julia]]
+- =\inlnJulia[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://julialang.org/][Julia]]
   source code (=Arg2=) and displays the output in line.
   - =Arg1= is optional and uses the [[https://julialang.org/][Julia]]
     server by default.
@@ -194,7 +195,7 @@ be customized with =\tcbset=,
     between "=```=" on both sides (as in the markdown grammar), then it
     will be implemented directly; otherwise the code will be written to
     a file on the disk and then be called.
-  - =Arg3= has the same effect as that of the basic command =\inln=.
+  - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 
 [[https://www.mathworks.com/products/matlab.html][MatLab]]
 
@@ -206,7 +207,7 @@ be customized with =\tcbset=,
     default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
     basic command =\runExtCode=.
-- =\inlnMatLab[Arg1]{Arg2}[Arg3]= runs
+- =\inlnMatLab[Arg1]{Arg2}[Arg3][Arg4]= runs
   [[https://www.mathworks.com/products/matlab.html][MatLab]] source code
   (=Arg2=) and displays the output in line.
   - =Arg1= is optional and uses the
@@ -219,7 +220,7 @@ be customized with =\tcbset=,
     code is wrapped between "```" on both sides (as in the markdown
     grammar), then it will be implemented directly; otherwise the code
     will be written to a file on the disk and then be called.
-  - =Arg3= has the same effect as that of the basic command =\inln=.
+  - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 
 [[https://www.python.org/][Python]]
 
@@ -230,7 +231,7 @@ be customized with =\tcbset=,
     [[https://julialang.org/][Julia]] server by default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
     basic command =\runExtCode=.
-- =\inlnPython[Arg1]{Arg2}[Arg3]= runs
+- =\inlnPython[Arg1]{Arg2}[Arg3][Arg4]= runs
   [[https://www.python.org/][Python]] source code (=Arg2=) and displays
   the output in line.
   - =Arg1= is optional and uses the [[https://www.python.org/][Python]]
@@ -240,7 +241,7 @@ be customized with =\tcbset=,
     between "```" on both sides (as in the markdown grammar), then it
     will be implemented directly; otherwise the code will be written to
     a file on the disk and then be called.
-  - =Arg3= has the same effect as that of the basic command =\inln=.
+  - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 - =\runPythonBatch[Arg1][Arg2]= runs an external
   [[https://www.python.org/][Python]] code file in batch mode (without a
   server running). Python (at least currently), unlike the other
@@ -262,7 +263,7 @@ be customized with =\tcbset=,
     [[https://www.r-project.org/][R]] server by default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the
     basic command =\runExtCode=.
-- =\inlnR[Arg1]{Arg2}[Arg3]= runs [[https://www.r-project.org/][R]]
+- =\inlnR[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://www.r-project.org/][R]]
   source code (=Arg2=) and displays the output in line.
   - =Arg1= is optional and uses the [[https://www.r-project.org/][R]]
     server by default.
@@ -271,7 +272,7 @@ be customized with =\tcbset=,
     between "```" on both sides (as in the markdown grammar), then it
     will be implemented directly; otherwise the code will be written to
     a file on the disk and then be called.
-  - =Arg3= has the same effect as that of the basic command =\inln=.
+  - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 
 
 ** Revisions
