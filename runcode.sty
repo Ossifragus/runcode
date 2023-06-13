@@ -358,7 +358,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","R",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","R",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
 \NewDocumentCommand{\runJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'} m m O{}}
 { 
@@ -368,7 +368,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","julia",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","julia",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
 \NewDocumentCommand{\runMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'} m m O{}}
 { 
@@ -378,7 +378,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","matlab",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","matlab",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
 
 \NewDocumentCommand{\runPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'} m m O{}}
@@ -389,7 +389,7 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
-\NewDocumentCommand{\inlnPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","\tmpname.txt")'} m O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","python",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","python",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
 
 %%%%%%%%
