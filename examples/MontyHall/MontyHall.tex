@@ -29,19 +29,19 @@
   \NewDocumentCommand{\showR}{m O{} O{}}{}
   \renewcommand{\runR}[2]{}
   \newcommand{\includeR}[1]{}
-  \renewcommand{\inlnR}[1]{}
+  \RenewDocumentCommand{\inlnR}{O{}mO{}O{}}{}
 \fi
 
-\newif\ifuseJulia\useJuliatrue
+\newif\ifuseJulia\useJuliafalse
 \ifuseJulia
   \NewDocumentCommand{\showJulia}{m O{} O{}}{\showCode{julia}{#1}[#2][#3]}
   \NewDocumentCommand{\includeJulia}{m O{vbox}}{\includeOutput{#1}[#2]}
-  \renewcommand{\inlnR}[1]{}
+  \RenewDocumentCommand{\inlnR}{O{}mO{}O{}}{}
 \else
   \NewDocumentCommand{\showJulia}{m O{} O{}}{}
   \renewcommand{\runJulia}[2]{}
   \newcommand{\includeJulia}[1]{}
-  \renewcommand{\inlnJulia}[1]{}
+  \RenewDocumentCommand{\inlnJulia}{O{}mO{}O{}}{}
 \fi
 %%%% ------------------------------------------------
 
@@ -77,14 +77,14 @@ simulated games.
 \runR{code/MontyHall_2.R}{montyhall-R2}
 % \includeOutput{montyhall-R2}
 
-The approximate probabilities of keeping the original choice and switching are \inlnR{```cat(probabilities)```}\inlnJulia{```print(probabilities)```}.
+The approximate probabilities of keeping the original choice and switching are \inlnR{```cat(probabilities)```}[inlnR1]\inlnJulia{```print(probabilities)```}[inlnJulia1].
 
 \end{document}
 
 %%% Local Variables:
 %%% coding: utf-8
 %%% TeX-command-extra-options: "--shell-escape"
-%%% TeX-engine: luatex
+%%% TeX-engine: xetex
 %%% End:
 
-%%% TeX-engine: xetex
+%%% TeX-engine: luatex
