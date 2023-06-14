@@ -276,6 +276,8 @@ be customized with =\tcbset=,
 
 
 ** Revisions
+- v1.9, June 13, 2023: Update =\inln= command; the optional =Arg3= is the output
+  file name and the optional =Arg4= is the output type.
 - v1.8, January 18, 2023, add support to [[https://ctan.org/pkg/listings?lang=en][listings.]]
 - v1.7, August 20, 2022: changed the tmp/ folder to generated/ in order to
   conform with CTAN suggestions; renamed the troubleshooting file.
