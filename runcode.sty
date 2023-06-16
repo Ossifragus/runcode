@@ -12,6 +12,10 @@
 \DeclareOption{run}{\runcodetrue}
 \DeclareOption{cache}{\runcodefalse}
 
+\newif\ifinlnrun
+% Change to \runcodefalse if you want to suspend code execution
+\inlnruntrue
+
 % Choose the package for code typesetting. The default is minted.
 % The other two options are listings and fvextra. For backward compatibility,
 % it is possible to use nominted, in which case fvextra is used.
@@ -249,7 +253,7 @@
 %        codeOutput is used).
 % Arg #4 controls when to run the code (optional - if not given, it listens
 %        to \runcode; run = force the code to run; cache or anything else =
-%        use cache)
+%        use cache. If the output file does not exist, override the cache option and run the code)
 \NewDocumentCommand{\runExtCode}{m m m O{}}{
   \IfFileExists{#2}{
   \stepcounter{codeOutput}
@@ -264,10 +268,12 @@
       }{
         \ifstrequal{#4}{run}{\immediate\write18{#1 #2 > \tmpname }}{}
       }
+      \IfFileExists{\tmpname}{}{\immediate\write18{#1 #2 > \tmpname }}
   }{
     \textcolor{red}{\textbf{runExtCode: File #2 does not exist!}}
   }
 }
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \includeOutput[Arg #1]{Arg #2} is used to embed the output from executed code.
@@ -314,7 +320,8 @@
 % and embed resulting output.
 % Arg #1 is the executable program;
 % Arg #2 is the source code;
-% Arg #3 is the output file name (optional);
+% Arg #3 is the output file name (optional). If the output name is given and it ends with .cache,
+%.       AND the output file exists, then \inln will use the cached result;
 % Arg #4 is the type output (if skipped or with empty value the default type is
 %        inline; vbox = verbatim in a box);
 
@@ -323,7 +330,9 @@
     \ifthenelse{\isempty{#3}}
     {\stepcounter{codeOutput}\unskip\unskip\setvalue{\tmpname}{\generated/\jobname_inln\thecodeOutput}\unskip\unskip\unskip}
     {\unskip\setvalue{\tmpname}{\generated/#3}\unskip\unskip\unskip}
-    \unskip\unskip\unskip
+    \unskip\unskip\unskip    
+    \IfFileExists{\tmpname.tex}{\IfEndWith{#3}{.cache}{\inlnrunfalse}{\inlnruntrue}}{\inlnruntrue}
+  \ifinlnrun
   \ifruncode % cache mode - don't try to run the code, just get the previous results
     \IfBeginWith{#2}{```}{\ifruncode\immediate\write18{#1 > \tmpname.tex}\unskip\fi}
     {\newwrite\tempfile
@@ -333,7 +342,9 @@
       \ifruncode
       \immediate\write18{#1 \tmpname.txt > \tmpname.tex}\unskip
     \fi}
-  \fi % end cache mode
+  \fi 
+  \fi% end cache mode
+  \unskip\unskip\unskip  
   \IfFileExists{\tmpname.tex}
   {\checkZeroBytes{\tmpname.tex}\unskip
     \ifstrequal{#4}{vbox}
