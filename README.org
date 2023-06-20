@@ -107,12 +107,12 @@ the code block is controlled through the minted package,
 \setminted[R]{linenos, frame=single, bgcolor=lightgray, breaklines=true}
 #+end_src
 
-Similarly, [[https://ctan.org/pkg/fvextra][fvextra]] and [[https://ctan.org/pkg/listings?lang=en][listings]] packages can be customized through the =\lstset=
-and =\fvset= commands, respectively, e.g.: 
+Similarly, [[https://ctan.org/pkg/fvextra][fvextra]] and [[https://ctan.org/pkg/listings?lang=en][listings]] packages can be customized through the =\fvset=
+and =\lstset= commands, respectively, e.g.: 
 
 #+begin_src latex :exports code
-\lstset{basicstyle=\large, frame=single}
 \fvset{fontsize=\small, linenos=true, frame=single}
+\lstset{basicstyle=\large, frame=single}
 #+end_src
 
 The outputs from executing codes are displayed in
