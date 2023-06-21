@@ -350,6 +350,29 @@
     {\unskip{\input{\tmpname.tex}}\unskip}}
     {\textcolor{red}{\textbf{Output file \tmpname~ not found}}}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Extended and language-specific comments:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \runCodeIncOutput: runs an external code and embeds the output.
+% Arg #1 is the executable program,
+% Arg #2 is the source file name,
+% Arg #3 controls when to run the code (optional - if not given, it listens
+%        to \runcode; run = force the code to run; cache or anything else =
+%        use cache). The same functionality as that of Arg #4 of \runExtCode.
+% Arg #4 is the output file name (optional - if not given, the counter 
+%        codeOutput is used). The same functionality as that of Arg #4 of
+%        \runExtCode.
+% Arg #5 is the optional type output with default "vbox"
+%        (vbox = verbatim in a box, tex = pure latex, or inline)
+%        The same functionality as that of Arg #2 of \includeOutput.
+
+\NewDocumentCommand{\runCodeIncOutput}{m m O{} O{} O{vbox}}{
+  \runExtCode{#1}{#2}{#4}[#3]
+  \includeOutput{#4}[#5]
+}
+
+% R
 \NewDocumentCommand{\runR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m m O{}}
 { 
   \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'}
@@ -358,8 +381,16 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
+\NewDocumentCommand{\runRIncOutput}
+{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'} m O{} O{} O{vbox}}
+{\def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","R","#2")'}
+  \ifstrequal{#1}{\runcmd}
+    {\runCodeIncOutput{#1}{}[#3][#4][#5]}
+    {\runCodeIncOutput{#1}{#2}[#3][#4][#5]}}
+
 \NewDocumentCommand{\inlnR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","R",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
+% Julia
 \NewDocumentCommand{\runJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'} m m O{}}
 { 
   \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'}
@@ -368,8 +399,16 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
+\NewDocumentCommand{\runJuliaIncOutput}
+{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'} m O{} O{} O{vbox}}
+{\def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'}
+  \ifstrequal{#1}{\runcmd}
+    {\runCodeIncOutput{#1}{}[#3][#4][#5]}
+    {\runCodeIncOutput{#1}{#2}[#3][#4][#5]}}
+
 \NewDocumentCommand{\inlnJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","julia",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
+% Matlab
 \NewDocumentCommand{\runMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'} m m O{}}
 { 
   \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'}
@@ -378,9 +417,16 @@
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
 
+\NewDocumentCommand{\runMatlabIncOutput}
+{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'} m O{} O{} O{vbox}}
+{\def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'}
+  \ifstrequal{#1}{\runcmd}
+    {\runCodeIncOutput{#1}{}[#3][#4][#5]}
+    {\runCodeIncOutput{#1}{#2}[#3][#4][#5]}}
+
 \NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","matlab",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
-
+% Python
 \NewDocumentCommand{\runPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'} m m O{}}
 { 
   \def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'}
@@ -388,6 +434,13 @@
   {\runExtCode{#1}{}{#3}[#4]}
   {\runExtCode{#1}{#2}{#3}[#4]}
 }
+
+\NewDocumentCommand{\runPythonIncOutput}
+{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'} m O{} O{} O{vbox}}
+{\def\runcmd{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'}
+  \ifstrequal{#1}{\runcmd}
+    {\runCodeIncOutput{#1}{}[#3][#4][#5]}
+    {\runCodeIncOutput{#1}{#2}[#3][#4][#5]}}
 
 \NewDocumentCommand{\inlnPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","python",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
 
