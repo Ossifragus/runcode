@@ -177,7 +177,7 @@ be customized with =\tcbset=,
 :CUSTOM_ID: extended-commands
 :END:
 
-- =\runCodeIncOutput{Arg1}{Arg2}[Arg3][Arg4][Arg5]= runs an external code and
+- =\runCodeIncOut{Arg1}{Arg2}[Arg3][Arg4][Arg5]= runs an external code and
   embeds the output. This is a combination of =\runExtCode= and =\includeOutput=.
   - =Arg1= is the executable program.
   - =Arg2= is the source file name.
@@ -199,11 +199,11 @@ be customized with =\tcbset=,
   - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://julialang.org/][Julia]] server by default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
     =\runExtCode=.
-- =\runJuliaIncOutput[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://julialang.org/][Julia]] code
+- =\runJuliaIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://julialang.org/][Julia]] code
   file and embeds the output.
   - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://julialang.org/][Julia]] server by default.
   - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
-    =\runCodeIncOutput=.
+    =\runCodeIncOut=.
 - =\inlnJulia[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://julialang.org/][Julia]] source code (=Arg2=) and displays
   the output in line.
   - =Arg1= is optional and uses the [[https://julialang.org/][Julia]] server by default.
@@ -219,11 +219,11 @@ be customized with =\tcbset=,
   - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.mathworks.com/products/matlab.html][MatLab]] server by default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
     =\runExtCode=.
-- =\runMatLabIncOutput[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.mathworks.com/products/matlab.html][MatLab]] code
+- =\runMatLabIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.mathworks.com/products/matlab.html][MatLab]] code
   file and embeds the output.
   - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.mathworks.com/products/matlab.html][MatLab]] server by default.
   - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
-    =\runCodeIncOutput=.
+    =\runCodeIncOut=.
 - =\inlnMatLab[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://www.mathworks.com/products/matlab.html][MatLab]] source code (=Arg2=) and
   displays the output in line.
   - =Arg1= is optional and uses the [[https://www.mathworks.com/products/matlab.html][MatLab]] server by default.
@@ -239,11 +239,11 @@ be customized with =\tcbset=,
   - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.python.org/][Python]] server by default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
     =\runExtCode=.
-- =\runPythonIncOutput[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.python.org/][Python]] code
+- =\runPythonIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.python.org/][Python]] code
   file and embeds the output.
   - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.python.org/][Python]] server by default.
   - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
-    =\runCodeIncOutput=.
+    =\runCodeIncOut=.
 - =\inlnPython[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://www.python.org/][Python]] source code (=Arg2=) and
   displays the output in line.
   - =Arg1= is optional and uses the [[https://www.python.org/][Python]] server by default.
@@ -269,11 +269,11 @@ be customized with =\tcbset=,
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
     =\runExtCode=.
 
-- =\runRIncOutput[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.r-project.org/][R]] code file and
+- =\runRIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.r-project.org/][R]] code file and
   embeds the output.
   - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.r-project.org/][R]] server by default.
   - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
-    =\runCodeIncOutput=.
+    =\runCodeIncOut=.
 
 - =\inlnR[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://www.r-project.org/][R]]
   source code (=Arg2=) and displays the output in line.
