@@ -159,8 +159,8 @@ be customized with =\tcbset=,
     =Arg1=, the counter =codeOutput= is used.
   - =Arg2= is optional and it controls the type of output with a default
     value =vbox=.
-    - =vbox= (or skipped) = verbatim in a box.
-    - =tex= = pure latex.
+    - =vbox= (or skipped) = verbatim in a box;
+    - =tex= = pure latex;
     - =inline= = embed result in text.
 
 - =\inln{Arg1}{Arg2}[Arg3][Arg4]= is designed for simple calculations; it runs
@@ -171,10 +171,11 @@ be customized with =\tcbset=,
   - =Arg2= is the source code.
   - =Arg3= is the output file name (optional);
   - =Arg4= is the output type and controls whether to run the code.
-    - =inline= (or skipped or with empty value) = embed result in text.
-    - =vbox= = verbatim in a box.
-    - If you append =.cache= to the argument AND the output file in =Arg3= exists,
-      then the cached result will be used and the code will not run.
+    - =inline= (or skipped or with empty value): embed result in text;
+    - =vbox=: verbatim in a box;
+    - =cache= or appending =.cache= to the argument (e.g., =vbox.cache=) AND the
+      output file in =Arg3= exists: the cached result will be used and the code
+      will not run.
 
 
 *** Extended commands:
