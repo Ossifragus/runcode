@@ -12,8 +12,13 @@
 \DeclareOption{run}{\runcodetrue}
 \DeclareOption{cache}{\runcodefalse}
 
+% to control whether \inln will get the result from the program(R, Python, etc.)
+% or get it from cache (if available), then we define the following. The default
+% is true (to run any \inln command in the tex file)
 \newif\ifinlnrun
-% Change to \runcodefalse if you want to suspend code execution
+% Change to \inlnrunfalse if you want to get the results from cache for all
+% \inln instances in the tex file (if cache is not available, it will be executed
+% even if this variable is set to false)
 \inlnruntrue
 
 % Choose the package for code typesetting. The default is minted.
@@ -320,10 +325,10 @@
 % and embed resulting output.
 % Arg #1 is the executable program;
 % Arg #2 is the source code;
-% Arg #3 is the output file name (optional). If the output name is given and it ends with .cache,
-%.       AND the output file exists, then \inln will use the cached result;
+% Arg #3 is the output file name (optional). 
 % Arg #4 is the type output (if skipped or with empty value the default type is
-%        inline; vbox = verbatim in a box);
+%        inline; vbox = verbatim in a box); If you append  .cache to the argument
+%.       AND the output file in Arg#3 exists, then \inln will use the cached result;
 
 \NewDocumentCommand{\inln}{m m O{} O{inline}}{\-
     \unskip
@@ -331,7 +336,7 @@
     {\stepcounter{codeOutput}\unskip\unskip\setvalue{\tmpname}{\generated/\jobname_inln\thecodeOutput}\unskip\unskip\unskip}
     {\unskip\setvalue{\tmpname}{\generated/#3}\unskip\unskip\unskip}
     \unskip\unskip\unskip    
-    \IfFileExists{\tmpname.tex}{\IfEndWith{#3}{.cache}{\inlnrunfalse}{\inlnruntrue}}{\inlnruntrue}
+    \IfFileExists{\tmpname.tex}{\IfEndWith{#4}{cache}{\inlnrunfalse}{\inlnruntrue}}{\inlnruntrue}
   \ifinlnrun
   \ifruncode % cache mode - don't try to run the code, just get the previous results
     \IfBeginWith{#2}{```}{\ifruncode\immediate\write18{#1 > \tmpname.tex}\unskip\fi}
@@ -347,7 +352,7 @@
   \unskip\unskip\unskip  
   \IfFileExists{\tmpname.tex}
   {\checkZeroBytes{\tmpname.tex}\unskip
-    \ifstrequal{#4}{vbox}
+    \IfBeginWith{#4}{vbox}
         {\begin{tcolorbox}
         \ifminted\unskip
           \inputminted{text}{\tmpname.tex}\unskip
