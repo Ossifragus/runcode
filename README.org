@@ -132,13 +132,15 @@ be customized with =\tcbset=,
 
   - =Arg1= is the executable program.
   - =Arg2= is the source file name.
-  - =Arg3= is the output file name (with an empty value, the counter
-    =codeOutput= is used).
-  - =Arg4= controls whether to run the code. =Arg4= is optional with
-    three possible values: if skipped or with empty value, the value of
-    the global Boolean variable =runcode= is used; if the value is set
-    to =run=, the code will be executed; if set to =cache= (or anything
-    else), use cached results (see more about the cache below).
+  - =Arg3= is the output file name (with an empty value, the counter =codeOutput= is
+    used).
+  - =Arg4= controls whether to run the code. =Arg4= is optional with three possible
+    values.
+    - empty value or skipped: the value of the global Boolean variable =runcode=
+      is used;
+    - =run=: the code will be executed;
+    - =cache= (or anything else): use cached results; if the output file does not
+      exist, the cache option will be overridden and the code will run.
 
 - =\showCode{Arg1}{Arg2}[Arg3][Arg4]= shows the source code, using
   [[https://ctan.org/pkg/minted][minted]] (requires [[https://pygments.org/][pygments]]), [[https://ctan.org/pkg/fvextra][fvextra]], or [[https://ctan.org/pkg/listings?lang=en][listings]].
@@ -156,7 +158,7 @@ be customized with =\tcbset=,
     as that of =Arg3= in =\runExtCode=. If an empty value is given to
     =Arg1=, the counter =codeOutput= is used.
   - =Arg2= is optional and it controls the type of output with a default
-    value =vbox=
+    value =vbox=.
     - =vbox= (or skipped) = verbatim in a box.
     - =tex= = pure latex.
     - =inline= = embed result in text.
@@ -168,9 +170,12 @@ be customized with =\tcbset=,
   - =Arg1= is the executable program or programming language.
   - =Arg2= is the source code.
   - =Arg3= is the output file name (optional);
-  - =Arg4= is the output type.
+  - =Arg4= is the output type and controls whether to run the code.
     - =inline= (or skipped or with empty value) = embed result in text.
     - =vbox= = verbatim in a box.
+    - If you append =.cache= to the argument AND the output file in =Arg3= exists,
+      then the cached result will be used and the code will not run.
+
 
 *** Extended commands:
 :PROPERTIES:
