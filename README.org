@@ -292,13 +292,18 @@ be customized with =\tcbset=,
 
 
 ** Revisions
+- v2.1, June 30, 2023: \detokenize code which is passed to \inln. This is
+  necessary when the code contains special latex characters like backslash.
+  These characters are escaped by latex when they are passed to macros as arguments,
+  which, in the case of \inln, alters the correct syntax and causes execution errors.
+  Detokenizing ensures that the code is passed as-is to R/Julia/MatLab/Python.
+  We thank [[https://github.com/kiryph][kiryph]] for reporting the issue.
 - v2.0, June 23, 2023: add =\runCodeIncOut= command that runs an external code and
   embeds the output and andd some language specific shortcuts; update
   =\runExtCode= so that if the output file does not exist, the =cache= option will
   be overridden and the code will run; update =\inln= so that its =Arg4= accept
   =cache= or appending =.cache= to use the cached result. We thank [[https://github.com/kiryph][kiryph]] for
   suggesting these features. 
-
 - v1.9, June 13, 2023: update =\inln= command; the optional =Arg3= is the output
   file name and the optional =Arg4= is the output type.
 - v1.8, January 18, 2023, add support to [[https://ctan.org/pkg/listings?lang=en][listings.]]
