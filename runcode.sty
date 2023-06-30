@@ -321,7 +321,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \inln{Arg #1}{Arg #2}[Arg #3] is used to execute short source code
+% \inln{Arg #1}{Arg #2}[Arg #3][Arg #4] is used to execute short source code
 % and embed resulting output.
 % Arg #1 is the executable program;
 % Arg #2 is the source code;
@@ -342,7 +342,7 @@
     \IfBeginWith{#2}{```}{\ifruncode\immediate\write18{#1 > \tmpname.tex}\unskip\fi}
     {\newwrite\tempfile
       \immediate\openout\tempfile=\tmpname.txt
-      \immediate\write\tempfile{#2}
+      \immediate\write\tempfile{\detokenize{#2}}
       \immediate\closeout\tempfile
       \ifruncode
       \immediate\write18{#1 \tmpname.txt > \tmpname.tex}\unskip
@@ -404,7 +404,14 @@
     {\runCodeIncOut{#1}{}[#3][#4][#5]}
     {\runCodeIncOut{#1}{#2}[#3][#4][#5]}}
 
-\NewDocumentCommand{\inlnR}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","R","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","R",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnR}
+{O{python3 -c 'from talk2stat.talk2stat import client;
+    client("./","R","\tmpname.txt")'} m O{} O{inline}}
+{\IfBeginWith{#2}{```}
+  {\inln{python3 -c 'from talk2stat.talk2stat import client;
+      client("./","R",r"""\detokenize{#2}""")'}{#2}[#3][#4]}
+  {\inln{#1}{#2}[#3][#4]}}
+
 
 % Julia
 \NewDocumentCommand{\runJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","#2")'} m m O{}}
@@ -422,7 +429,14 @@
     {\runCodeIncOut{#1}{}[#3][#4][#5]}
     {\runCodeIncOut{#1}{#2}[#3][#4][#5]}}
 
-\NewDocumentCommand{\inlnJulia}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","julia","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","julia",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnJulia}
+{O{python3 -c 'from talk2stat.talk2stat import client;
+    client("./","julia","\tmpname.txt")'} m O{} O{inline}}
+{\IfBeginWith{#2}{```}
+  {\inln{python3 -c 'from talk2stat.talk2stat import client;
+      client("./","julia",r"""\detokenize{#2}""")'}{#2}[#3][#4]}
+  {\inln{#1}{#2}[#3][#4]}}
+
 
 % Matlab
 \NewDocumentCommand{\runMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","#2")'} m m O{}}
@@ -440,7 +454,14 @@
     {\runCodeIncOut{#1}{}[#3][#4][#5]}
     {\runCodeIncOut{#1}{#2}[#3][#4][#5]}}
 
-\NewDocumentCommand{\inlnMatlab}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","matlab","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","matlab",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnMatlab}
+{O{python3 -c 'from talk2stat.talk2stat import client;
+    client("./","matlab","\tmpname.txt")'} m O{} O{inline}}
+{\IfBeginWith{#2}{```}
+  {\inln{python3 -c 'from talk2stat.talk2stat import client;
+      client("./","matlab",r"""\detokenize{#2}""")'}{#2}[#3][#4]}
+  {\inln{#1}{#2}[#3][#4]}}
+
 
 % Python
 \NewDocumentCommand{\runPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","#2")'} m m O{}}
@@ -458,7 +479,14 @@
     {\runCodeIncOut{#1}{}[#3][#4][#5]}
     {\runCodeIncOut{#1}{#2}[#3][#4][#5]}}
 
-\NewDocumentCommand{\inlnPython}{O{python3 -c 'from talk2stat.talk2stat import client; client("./","python","\tmpname.txt")'} m O{} O{inline}}{\IfBeginWith{#2}{```}{\inln{python3 -c 'from talk2stat.talk2stat import client;rc0="""#2""";rc0=rc0.lstrip("```").rstrip("```");client("./","python",f"```{rc0}```")'}{#2}[#3][#4]}{\inln{#1}{#2}[#3][#4]}}
+\NewDocumentCommand{\inlnPython}
+{O{python3 -c 'from talk2stat.talk2stat import client;
+    client("./","python","\tmpname.txt")'} m O{} O{inline}}
+{\IfBeginWith{#2}{```}
+  {\inln{python3 -c 'from talk2stat.talk2stat import client;
+      client("./","python",r"""\detokenize{#2}""")'}{#2}[#3][#4]}
+  {\inln{#1}{#2}[#3][#4]}}
+
 
 
 %%%%%%%%
