@@ -292,10 +292,10 @@ be customized with =\tcbset=,
 
 
 ** Revisions
-- v2.1, June 30, 2023: \detokenize code which is passed to \inln. This is
+- v2.1, June 30, 2023: detokenize code which is passed to =\inln=. This is
   necessary when the code contains special latex characters like backslash.
   These characters are escaped by latex when they are passed to macros as arguments,
-  which, in the case of \inln, alters the correct syntax and causes execution errors.
+  which, in the case of =\inln=, alters the correct syntax and causes execution errors.
   Detokenizing ensures that the code is passed as-is to R/Julia/MatLab/Python.
   We thank [[https://github.com/kiryph][kiryph]] for reporting the issue.
 - v2.0, June 23, 2023: add =\runCodeIncOut= command that runs an external code and
