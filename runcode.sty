@@ -205,7 +205,6 @@
 \setvalue{\tmpname}{} % initialize with a blank
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 % \showCode prints the source code, using minted or listings for a pretty layout
 % Arg #1 is the programming language,
@@ -317,6 +316,50 @@
 
 \NewDocumentCommand{\checkZeroBytes}{m}{
   \immediate\write18{python3 -c 'import os; print("**ZERO BYTES IN OUTPUT**", file=open("#1", "a")) if os.path.getsize("#1") == 0 else True'}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% \showChunk prints a selected chunk from  source code, using minted or listings for a pretty layout.
+% The chunk is identified in the source code by two strings that define the beginning and end of the chunk.
+% The default beginning is label===<name> where <name> should be a unique user-defined chunk ID.
+% The default end marker is ===end
+% In the code, these markers should appear after a comment character, so that the code will run. 
+% Arg #1 is the programming language,
+% Arg #2 is the source file name,
+% Args #3 is the chunk identifier
+% Args #4 and #5 are the beginning and end markings of a chunk (optional).
+
+\NewDocumentCommand{\showChunk}{m m m O{label===} O{===end}} {
+  \IfFileExists{#2}{
+    \endlinechar=-1
+    \def\printcode{0} % don't print until we see the begin-block string
+    \newread\file
+    \openin\file=#2
+    \newwrite\outfile
+    \immediate\openout\outfile=\generated/#3.txt
+    \loop\unless\ifeof\file
+      \immediate\readline\file to\fileline
+      \ifnum\printcode=1
+        \IfSubStr{\fileline}{\detokenize{#5}}{
+          \renewcommand{\printcode}{-1}}{\immediate\write\outfile{\fileline}}
+      \fi
+      \IfSubStr{\fileline}{\detokenize{#4}}{
+          \StrBehind{\fileline}{\detokenize{#4}}[\chunkname]
+          \IfStrEq*{\detokenize{#3}}{\chunkname}{\renewcommand{\printcode}{1}}{}
+      }
+      {}
+    \repeat
+    \closein\file
+    \immediate\closeout\outfile
+    \endlinechar=13
+    \ifnum\printcode=0
+      \textcolor{red}{\textbf{Label #3 not found in #2}}
+    \else
+        \showCode{#1}{\generated/#3.txt}
+    \fi
+  }{\textcolor{red}{\textbf{Source file #2 not found}}}
 }
 
 
