@@ -116,14 +116,7 @@
 
 \ProcessOptions*
 
-%%%% check if \langs is empty !!
-\ifdefempty{\langs}{}{
-  \newwrite\outfile
-  \immediate\openout\outfile=serverslist.txt
-  \immediate\write\outfile{\langs}
-  \immediate\closeout\outfile}
-{}
-
+\usepackage{etoolbox}
 \usepackage{morewrites}               % allow more than 16 \write
 \usepackage[many]{tcolorbox}            % to put boxes around text
 \tcbset{colframe=blue!25,colback=blue!10} % default colors for box output
@@ -135,6 +128,14 @@
 \usepackage{xparse}
 \usepackage{xstring}
 \usepackage{forloop}
+
+%%%% check if \langs is empty !!
+\ifdefempty{\langs}{}{
+  \newwrite\outfile
+  \immediate\openout\outfile=serverslist.txt
+  \immediate\write\outfile{\langs}
+  \immediate\closeout\outfile}
+{}
 
 % Use minted by default; but the user can change to listings or fvextra.
 \ifminted
@@ -459,7 +460,7 @@
 
 
 \NewDocumentCommand{\runRChunk}{O{LANGSERVER} m m O{} O{} O{vbox}}
-{\runLANGChunk}[#1]{R}{#2}{#3}[#4][#5][#6]}
+{\runLANGChunk[#1]{R}{#2}{#3}[#4][#5][#6]}
 
 
 % Julia
@@ -473,7 +474,7 @@
 {\inlnLANG[#1]{julia}{#2}[#3][#4]}
 
 \NewDocumentCommand{\runJuliaChunk}{O{LANGSERVER} m m O{} O{} O{vbox}}
-{\runLANGChunk}[#1]{julia}{#2}{#3}[#4][#5][#6]}
+{\runLANGChunk[#1]{julia}{#2}{#3}[#4][#5][#6]}
 
 
 % Matlab
@@ -487,7 +488,7 @@
 {\inlnLANG[#1]{matlab}{#2}[#3][#4]}
 
 \NewDocumentCommand{\runMatlabChunk}{O{LANGSERVER} m m O{} O{} O{vbox}}
-{\runLANGChunk}[#1]{matlab}{#2}{#3}[#4][#5][#6]}
+{\runLANGChunk[#1]{matlab}{#2}{#3}[#4][#5][#6]}
 
 
 % Python
@@ -501,7 +502,7 @@
 {\inlnLANG[#1]{python}{#2}[#3][#4]}
 
 \NewDocumentCommand{\runPythonChunk}{O{LANGSERVER} m m O{} O{} O{vbox}}
-{\runLANGChunk}[#1]{paython}{#2}{#3}[#4][#5][#6]}
+{\runLANGChunk[#1]{paython}{#2}{#3}[#4][#5][#6]}
 
 
 
