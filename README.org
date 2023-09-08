@@ -234,6 +234,15 @@ language, respectively, for the following commands.
     disk and then be called.
   - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 
+- =\runLANGChunk[Arg1]{Arg2}{Arg3}[Arg4][Arg5][Arg6]= runs a selected chunk from
+  an external =LANG= code file and embeds the output. 
+  - =Arg1= (optional ) uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s =LANG= server by default.
+  - =Arg2= is the source file name.
+  - =Arg3= is is the chunk identifier.
+  - =Arg4= (optional) controls whether to run the code.
+  - =Arg5= (optional) is the output file name.
+  - =Arg6= (optional) controls the type of output with a default value =vbox=.
+
 For example,
 #+begin_src latex :exports code
 \runR{code/MontyHall_1.R}{montyhall-R1}
@@ -254,6 +263,8 @@ Specifically for [[https://www.python.org/][Python]],
 
 
 ** Revisions
+- v2.2, September 8, 2023: add ~\showChunk~ basic command and ~\runLANGChunk~
+  commands for multiple languages. 
 - v2.1, June 30, 2023: detokenize code which is passed to =\inln=. This is
   necessary when the code contains special latex characters like backslash.
   These characters are escaped by latex when they are passed to macros as arguments,
