@@ -177,6 +177,20 @@ be customized with =\tcbset=,
       output file in =Arg3= exists: the cached result will be used and the code
       will not run.
 
+- =\showChunk{Arg1}{Arg2}[Arg3][Arg4]= prints a selected chunk from source
+  code. The chunk is identified in the source code by two strings that define
+  the beginning and end of the chunk. The default beginning is =label===<name>=
+  where =<name>= should be a unique user-defined chunk ID. The default end marker is
+  ====end=. In the code, these markers should appear after a comment character, so
+  that the code will run.
+
+  - =Arg1= is the programming language.
+  - =Arg2= is the source file name.
+  - =Arg3= is is the chunk identifier.
+  - =Arg4= and =Arg5= are the beginning and end markings of a chunk (optional with
+    default =label=== and ====end=.
+
+
 
 *** Extended commands:
 :PROPERTIES:
@@ -199,65 +213,35 @@ be customized with =\tcbset=,
 :CUSTOM_ID: language-specific-shortcuts
 :END:
 
-[[https://julialang.org/][Julia]]
+Replace =LANG= with =Julia=, =MatLab=, =Python=, or =R=, for the [[https://julialang.org/][Julia]], [[https://www.mathworks.com/products/matlab.html][MatLab]], [[https://www.python.org/][Python]], [[https://www.r-project.org/][R]]
+language, respectively, for the following commands.
 
-- =\runJulia[Arg1]{Arg2}{Arg3}[Arg4]= runs an external [[https://julialang.org/][Julia]] code file.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://julialang.org/][Julia]] server by default.
+- =\runLANG[Arg1]{Arg2}{Arg3}[Arg4]= runs an external =LANG= code file.
+  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s =LANG= server by default.
   - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
     =\runExtCode=.
-- =\runJuliaIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://julialang.org/][Julia]] code
+- =\runLANGIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external =LANG= code
   file and embeds the output.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://julialang.org/][Julia]] server by default.
+  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s =LANG= server by default.
   - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
     =\runCodeIncOut=.
-- =\inlnJulia[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://julialang.org/][Julia]] source code (=Arg2=) and displays
+- =\inlnLANG[Arg1]{Arg2}[Arg3][Arg4]= runs =LANG= source code (=Arg2=) and displays
   the output in line.
-  - =Arg1= is optional and uses the [[https://julialang.org/][Julia]] server by default.
-  - =Arg2= is the [[https://julialang.org/][Julia]] source code to run. If the [[https://julialang.org/][Julia]] source code is wrapped
+  - =Arg1= is optional and uses the =LANG= server by default.
+  - =Arg2= is the =LANG= source code to run. If the =LANG= source code is wrapped
     between "=```=" on both sides (as in the markdown grammar), then it will be
     implemented directly; otherwise the code will be written to a file on the
     disk and then be called.
   - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 
-[[https://www.mathworks.com/products/matlab.html][MatLab]]
+For example,
+#+begin_src latex :exports code
+\runR{code/MontyHall_1.R}{montyhall-R1}
+\runRIncOut{code/MontyHall_1.R}[][montyhall-R1]
+#+end_src
 
-- =\runMatLab[Arg1]{Arg2}{Arg3}[Arg4]= runs an external [[https://www.mathworks.com/products/matlab.html][MatLab]] code file.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.mathworks.com/products/matlab.html][MatLab]] server by default.
-  - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
-    =\runExtCode=.
-- =\runMatLabIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.mathworks.com/products/matlab.html][MatLab]] code
-  file and embeds the output.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.mathworks.com/products/matlab.html][MatLab]] server by default.
-  - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
-    =\runCodeIncOut=.
-- =\inlnMatLab[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://www.mathworks.com/products/matlab.html][MatLab]] source code (=Arg2=) and
-  displays the output in line.
-  - =Arg1= is optional and uses the [[https://www.mathworks.com/products/matlab.html][MatLab]] server by default.
-  - =Arg2= is the [[https://www.mathworks.com/products/matlab.html][MatLab]] source code to run. If the [[https://www.mathworks.com/products/matlab.html][MatLab]] source code is wrapped
-    between "```" on both sides (as in the markdown grammar), then it will be
-    implemented directly; otherwise the code will be written to a file on the
-    disk and then be called.
-  - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
+Specifically for [[https://www.python.org/][Python]], 
 
-[[https://www.python.org/][Python]]
-
-- =\runPython[Arg1]{Arg2}{Arg3}[Arg4]= runs an external [[https://www.python.org/][Python]] code file.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.python.org/][Python]] server by default.
-  - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
-    =\runExtCode=.
-- =\runPythonIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.python.org/][Python]] code
-  file and embeds the output.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.python.org/][Python]] server by default.
-  - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
-    =\runCodeIncOut=.
-- =\inlnPython[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://www.python.org/][Python]] source code (=Arg2=) and
-  displays the output in line.
-  - =Arg1= is optional and uses the [[https://www.python.org/][Python]] server by default.
-  - =Arg2= is the [[https://julialang.org/][Julia]] source code to run.  If the [[https://www.python.org/][Python]] source code is wrapped
-    between "```" on both sides (as in the markdown grammar), then it will be
-    implemented directly; otherwise the code will be written to a file on the
-    disk and then be called.
-  - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 - =\runPythonBatch[Arg1][Arg2]= runs an external [[https://www.python.org/][Python]] code file in batch mode
   (without a server running). Python (at least currently), unlike the other
   languages we use, does not have an option to save and restore a session, which
@@ -267,28 +251,6 @@ be customized with =\tcbset=,
   installed via =pip3 install dill=.
   - =Arg1= is the [[https://www.python.org/][Python]] source file name,
   - =Arg2= is the output file name.
-
-[[https://www.r-project.org/][R]]
-
-- =\runR[Arg1]{Arg2}{Arg3}[Arg4]= runs an external [[https://www.r-project.org/][R]] code file.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.r-project.org/][R]] server by default.
-  - =Arg2=, =Arg3=, and =Arg4= have the same effects as those of the basic command
-    =\runExtCode=.
-
-- =\runRIncOut[Arg1]{Arg2}[Arg3][Arg4][Arg5]= runs an external [[https://www.r-project.org/][R]] code file and
-  embeds the output.
-  - =Arg1= is optional and uses [[https://pypi.org/project/talk2stat/][talk2stat]]'s [[https://www.r-project.org/][R]] server by default.
-  - =Arg2=, =Arg3=, =Arg4=, and =Arg5= have the same effects as those of the command
-    =\runCodeIncOut=.
-
-- =\inlnR[Arg1]{Arg2}[Arg3][Arg4]= runs [[https://www.r-project.org/][R]]
-  source code (=Arg2=) and displays the output in line.
-  - =Arg1= is optional and uses the [[https://www.r-project.org/][R]] server by default.
-  - =Arg2= is the [[https://www.r-project.org/][R]] source code to run. If the [[https://www.r-project.org/][R]] source code is wrapped between
-    "```" on both sides (as in the markdown grammar), then it will be
-    implemented directly; otherwise the code will be written to a file on the
-    disk and then be called.
-  - =Arg3= and =Arg4= have the same effects as those of the basic command =\inln=.
 
 
 ** Revisions
