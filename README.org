@@ -181,14 +181,14 @@ be customized with =\tcbset=,
   code. The chunk is identified in the source code by two strings that define
   the beginning and end of the chunk. The default beginning is =label===<name>=
   where =<name>= should be a unique user-defined chunk ID. The default end marker is
-  ====end=. In the code, these markers should appear after a comment character, so
+  ~===end~. In the code, these markers should appear after a comment character, so
   that the code will run.
 
   - =Arg1= is the programming language.
   - =Arg2= is the source file name.
   - =Arg3= is is the chunk identifier.
   - =Arg4= and =Arg5= are the beginning and end markings of a chunk (optional with
-    default =label=== and ====end=.
+    default =label=== and ~===end~.
 
 
 
