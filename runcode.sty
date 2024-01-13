@@ -424,10 +424,9 @@
 \newcommand{\runcmd}[2]
 {python3 -c 'from talk2stat.talk2stat import client; client("./","#1",#2)'}
 
-% R
-% It will be used as a template for other languages
-\newcommand{\LANG}{R}
-\newcommand{\LANGcmd}{R}
+% a generic LANG - it will be used as a template for other languages
+\newcommand{\LANG}{LANG}
+\newcommand{\LANGcmd}{LANGcmd}
 
 \expandafter\NewDocumentCommand\csname run\LANG\endcsname
 {O{} m m O{}}
@@ -451,6 +450,7 @@
     {\inln{\runcmd{\LANGcmd}{"\tmpname.txt"}}{#2}[#3][#4]}
   }
   {\inln{#1}{#2}[#3][#4]}
+  \unskip\unskip\unskip
 }
 
 \expandafter\NewDocumentCommand\csname run\LANG Chunk\endcsname
@@ -459,46 +459,59 @@
   {\csname run\LANG IncOut\endcsname[#1]{\generated/#2-#3.txt}[#4][#2-#3][#6]}
 }
 
+% R
+\NewDocumentCommand{\runR}{O{} m m O{}}
+{{\renewcommand{\LANGcmd}{R}\runLANG[#1]{#2}{#3}[#4]}}
+
+\NewDocumentCommand{\runRIncOut}{O{} m O{} O{} O{vbox}}
+{{\renewcommand{\LANGcmd}{R}\runLANGIncOut[#1]{#2}[#3][#4][#5]}}
+
+\NewDocumentCommand{\inlnR}{O{} m O{} O{inline}}
+{{\renewcommand{\LANGcmd}{R}\inlnLANG[#1]{#2}[#3][#4]}}
+
+\NewDocumentCommand{\runRChunk}{O{} m m O{} O{} O{vbox}}
+{{\renewcommand{\LANGcmd}{R}\runLANGChunk[#1]{#2}{#3}[#4][#5][#6]}}
+
 % Julia
 \NewDocumentCommand{\runJulia}{O{} m m O{}}
-{\renewcommand{\LANGcmd}{julia} \runR[#1]{#2}{#3}[#4]}
+{{\renewcommand{\LANGcmd}{julia}\runLANG[#1]{#2}{#3}[#4]}}
 
 \NewDocumentCommand{\runJuliaIncOut}{O{} m O{} O{} O{vbox}}
-{\renewcommand{\LANGcmd}{julia} \runRIncOut[#1]{#2}[#3][#4][#5]}
+{{\renewcommand{\LANGcmd}{julia}\runLANGIncOut[#1]{#2}[#3][#4][#5]}}
 
 \NewDocumentCommand{\inlnJulia}{O{} m O{} O{inline}}
-{\renewcommand{\LANGcmd}{julia} \inlnR[#1]{#2}[#3][#4]}
+{{\renewcommand{\LANGcmd}{julia}\inlnLANG[#1]{#2}[#3][#4]}}
 
 \NewDocumentCommand{\runJuliaChunk}{O{} m m O{} O{} O{vbox}}
-{\renewcommand{\LANGcmd}{julia} \runRChunk[#1]{#2}{#3}[#4][#5][#6]}
+{{\renewcommand{\LANGcmd}{julia}\runLANGChunk[#1]{#2}{#3}[#4][#5][#6]}}
 
 
 % Matlab
 \NewDocumentCommand{\runMatLab}{O{} m m O{}}
-{\renewcommand{\LANGcmd}{matlab} \runR[#1]{#2}{#3}[#4]}
+{{\renewcommand{\LANGcmd}{matlab}\runLANG[#1]{#2}{#3}[#4]}}
 
 \NewDocumentCommand{\runMatLabIncOut}{O{} m O{} O{} O{vbox}}
-{\renewcommand{\LANGcmd}{matlab} \runRIncOut[#1]{#2}[#3][#4][#5]}
+{{\renewcommand{\LANGcmd}{matlab}\runLANGIncOut[#1]{#2}[#3][#4][#5]}}
 
 \NewDocumentCommand{\inlnMatLab}{O{} m O{} O{inline}}
-{\renewcommand{\LANGcmd}{matlab} \inlnR[#1]{#2}[#3][#4]}
+{{\renewcommand{\LANGcmd}{matlab}\inlnLANG[#1]{#2}[#3][#4]}}
 
 \NewDocumentCommand{\runMatLabChunk}{O{} m m O{} O{} O{vbox}}
-{\renewcommand{\LANGcmd}{matlab} \runRChunk[#1]{#2}{#3}[#4][#5][#6]}
+{{\renewcommand{\LANGcmd}{matlab}\runLANGChunk[#1]{#2}{#3}[#4][#5][#6]}}
 
 
 % Python
 \NewDocumentCommand{\runPython}{O{} m m O{}}
-{\renewcommand{\LANGcmd}{python} \runR[#1]{#2}{#3}[#4]}
+{{\renewcommand{\LANGcmd}{python}\runLANG[#1]{#2}{#3}[#4]}}
 
 \NewDocumentCommand{\runPythonIncOut}{O{} m O{} O{} O{vbox}}
-{\renewcommand{\LANGcmd}{python} \runRIncOut[#1]{#2}[#3][#4][#5]}
+{{\renewcommand{\LANGcmd}{python}\runLANGIncOut[#1]{#2}[#3][#4][#5]}}
 
 \NewDocumentCommand{\inlnPython}{O{} m O{} O{inline}}
-{\renewcommand{\LANGcmd}{python} \inlnR[#1]{#2}[#3][#4]}
+{{\renewcommand{\LANGcmd}{python}\inlnLANG[#1]{#2}[#3][#4]}}
 
 \NewDocumentCommand{\runPythonChunk}{O{} m m O{} O{} O{vbox}}
-{\renewcommand{\LANGcmd}{python} \runRChunk[#1]{#2}{#3}[#4][#5][#6]}
+{{\renewcommand{\LANGcmd}{python}\runLANGChunk[#1]{#2}{#3}[#4][#5][#6]}}
 
 
 %%%%%%%%
