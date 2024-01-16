@@ -263,9 +263,9 @@ Specifically for [[https://www.python.org/][Python]],
 
 
 ** Revisions
-- v2.3, January 12, 2024: two bug fixes (1. removed an extra space after ~\inlnX~,
-  2. when an underscore appeared inside R code, the tex file would compile with
-  an error).
+- v2.3, January 12, 2024: two bug fixes (1. removed an extra space after
+  ~\inlnX~; 2. when an underscore appeared inside R code, the tex file would
+  compile with an error). 
 - v2.2, September 8, 2023: add ~\showChunk~ basic command and ~\runLANGChunk~
   commands for multiple languages. 
 - v2.1, June 30, 2023: detokenize code which is passed to =\inln=. This is
