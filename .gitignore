@@ -15,14 +15,13 @@
 *.out
 *.synctex.gz
 *.mw
+*generated
 *tmp
 
 Rplots.pdf
 __pycache__
 *.pyc
 *debug.txt
-
-.gitignore
 
 *R.config
 *Rdebug.txt
@@ -32,4 +31,16 @@ __pycache__
 *matlabdebug.txt
 serverPID*.txt
 
+_minted-runcode/
 FAQ.html
+README
+header.tex
+runcode.tar.gz
+runcode.tex
+runcode.hd
+runcode.pdf
+runcode.tex~
+runcode/
+
+# Exceptions
+!examples/Collaborate/generated

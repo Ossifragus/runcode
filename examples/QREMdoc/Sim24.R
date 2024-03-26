@@ -21,21 +21,21 @@ i <- 1
 for (qn in qns) {
   qremFit <- QREM(lm, linmod=y~x*x2 +x3, df=data.frame(y,x,x2, x3), qn=qn)
   qrdg <- QRdiagnostics(x, "x",qremFit$ui, qn, plot.it = ifelse(qn == 0.1, T, F))
-  dgx3 <- QRdiagnostics(x3, "x3",qremFit$ui, qn,  plot.it = ifelse(qn == 0.1, T, F), filename="tmp/sim24q10correct.pdf")
+  dgx3 <- QRdiagnostics(x3, "x3",qremFit$ui, qn,  plot.it = ifelse(qn == 0.1, T, F), filename="generated/sim24q10correct.pdf")
   for (j in 1:(L-1)) {
     qqp2[j,i] <- length(which(qrdg$y < xqs[j])) / length(which(qrdg$x < xqs[j]))
   }
 
   qremFit <- QREM(lm, linmod=y~x+x2+x3, df=data.frame(y,x,x2, x3), qn=qn)
   qrdg <- QRdiagnostics(x, "x",qremFit$ui, qn,  plot.it = ifelse(qn == 0.1, T, F))
-  dgx3 <- QRdiagnostics(x3, "x3",qremFit$ui, qn,  plot.it = ifelse(qn == 0.1, T, F), filename="tmp/sim24q10incorrect.pdf")
+  dgx3 <- QRdiagnostics(x3, "x3",qremFit$ui, qn,  plot.it = ifelse(qn == 0.1, T, F), filename="generated/sim24q10incorrect.pdf")
   for (j in 1:(L-1)) {
     qqp[j,i] <- length(which(qrdg$y < xqs[j])) / length(which(qrdg$x < xqs[j]))
   }
   i <- i+1
 }
-flatQQplot(x,xqs,qqp,qns)
-flatQQplot(x,xqs,qqp2,qns)
+#flatQQplot(x,xqs,qqp,qns)
+#flatQQplot(x,xqs,qqp2,qns)
 
 library(xtable)
 qremFit <- QREM(lm, linmod=y~x*x2 +x3, df=data.frame(y,x,x2, x3), qn=qn)
