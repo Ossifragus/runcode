@@ -222,7 +222,7 @@
     \fi
   } 
   }{
-    \textcolor{red}{\textbf{showCode: File #2 does not exist!}}
+    \textcolor{red}{\textbf{showCode: File $#2$ does not exist!}}
   }
 
 }
@@ -289,7 +289,7 @@
       {\input{\tmpname}}}}
   % if code execution disabled, and no cache:
   {\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black]
-      \textbf{Output file \tmpname~ not found}. Check the file name (it may be that the file name was given with the suffix .tex. If so, remove it). If the file name is correct the problem may be because code execution is disabled and no cache is available. If so, force the code to run again (using the [run] option).
+      \textbf{Output file $\tmpname~$ not found}. Check the file name (it may be that the file name was given with the suffix .tex. If so, remove it). If the file name is correct the problem may be because code execution is disabled and no cache is available. If so, force the code to run again (using the [run] option).
     \end{tcolorbox}}}
 
 
@@ -328,9 +328,9 @@
     \immediate\closeout\outfile
     \endlinechar=13
     \ifnum\printcode=0
-      \textcolor{red}{\textbf{Label #2 not found in #1}}
+      \textcolor{red}{\textbf{Label $#2$ not found in #1}}
     \fi
-  }{\textcolor{red}{\textbf{Source file #1 not found}}}
+  }{\textcolor{red}{\textbf{Source file $#1$ not found}}}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -348,8 +348,8 @@
   \IfFileExists{#2}{
     \writeChunk{#2}{#3}[#4][#5]
     \IfFileExists{\generated/#2-#3.txt}{\showCode{#1}{\generated/#2-#3.txt}}
-    {\textcolor{red}{\textbf{Label #3 not found in #2}}}
-  }{\textcolor{red}{\textbf{Source file #2 not found}}}
+    {\textcolor{red}{\textbf{Label $#3$ not found in #2}}}
+  }{\textcolor{red}{\textbf{Source file $#2$ not found}}}
 }
 
 
@@ -397,7 +397,7 @@
         \fi
       \end{tcolorbox}}
     {\unskip{\input{\tmpname.tex}}\unskip}}
-    {\textcolor{red}{\textbf{Output file \tmpname~ not found}}}}
+    {\textcolor{red}{\textbf{Output file $\tmpname~$ not found}}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Extended and language-specific commands:
@@ -551,7 +551,7 @@
      }
      {
         \immediate\write18{cat /dev/null > \tmpname}
-        \textcolor{red}{\textbf{runPythonBatch: File #1 does not exist!}}
+        \textcolor{red}{\textbf{runPythonBatch: File $#1$ does not exist!}}
      }
 }
 
