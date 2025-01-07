@@ -36,12 +36,12 @@ package’s github repository, at \url{https://github.com/Ossifragus/runcode}.
 :END:
 You can simply put the runcode.sty file in the LaTeX project folder.
 
-The server mode requires the
-[[https://pypi.org/project/talk2stat/][talk2stat]] package. To install
-it from the command line, use:
+The server mode requires the [[https://pypi.org/project/talk2stat/][talk2stat]] package, and some chunk command (e.g.,
+=\showChunk=) requires the [[https://pypi.org/project/advance-touch/][advance-touch]] package. To install them from the
+command line, use:
 
 #+begin_example
-pip3 install talk2stat
+pip3 install talk2stat advance-touch
 #+end_example
 
 *Note*: =runcode= requires to enable the =shell-escape= option when
