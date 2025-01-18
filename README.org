@@ -263,6 +263,9 @@ Specifically for [[https://www.python.org/][Python]],
 
 
 ** Revisions
+- v2.4, January 17, 2025: 1. put file names within $$ for more robust
+  warnings; 2. use the python [[https://pypi.org/project/advance-touch/][advance-touch]] package to create sub-folders for
+  chunk related commands. 
 - v2.3, January 12, 2024: two bug fixes (1. removed an extra space after
   ~\inlnX~; 2. when an underscore appeared inside R code, the tex file would
   compile with an error). 
