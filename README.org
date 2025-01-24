@@ -254,7 +254,7 @@ Specifically for [[https://www.python.org/][Python]],
 - =\runPythonBatch[Arg1][Arg2]= runs an external [[https://www.python.org/][Python]] code file in batch mode
   (without a server running). Python (at least currently), unlike the other
   languages we use, does not have an option to save and restore a session, which
-  means that once a Python session ends, the working environement (variable,
+  means that once a Python session ends, the working environment (variable,
   functions) is deleted. In order to allow a batch-mode in Python, we
   implemented such capability. It requires the [[https://pypi.org/project/dill/][dill]] module, which has to be
   installed via =pip3 install dill=.
@@ -278,7 +278,7 @@ Specifically for [[https://www.python.org/][Python]],
   Detokenizing ensures that the code is passed as-is to R/Julia/MatLab/Python.
   We thank [[https://github.com/kiryph][kiryph]] for reporting the issue.
 - v2.0, June 23, 2023: add =\runCodeIncOut= command that runs an external code and
-  embeds the output and andd some language specific shortcuts; update
+  embeds the output and add some language specific shortcuts; update
   =\runExtCode= so that if the output file does not exist, the =cache= option will
   be overridden and the code will run; update =\inln= so that its =Arg4= accept
   =cache= or appending =.cache= to use the cached result. We thank [[https://github.com/kiryph][kiryph]] for
