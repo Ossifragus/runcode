@@ -13,10 +13,10 @@ linmodMin <- TMIN ~ sinedoy + year + (1|month)
 linmodMax <- TMAX ~ sinedoy + year + (1|month)
 
 qremFit10min <- QREM(lmer,linmodMin, dat,qn = 0.1)
-qrdg10 <- QRdiagnostics(dat$year, "year (min. temp.)", qremFit10min$ui, qn=0.1, filename = "tmp/LVmintemp.pdf")
+qrdg10 <- QRdiagnostics(dat$year, "year (min. temp.)", qremFit10min$ui, qn=0.1, filename = "generated/LVmintemp.pdf")
 
 qremFit90max <- QREM(lmer,linmodMax, dat,qn = 0.9)
-qrdg90 <- QRdiagnostics(dat$year, "year (max. temp.)", qremFit90max$ui, qn=0.9, filename = "tmp/LVmaxtemp.pdf")
+qrdg90 <- QRdiagnostics(dat$year, "year (max. temp.)", qremFit90max$ui, qn=0.9, filename = "generated/LVmaxtemp.pdf")
 
 # can also use a generalized additive model (gam), but the fit it slower
 #  gam10fit <- QREM(gam, TMIN ~ s(yday,4) + year + month, data=dat, qn=0.1)
