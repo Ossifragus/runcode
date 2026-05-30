@@ -153,6 +153,10 @@
 
 \newcommand{\generated}{generated}
 \immediate\write18{mkdir -p \generated}
+% Pre-allocated streams for writeChunk — declared once to avoid exhausting
+% TeX's 16-stream limit when writeChunk/showChunk are called many times.
+\newread\runcodeReadStream
+\newwrite\runcodeWriteStream
 
 \definecolor{bg}{rgb}{0.95,0.95,0.95} % code block background color
 
@@ -306,17 +310,17 @@
 
 \NewDocumentCommand{\writeChunk}{m m O{label===} O{===end}} {
   \IfFileExists{#1}{
+    \filename@parse{#1}%
+    \immediate\write18{mkdir -p "\generated/\filename@area"}%
     \endlinechar=-1
     \def\printcode{0} % don't print until we see the begin-block string
-    \newread\file
-    \openin\file=#1
-    \newwrite\outfile
-    \immediate\openout\outfile=\generated/#1-#2.txt
-    \loop\unless\ifeof\file
-      \immediate\readline\file to\fileline
+    \openin\runcodeReadStream=#1
+    \immediate\openout\runcodeWriteStream=\generated/#1-#2.txt
+    \loop\unless\ifeof\runcodeReadStream
+      \immediate\readline\runcodeReadStream to\fileline
       \ifnum\printcode=1
         \IfSubStr{\fileline}{\detokenize{#4}}{
-          \renewcommand{\printcode}{-1}}{\immediate\write\outfile{\fileline}}
+          \renewcommand{\printcode}{-1}}{\immediate\write\runcodeWriteStream{\fileline}}
       \fi
       \IfSubStr{\fileline}{\detokenize{#3}}{
           \StrBehind{\fileline}{\detokenize{#3}}[\chunkname]
@@ -324,8 +328,8 @@
       }
       {}
     \repeat
-    \closein\file
-    \immediate\closeout\outfile
+    \closein\runcodeReadStream
+    \immediate\closeout\runcodeWriteStream
     \endlinechar=13
     \ifnum\printcode=0
       \textcolor{red}{\textbf{Label $#2$ not found in #1}}
@@ -346,7 +350,6 @@
 
 \NewDocumentCommand{\showChunk}{m m m O{label===} O{===end}}{
   \IfFileExists{#2}{
-    \immediate\write18{ad \generated/#2-#3.txt}
     \writeChunk{#2}{#3}[#4][#5]
     \IfFileExists{\generated/#2-#3.txt}{\showCode{#1}{\generated/#2-#3.txt}}
     {\textcolor{red}{\textbf{Label $#3$ not found in #2}}}

@@ -1,0 +1,83 @@
+% ChunkTest.tex — regression test for writeChunk / showChunk / runRChunk
+%
+% Covers three bugs fixed in v2.4:
+%   1. Stream exhaustion: \newread/\newwrite inside writeChunk exhausted
+%      TeX's 16-stream limit. Fixed by pre-allocating streams at package level.
+%      Tested here by calling \showChunk 18 times (> the old limit of 16).
+%   2. Unknown shell command: showChunk called \write18{ad ...} which is not
+%      a standard command. Fixed by removing the call (writeChunk handles
+%      directory creation itself now).
+%   3. Subdirectory path: writeChunk wrote chunk files to generated/<path>
+%      without creating the intermediate directory. Fixed by running
+%      mkdir -p on the directory component of the source path.
+%      Tested here by using a source file in the code/ subdirectory.
+
+\documentclass[12pt]{article}
+\usepackage[nohup,R,stopserver,listings]{../../runcode}
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+
+\section*{Test 1: \texttt{showChunk} with a file in a subdirectory}
+
+Source file is \texttt{code/stats.R}.
+The chunk output must land in \texttt{generated/code/stats.R-chunkXX.txt},
+requiring \texttt{generated/code/} to be created automatically.
+
+\showChunk{R}{code/stats.R}{chunk01}
+\showChunk{R}{code/stats.R}{chunk02}
+\showChunk{R}{code/stats.R}{chunk03}
+
+\section*{Test 2: \texttt{showChunk} with a flat file (no subdirectory)}
+
+Source file is \texttt{flatcode.R} in the current directory.
+Output lands in \texttt{generated/flatcode.R-flat\_hello.txt}.
+
+\showChunk{R}{flatcode.R}{flat_hello}
+\showChunk{R}{flatcode.R}{flat_arithmetic}
+
+\section*{Test 3: Stream exhaustion — 18 \texttt{showChunk} calls}
+
+Calling \texttt{showChunk} 18 times on the same file exercises the
+pre-allocated stream fix. The old code would crash after the 16th call
+with ``No room for a new read stream.''
+
+\showChunk{R}{code/stats.R}{chunk04}
+\showChunk{R}{code/stats.R}{chunk05}
+\showChunk{R}{code/stats.R}{chunk06}
+\showChunk{R}{code/stats.R}{chunk07}
+\showChunk{R}{code/stats.R}{chunk08}
+\showChunk{R}{code/stats.R}{chunk09}
+\showChunk{R}{code/stats.R}{chunk10}
+\showChunk{R}{code/stats.R}{chunk11}
+\showChunk{R}{code/stats.R}{chunk12}
+\showChunk{R}{code/stats.R}{chunk13}
+\showChunk{R}{code/stats.R}{chunk14}
+\showChunk{R}{code/stats.R}{chunk15}
+\showChunk{R}{code/stats.R}{chunk16}
+\showChunk{R}{code/stats.R}{chunk17}
+\showChunk{R}{code/stats.R}{chunk18}
+
+\section*{Test 4: \texttt{runRChunk} with a subdirectory file}
+
+\texttt{runRChunk} should extract the chunk, run it via the R server,
+and display the output.
+
+\runRChunk{code/stats.R}{chunk01}
+\runRChunk{code/stats.R}{chunk02}
+\runRChunk{code/stats.R}{chunk17}
+
+\section*{Test 5: \texttt{runRChunk} with a flat file}
+
+\runRChunk{flatcode.R}{flat_hello}
+\runRChunk{flatcode.R}{flat_arithmetic}
+
+\section*{Test 6: Missing chunk label (should show red error, not crash)}
+
+\showChunk{R}{code/stats.R}{no_such_label}
+
+\section*{Test 7: Missing source file (should show red error, not crash)}
+
+\showChunk{R}{no_such_file.R}{chunk01}
+
+\end{document}
