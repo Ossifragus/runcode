@@ -310,8 +310,7 @@
 
 \NewDocumentCommand{\writeChunk}{m m O{label===} O{===end}} {
   \IfFileExists{#1}{
-    \filename@parse{#1}%
-    \immediate\write18{mkdir -p "\generated/\filename@area"}%
+    \immediate\write18{python3 -c "import os; os.makedirs(os.path.join('\generated', os.path.dirname('#1')), exist_ok=True)"}%
     \endlinechar=-1
     \def\printcode{0} % don't print until we see the begin-block string
     \openin\runcodeReadStream=#1

@@ -1,3 +1,10 @@
+% -*- TeX-command-extra-options: "-shell-escape" -*-
+% This file requires --shell-escape (for \write18 calls that create the
+% generated/ directory tree). Without it, pdflatex silently skips all
+% \write18 commands and then fails with "I can't write on file ...".
+% The magic comment above makes AUCTeX (Emacs) pass --shell-escape
+% automatically. Command-line users: pdflatex --shell-escape ChunkTest.tex
+%
 % ChunkTest.tex — regression test for writeChunk / showChunk / runRChunk
 %
 % Covers three bugs fixed in v2.4:
@@ -8,8 +15,8 @@
 %      a standard command. Fixed by removing the call (writeChunk handles
 %      directory creation itself now).
 %   3. Subdirectory path: writeChunk wrote chunk files to generated/<path>
-%      without creating the intermediate directory. Fixed by running
-%      mkdir -p on the directory component of the source path.
+%      without creating the intermediate directory. Fixed by using
+%      Python os.makedirs for cross-platform directory creation.
 %      Tested here by using a source file in the code/ subdirectory.
 
 \documentclass[12pt]{article}
