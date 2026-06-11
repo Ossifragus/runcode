@@ -1,4 +1,4 @@
-LaTeX Package: runcode 2026/06/10 v2.4.1
+LaTeX Package: runcode XXX-Date Version-XXX
 ----------------------------------------
 The runcode package enables the execution of source code (e.g., R, 
 Julia, Matlab, shell, Python, etc.) and embed the results in the pdf file
