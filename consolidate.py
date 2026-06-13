@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+# Copyright (C) 2020-2026 by Haim Bar and HaiYing Wang
+# Part of the runcode package XXX-Date Version-XXX
+# https://github.com/Ossifragus/runcode
+#
+# This file may be distributed and/or modified under the conditions of
+# the LaTeX Project Public License, either version 1.3c of this license
+# or (at your option) any later version.
+# The latest version of this license is in http://www.latex-project.org/lppl.txt
+
 """consolidate.py — produce a self-contained LaTeX project from a runcode document.
 
 After a successful build (all code executed, outputs cached in generated/),

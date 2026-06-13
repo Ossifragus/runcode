@@ -263,17 +263,17 @@ Specifically for [[https://www.python.org/][Python]],
 
 
 ** Revisions
-- v2.5, June 2026:
+- v2.6, June 2026:
   1. Checksum-based cache invalidation: source files are now fingerprinted
      with MD5; a script is re-executed only when its source has changed (or
      when the output file is missing), avoiding unnecessary reruns on
      unchanged code.
-  2. New ~wait_for_rserver.py~: polls a talk2stat server until it accepts
+  2. New ~wait_for_server.py~: polls a talk2stat server until it accepts
      connections, eliminating the server-startup race condition in ~nohup~
      mode. Supports R, Python, Julia, and Matlab via a command-line argument.
   3. New ~runcode-Makefile.sample~: a sample Makefile encoding three best
      practices for ~nohup~ builds — quit any old server before starting
-     fresh, wait for the server to be ready (via ~wait_for_rserver.py~), and
+     fresh, wait for the server to be ready (via ~wait_for_server.py~), and
      send a sync barrier after the first draft pass so all queued scripts
      finish before results are cached.
   4. New ~consolidate.py~: produces a self-contained copy of a runcode

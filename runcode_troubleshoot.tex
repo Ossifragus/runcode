@@ -229,7 +229,13 @@ Will look better: A matrix \inlnR{```matrix(1:9,ncol=3,nrow=3)```}[vbox].
 
 
 \cause\bgroup
-This type of problem can also be due to invalid output in the cache files. If for some reason, the cache files contain special characters or an underscore in text-mode, then the output will be corrupted. It is recommended to clear the cache, and if server-mode is used to also restart the server. For example, suppose that the directory of the project is called proj, and we're using Python in server-mode. From the command line, run the following:
+This type of problem can also be due to invalid output in the cache files. If for some reason, the cache files contain special characters or an underscore in text-mode, then the output will be corrupted.
+
+As of v2.5, runcode automatically invalidates the cache whenever the source file changes (using an MD5 checksum), so simply editing the source file and recompiling is usually enough. If you need to force all code to re-execute regardless of whether the source has changed, use the \verb|run| flag on the individual command or load the package with the \verb|run| option:
+\begin{Verbatim}
+\usepackage[run]{runcode}
+\end{Verbatim}
+If the cache files are corrupt (e.g., contain garbled output), remove them manually and restart the server. For example, suppose that the directory of the project is called proj, and we're using Python in server-mode. From the command line, run the following:
 \begin{Verbatim}
 cd proj
 rm -f proj.aux generated/*.txt nohup.out proj.synctex.gz
@@ -283,7 +289,26 @@ If the correct output is in the files in generated directory, but it's not showi
 \cause\bgroup
 If you are using the server-mode, be aware that some editors terminate all child processes at the end of \LaTeX compilation. For example, Emacs with Auctex behaves this way. For this case, use the nohup option, and the server will not be terminated by the parent process.\\
 If you want the server to be stopped after each compilation (regardless of the editor you are using), use the stopserver option. While you are compiling the tex document often, you may want to keep the server side running in order to save time during initialization, and to maintain the variables and results already in memory. However, it is a good idea to use the stopserver option when you are done, just to prevent any conflicts (see above).\\
-It's recommended to check that port numbers are unique, and when a project is not expected to be compiled for a while to enable the stopserver option. 
+It's recommended to check that port numbers are unique, and when a project is not expected to be compiled for a while to enable the stopserver option.
+\egroup
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\prob{Using \texttt{nohup} mode, the first code block produces no output or an error, even though the source file is correct.}
+\cause\bgroup
+With the \texttt{nohup} option the server is started in the background, and \LaTeX{} begins executing \verb|\run*| commands immediately. If the server has not yet opened its socket by the time the first command is sent, that command is silently dropped and its output file is never created, causing a missing-output error later in the document.
+
+The fix is to wait until the server is ready before the first \LaTeX{} pass. The \verb|wait_for_server.py| script (distributed with the package) polls the server once per second until it accepts connections:
+\begin{Verbatim}
+python3 wait_for_server.py [LANG [DIR [TIMEOUT]]]
+\end{Verbatim}
+For example, to wait up to 120 seconds for an R server in the current directory:
+\begin{Verbatim}
+python3 wait_for_server.py R ./ 120
+\end{Verbatim}
+Call this script between starting the server and invoking the \LaTeX{} compiler. The \verb|runcode-Makefile.sample| file (also distributed with the package) encodes this pattern in a ready-to-use \verb|Makefile|.
 \egroup
 
 
