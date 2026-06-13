@@ -1,0 +1,122 @@
+% -*- TeX-command-extra-options: "-shell-escape" -*-
+% This file requires --shell-escape (for \write18 calls).
+% The magic comment above makes AUCTeX (Emacs) pass --shell-escape automatically.
+% Command-line users: pdflatex --shell-escape CacheTest.tex
+%
+% CacheTest.tex — test suite for smart checksum-based cache invalidation (Issue #10)
+%                 and \inln fallback when output file is missing (Issue #16)
+%
+% HOW TO VERIFY CACHING:
+%   1st compile: all code runs; generated/ gets .md5 sidecar files.
+%   2nd compile: no code reruns; .tex output file mtimes are unchanged.
+%   Edit one chunk: only that chunk reruns on next compile.
+%   [run] option: forces all code to rerun regardless of checksums.
+%   [cache] option: never reruns; Issue #16 fix — runs anyway if output missing.
+%
+% Languages exercised: R, Python, Julia, Matlab
+% To enable the Matlab section, set \useMatlabtrue below (requires Matlab installed).
+
+\documentclass[12pt]{article}
+\usepackage[nohup,R,python,julia,stopserver,listings]{../../runcode}
+\usepackage[margin=1in]{geometry}
+
+% Set to \useMatlabtrue to enable the Matlab section (requires Matlab + talk2stat).
+\newif\ifuseMatlab\useMatlabfalse
+
+\begin{document}
+
+\title{\texttt{CacheTest}: Smart Cache and \texttt{{\textbackslash}inln} Fallback}
+\date{}
+\maketitle
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{R}
+
+\subsection{\texttt{\textbackslash runRChunk} — per-chunk cache via MD5}
+
+The chunks below are cached individually: editing \texttt{r-sum} will only
+rerun that chunk on the next compile, leaving \texttt{r-mean} untouched.
+
+Sum:  \runRChunk{code/hello.R}{r-sum}
+Mean: \runRChunk{code/hello.R}{r-mean}
+
+\subsection{\texttt{\textbackslash runRIncOut} — whole-file cache}
+
+Running the full file produces all three outputs:
+
+\runRIncOut{code/hello.R}
+
+\subsection{\texttt{\textbackslash inlnR} — backtick inline (Issue \#16 fallback)}
+
+On first compile there is no cached \texttt{.tex} output, so the code must run
+regardless of the \texttt{\textbackslash ifruncode} flag.
+
+Inline sum: \inlnR{```cat(sum(c(2,4,6,8,10)))```}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Python}
+
+\subsection{\texttt{\textbackslash runPythonChunk} — per-chunk cache via MD5}
+
+Sum:  \runPythonChunk{code/hello.py}{py-sum}
+Mean: \runPythonChunk{code/hello.py}{py-mean}
+
+\subsection{\texttt{\textbackslash runPythonIncOut} — whole-file cache}
+
+\runPythonIncOut{code/hello.py}
+
+\subsection{\texttt{\textbackslash inlnPython} — backtick inline (Issue \#16 fallback)}
+
+Inline sum: \inlnPython{```print(sum([2,4,6,8,10]))```}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Julia}
+
+\subsection{\texttt{\textbackslash runJuliaChunk} — per-chunk cache via MD5}
+
+Sum:  \runJuliaChunk{code/hello.jl}{jl-sum}
+Mean: \runJuliaChunk{code/hello.jl}{jl-mean}
+
+\subsection{\texttt{\textbackslash runJuliaIncOut} — whole-file cache}
+
+\runJuliaIncOut{code/hello.jl}
+
+\subsection{\texttt{\textbackslash inlnJulia} — backtick inline (Issue \#16 fallback)}
+
+Inline sum: \inlnJulia{```println(sum([2,4,6,8,10]))```}
+
+% ─────────────────────────────────────────────────────────────────────────────
+% Matlab section — enabled only when \useMatlabtrue is set in the preamble.
+% Requires Matlab installed and the matlab option added to \usepackage{runcode}.
+% Change the \usepackage line above to:
+%   \usepackage[nohup,R,python,julia,matlab,stopserver,listings]{../../runcode}
+\ifuseMatlab
+
+\section{Matlab}
+
+\subsection{\texttt{\textbackslash runMatLabChunk} — per-chunk cache via MD5}
+
+Sum:  \runMatLabChunk{code/hello.m}{ml-sum}
+Mean: \runMatLabChunk{code/hello.m}{ml-mean}
+
+\subsection{\texttt{\textbackslash runMatLabIncOut} — whole-file cache}
+
+\runMatLabIncOut{code/hello.m}
+
+\subsection{\texttt{\textbackslash inlnMatLab} — backtick inline (Issue \#16 fallback)}
+
+Inline sum: \inlnMatLab{```disp(sum([2,4,6,8,10]))```}
+
+\fi % end \ifuseMatlab
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Issue \#16: \texttt{[cache]} package option with missing output}
+
+Compiled with \texttt{[cache]} the package sets \texttt{\textbackslash runcodefalse}.
+The Issue \#16 fix ensures that if the output \texttt{.tex} file does not exist,
+the code still runs.  Delete \texttt{generated/} and recompile with
+\texttt{\textbackslash usepackage[cache,...]\{runcode\}} to exercise this path.
+
+Fallback: \inlnR{```cat("cache-fallback")```}[inlnR-fallback]
+
+\end{document}
