@@ -10,8 +10,11 @@ mkdir runcode
 
 cp -r runcode.sty runcode.tex runcode.pdf \
        runcode_troubleshoot.tex runcode_troubleshoot.pdf \
-       README generated \
+       generated \
        runcode/
+
+# Generate README from CTAN/README with version placeholder substituted
+sed "s/XXX-Date Version-XXX/$VersionDate/" CTAN/README > runcode/README
 
 # Copy the three auxiliary scripts with the version placeholder substituted
 sed "s/XXX-Date Version-XXX/$VersionDate/" wait_for_server.py    > runcode/wait_for_server.py
