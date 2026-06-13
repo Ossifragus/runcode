@@ -1,0 +1,483 @@
+% LaTeX Package: runcode v2.6
+%
+% Copyright (C) 2020-2026 by Haim Bar and HaiYing Wang
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any later
+% version.  The latest version of this license is in:
+%
+%   http://www.latex-project.org/lppl.txt
+%
+% and version 1.3c or later is part of all distributions of
+% LaTeX version 2005/12/01 or later.
+
+\PassOptionsToPackage{colorlinks=true,linkcolor=blue,urlcolor=blue}{hyperref}
+\documentclass{ltxdoc}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% hyperref is loaded by ltxdoc via hypdoc; options are set above.
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  frame=single,
+  breaklines=true,
+  columns=flexible,
+}
+
+\newcommand{\pkg}[1]{\textsf{#1}}
+\newcommand{\opt}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{#1}}
+
+\title{The \pkg{runcode} package}
+\author{Haim Bar and HaiYing Wang \\
+  \href{mailto:haim.bar@uconn.edu}{haim.bar@uconn.edu},
+  \href{mailto:haiying.wang@uconn.edu}{haiying.wang@uconn.edu}}
+\date{v2.6, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\pkg{runcode} is a \LaTeX{} package that executes programming source
+codes (including all command-line tools) from \LaTeX{} and embeds the
+results in the resulting PDF file.  Many programming languages can be
+used and any command-line executable can be invoked when preparing the
+PDF from a \texttt{.tex} file.  \pkg{runcode} is also available on
+\href{https://ctan.org/pkg/runcode}{CTAN}.
+
+It is recommended to use this package in server mode together with the
+Python \href{https://pypi.org/project/talk2stat/}{talk2stat} package.
+Currently, the server mode supports
+\href{https://julialang.org/}{Julia},
+\href{https://www.mathworks.com/products/matlab.html}{MatLab},
+\href{https://www.python.org/}{Python}, and
+\href{https://www.r-project.org/}{R}.
+More languages will be added.
+
+For more details, usage examples, and troubleshooting, refer to the
+package's GitHub repository at
+\url{https://github.com/Ossifragus/runcode}.
+\end{abstract}
+
+\tableofcontents
+
+%%--------------------------------------------------------------------
+\section{Installation}
+\label{sec:installation}
+
+You can simply put the \file{runcode.sty} file in your \LaTeX{} project
+folder.
+
+The server mode requires the
+\href{https://pypi.org/project/talk2stat/}{talk2stat} package.
+Some chunk commands (e.g., \cs{showChunk}) also require the
+\href{https://pypi.org/project/advance-touch/}{advance-touch} package.
+Install them from the command line with:
+\begin{lstlisting}[language=bash]
+pip3 install talk2stat advance-touch
+\end{lstlisting}
+
+\textbf{Note:} \pkg{runcode} requires the \texttt{shell-escape} option
+when compiling a \LaTeX{} document:
+\begin{lstlisting}[language=bash]
+pdflatex --shell-escape yourfile.tex
+\end{lstlisting}
+
+When using AUCTeX or a similar IDE, you can avoid setting
+\texttt{shell-escape} manually by adding the following magic comment at
+the top of your \texttt{.tex} file:
+\begin{lstlisting}[language=tex]
+% !TEX program = pdflatex --shell-escape
+\end{lstlisting}
+Replace \texttt{pdflatex} with \texttt{xelatex} or \texttt{lualatex} as
+appropriate.
+
+%%--------------------------------------------------------------------
+\section{Usage}
+\label{sec:usage}
+
+\subsection{Loading the package}
+
+\begin{lstlisting}[language=tex]
+\usepackage[options]{runcode}
+\end{lstlisting}
+
+Available options:
+
+\begin{description}
+  \item[\opt{cache}] Use cached results (do not re-run code).
+  \item[\opt{fvextra}] Use the \href{https://ctan.org/pkg/fvextra}{fvextra}
+    package to display code.
+  \item[\opt{julia}] Start a server for
+    \href{https://julialang.org/}{Julia} (requires \pkg{talk2stat}).
+  \item[\opt{listings}] Use the
+    \href{https://ctan.org/pkg/listings}{listings} package to display code.
+  \item[\opt{matlab}] Start a server for
+    \href{https://www.mathworks.com/products/matlab.html}{MatLab}
+    (requires \pkg{talk2stat}).
+  \item[\opt{minted}] Use the
+    \href{https://ctan.org/pkg/minted}{minted} package to display code
+    (requires \href{https://pygments.org/}{Pygments}).
+    This is the default.
+  \item[\opt{nominted}] Use \href{https://ctan.org/pkg/fvextra}{fvextra}
+    instead of \pkg{minted} (no syntax highlighting; no Pygments required).
+  \item[\opt{nohup}] Use \texttt{nohup} when starting a server.
+    Some editors (e.g.\ Emacs with AUCTeX) terminate child processes after
+    compilation; this option keeps the server alive.
+    \textbf{Must be declared before any language option}, e.g.\
+    \opt{[nohup,R]} works but \opt{[R,nohup]} does not.
+    See Section~\ref{sec:tools} for tools that smooth the \opt{nohup}
+    workflow.
+  \item[\opt{python}] Start a server for
+    \href{https://www.python.org/}{Python} (requires \pkg{talk2stat}).
+  \item[\opt{R}] Start a server for \href{https://www.r-project.org/}{R}
+    (requires \pkg{talk2stat}).
+  \item[\opt{reducedspace}] Reduce the vertical space around output boxes.
+  \item[\opt{run}] Force source code to run (override cache).
+  \item[\opt{stopserver}] Stop the server(s) when PDF compilation finishes.
+\end{description}
+
+\subsection{Output box style}
+
+Output boxes are displayed using
+\href{https://ctan.org/pkg/tcolorbox}{tcolorbox} and can be customised
+with \cs{tcbset}, e.g.:
+\begin{lstlisting}[language=tex]
+\tcbset{breakable, colback=red!5!white, colframe=red!75!black}
+\end{lstlisting}
+
+\subsection{Code display style}
+
+The style of \emph{source code} blocks (shown by \cs{showCode},
+\cs{showChunk}, and the \texttt{\cs{run}LANG\texttt{Chunk}} commands)
+depends on the package option used to display code:
+
+\begin{itemize}
+  \item \textbf{\pkg{minted}} (default): use \cs{setminted} to control
+    language-specific highlighting, e.g.:
+\begin{lstlisting}[language=tex]
+\setminted[r]{linenos, frame=single, bgcolor=bg, breaklines=true}
+\end{lstlisting}
+  \item \textbf{\pkg{fvextra}} or \opt{nominted}: use \cs{fvset} to set
+    options globally, e.g.:
+\begin{lstlisting}[language=tex]
+\fvset{frame=single, numbers=left, breaklines=true}
+\end{lstlisting}
+  \item \textbf{\pkg{listings}}: use \cs{lstset} to configure the style,
+    e.g.:
+\begin{lstlisting}[language=tex]
+\lstset{basicstyle=\ttfamily\small, frame=single, numbers=left}
+\end{lstlisting}
+\end{itemize}
+
+\subsection{Basic commands}
+
+\DescribeMacro{\runExtCode}
+\cs{runExtCode}\marg{prog}\marg{src}\marg{label}\oarg{flag}
+runs an external code file.
+\begin{itemize}
+  \item \meta{prog}: the executable program.
+  \item \meta{src}: the source file name.
+  \item \meta{label}: the output file name (empty $\Rightarrow$ uses
+    counter \texttt{codeOutput}).
+  \item \oarg{flag}: optional run control --- omit or empty to use the
+    global \texttt{runcode} Boolean; \texttt{run} to force execution;
+    \texttt{cache} (or any other value) to use cached results.
+\end{itemize}
+
+\textbf{Checksum-based cache invalidation (v2.5):} when neither
+\opt{cache} nor \opt{run} is active, \pkg{runcode} computes an MD5
+checksum of \meta{src} and compares it with the checksum stored from the
+previous run.  The script is re-executed only if the source has changed
+or if the output file is missing; otherwise the cached output is reused.
+This avoids unnecessary reruns without requiring the user to manage
+cache flags manually.
+
+\DescribeMacro{\showCode}
+\cs{showCode}\marg{lang}\marg{src}\oarg{first}\oarg{last}
+displays source code using \pkg{minted}, \pkg{fvextra}, or \pkg{listings}.
+\begin{itemize}
+  \item \meta{lang}: programming language.
+  \item \meta{src}: source file name.
+  \item \oarg{first}/\oarg{last}: first and last line to display
+    (optional; defaults to the whole file).
+\end{itemize}
+
+\DescribeMacro{\includeOutput}
+\cs{includeOutput}\marg{label}\oarg{type}
+embeds the output of executed code.
+\begin{itemize}
+  \item \meta{label}: output file name (must match \meta{label} in
+    \cs{runExtCode}; empty $\Rightarrow$ uses counter).
+  \item \oarg{type}: \texttt{vbox} (default) = verbatim in a box;
+    \texttt{tex} = raw \LaTeX{}; \texttt{inline} = inline text.
+\end{itemize}
+
+\DescribeMacro{\inln}
+\cs{inln}\marg{prog}\marg{code}\oarg{label}\oarg{type}
+runs a short piece of code and displays the result inline.
+\begin{itemize}
+  \item \meta{prog}: executable or language server.
+  \item \meta{code}: source code.
+  \item \oarg{label}: output file name (optional).
+  \item \oarg{type}: controls display format and caching.  Values:
+    \texttt{inline} (default), \texttt{vbox}, \texttt{tex};
+    append \texttt{.cache} to any of these
+    (e.g.\ \texttt{vbox.cache}) to reuse a cached result,
+    re-running only if the output file is absent.
+\end{itemize}
+
+\DescribeMacro{\showChunk}
+\cs{showChunk}\marg{lang}\marg{src}\marg{id}\oarg{begin}\oarg{end}
+displays a labelled chunk of a source file.  Chunks are delimited by
+comment lines containing \texttt{label===}\meta{id} (start) and
+\texttt{===end} (end) by default.  These delimiters can be overridden
+with \oarg{begin} and \oarg{end}.
+
+\DescribeMacro{\writeChunk}
+\cs{writeChunk}\marg{lang}\marg{src}\marg{id}\oarg{begin}\oarg{end}
+extracts the chunk identified by \meta{id} from \meta{src} and writes it
+to \file{generated/}\meta{src}\texttt{-}\meta{id} on disk.  This is
+called internally by \cs{showChunk} and \cs{runLANGChunk}, but can also
+be used standalone when only the extraction step is needed.
+
+\subsection{Extended commands}
+
+\DescribeMacro{\runCodeIncOut}
+\cs{runCodeIncOut}\marg{prog}\marg{src}\oarg{flag}\oarg{label}\oarg{type}
+combines \cs{runExtCode} and \cs{includeOutput} in one call.
+
+\subsection{Language-specific shortcuts}
+
+Replace \texttt{LANG} with \texttt{Julia}, \texttt{MatLab},
+\texttt{Python}, or \texttt{R} in the following commands.
+
+\DescribeMacro{\runLANG}
+\cs{runLANG}\oarg{prog}\marg{src}\marg{label}\oarg{flag}
+runs an external \texttt{LANG} code file.  \oarg{prog} is optional and
+defaults to the \pkg{talk2stat} \texttt{LANG} server.
+
+\DescribeMacro{\runLANGIncOut}
+\cs{runLANGIncOut}\oarg{prog}\marg{src}\oarg{flag}\oarg{label}\oarg{type}
+runs a \texttt{LANG} code file and embeds the output.
+
+\DescribeMacro{\inlnLANG}
+\cs{inlnLANG}\oarg{prog}\marg{code}\oarg{label}\oarg{type}
+runs \texttt{LANG} source code and displays the result inline.
+If \meta{code} is wrapped in triple backticks (\texttt{```code```}),
+it is sent directly to the server; otherwise it is written to a file
+first.
+
+\DescribeMacro{\runLANGChunk}
+\cs{runLANGChunk}\oarg{prog}\marg{src}\marg{id}\oarg{flag}\oarg{label}\oarg{type}
+extracts the chunk \meta{id} from \meta{src}, runs it, and embeds the
+output.
+\begin{itemize}
+  \item \oarg{label}: output file name.  When omitted, the label is
+    derived automatically as \meta{src}\texttt{-}\meta{id}
+    (e.g.\ \texttt{code/analysis.R-section2}).
+  \item \oarg{type}: output display type (\texttt{vbox}, \texttt{tex},
+    \texttt{inline}, or their \texttt{.cache} variants).
+\end{itemize}
+
+For example:
+\begin{lstlisting}[language=tex]
+\runR{code/analysis.R}{result1}
+\runRIncOut{code/analysis.R}[][result1]
+\runRChunk{code/analysis.R}{section2}
+\inlnR{```mean(c(1,2,3,4,5))```}
+\end{lstlisting}
+
+\subsubsection{Python batch mode}
+
+\DescribeMacro{\runPythonBatch}
+\cs{runPythonBatch}\oarg{src}\oarg{label}
+runs a Python file in batch mode (no server).  Requires the
+\href{https://pypi.org/project/dill/}{dill} module
+(\texttt{pip3 install dill}), which provides session save/restore
+so that variables persist across calls.
+
+%%--------------------------------------------------------------------
+\section{Auxiliary tools}
+\label{sec:tools}
+
+The following scripts are distributed with the package and address
+common workflow needs.  Copy them into your project directory alongside
+your \texttt{.tex} file.
+
+\subsection{\file{wait\_for\_server.py}}
+
+Polls a \pkg{talk2stat} server until it is ready to accept connections.
+This eliminates the server-startup race condition that can occur in
+\opt{nohup} mode, where the first \cs{runR} call may arrive before the
+server socket is open.
+
+\begin{lstlisting}[language=bash]
+python3 wait_for_server.py [LANG [DIR [TIMEOUT]]]
+\end{lstlisting}
+
+\begin{itemize}
+  \item \texttt{LANG}: language server to wait for --- \texttt{R},
+    \texttt{python}, \texttt{julia}, or \texttt{matlab} (default: \texttt{R}).
+  \item \texttt{DIR}: working directory of the server (default: \texttt{./}).
+  \item \texttt{TIMEOUT}: seconds before giving up (default: 120).
+\end{itemize}
+
+\subsection{\file{runcode-Makefile.sample}}
+
+A sample \file{Makefile} for documents compiled in \opt{nohup} server
+mode.  Copy it to your project as \file{Makefile} and set the
+\texttt{MAIN} and \texttt{LANGS} variables.  The \texttt{make all}
+target encodes three best practices:
+
+\begin{enumerate}
+  \item Quit any existing server before starting a fresh one, so the
+    new server picks up the current \file{.config} settings
+    (including any updated \texttt{PIPETIMEOUT}).
+  \item Call \file{wait\_for\_rserver.py} to block until the server is
+    ready before the first \LaTeX{} pass.
+  \item After the draft pass (\texttt{-{}-no-pdf} / \texttt{-draftmode}),
+    send a language-appropriate no-op command as a sync barrier
+    (\texttt{invisible(NULL)} for R, \texttt{pass} for Python, etc.)
+    to ensure all queued scripts have finished writing their output
+    files before the final passes begin.
+\end{enumerate}
+
+\textbf{PIPETIMEOUT note:} the default timeout in the generated
+\file{.config} is 60 seconds.  For long-running scripts, raise it by
+editing the \file{.config} file (e.g.\ \texttt{PIPETIMEOUT = 3600})
+and restarting the server (\texttt{make stopserver}).
+
+\subsection{\file{consolidate.py}}
+
+Produces a self-contained copy of a \pkg{runcode} project in which all
+cached outputs are inlined into the \texttt{.tex} source, so the result
+compiles without \pkg{talk2stat} or any language runtime.  This is
+useful for submission to Overleaf, a journal, or any recipient who does
+not have \pkg{runcode} installed.
+
+\begin{lstlisting}[language=bash]
+python3 consolidate.py [--out DIR] [--engine CMD] [--no-compile]
+                       [--exclude GLOB] MAIN.tex
+\end{lstlisting}
+
+The script copies the project to \file{standalone/} (configurable via
+\texttt{-{}-out}), transforms all \texttt{.tex} files by replacing
+\cs{includeOutput}, \cs{inlnR}/\cs{inlnPython}/\ldots,
+\cs{runRIncOut}, \cs{runRChunk}, etc.\ with the cached content from
+\file{generated/}, and substitutes \cs{usepackage}\texttt{\{runcode\}}
+with a minimal \pkg{tcolorbox} + \pkg{listings} shim.  Run-only
+commands (\cs{runR}, \cs{runPython}, \ldots) are silently removed.
+A \texttt{make consolidate} target is provided in
+\file{runcode-Makefile.sample}.
+
+%%--------------------------------------------------------------------
+\section{Revisions}
+\label{sec:revisions}
+
+\begin{itemize}
+
+\item \textbf{v2.6, June 2026:}
+  \begin{enumerate}
+    \item Checksum-based cache invalidation: source files are
+      fingerprinted with MD5; a script is re-executed only when its
+      source has changed or when the output file is missing, avoiding
+      unnecessary reruns.
+    \item New \file{wait\_for\_rserver.py}: eliminates the server-startup
+      race condition in \opt{nohup} mode (see Section~\ref{sec:tools}).
+    \item New \file{runcode-Makefile.sample}: sample \file{Makefile}
+      with server lifecycle management, startup synchronisation, and
+      sync barrier (see Section~\ref{sec:tools}).
+    \item New \file{consolidate.py}: produces standalone \LaTeX{}
+      projects with all cached outputs inlined
+      (see Section~\ref{sec:tools}).
+  \end{enumerate}
+
+\item \textbf{v2.4.1, June 10, 2026:}
+  Bug fixes in \cs{writeChunk}: (1) replaced \texttt{mkdir -p} with
+  Python \texttt{os.makedirs} for cross-platform subdirectory creation;
+  (2) fixed stream exhaustion when more than 16 \cs{showChunk} calls
+  appear in one document (streams are now pre-allocated at package load
+  time); (3) removed erroneous \verb|\write18{ad ...}| call in
+  \cs{showChunk}.
+  Added AUCTeX magic comment to example files.
+
+\item \textbf{v2.4, January 17, 2025:}
+  (1) Put file names within \texttt{\$\$} for more robust warnings;
+  (2) use the Python \pkg{advance-touch} package to create sub-folders
+  for chunk-related commands.
+
+\item \textbf{v2.3, January 12, 2024:}
+  Two bug fixes: (1) removed extra space after \cs{inlnX};
+  (2) fixed compilation error when an underscore appeared inside R code.
+
+\item \textbf{v2.2, September 8, 2023:}
+  Added \cs{showChunk} basic command and \cs{runLANGChunk} commands for
+  multiple languages.
+
+\item \textbf{v2.1, June 30, 2023:}
+  Detokenize code passed to \cs{inln}.  This prevents special
+  \LaTeX{} characters (e.g.\ backslash) from being escaped before
+  reaching the interpreter.  Thanks to
+  \href{https://github.com/kiryph}{kiryph} for the report.
+
+\item \textbf{v2.0, June 23, 2023:}
+  Added \cs{runCodeIncOut}; updated \cs{runExtCode} to override cache
+  when output is missing; updated \cs{inln} to accept \texttt{cache}
+  in \texttt{Arg4}.  Thanks to
+  \href{https://github.com/kiryph}{kiryph} for the suggestions.
+
+\item \textbf{v1.9, June 13, 2023:}
+  Updated \cs{inln}: optional \texttt{Arg3} is the output file name,
+  optional \texttt{Arg4} is the output type.
+
+\item \textbf{v1.8, January 18, 2023:}
+  Added support for the \pkg{listings} package.
+
+\item \textbf{v1.7, August 20, 2022:}
+  Renamed the \texttt{tmp/} folder to \texttt{generated/} (CTAN
+  requirement); renamed the troubleshooting file.
+
+\item \textbf{v1.6, August 10, 2022:}
+  Stop only configured/running servers; new \opt{reducedspace} option;
+  default server timeout changed to 60 s; expanded troubleshooting
+  document.
+
+\item \textbf{v1.5, July 23, 2022:}
+  Removed \texttt{utf8x} option from \pkg{inputenc} (conflict with
+  \pkg{hyperref}).
+
+\item \textbf{v1.4, July 18, 2022:} Fixed a bug in cache mode.
+
+\item \textbf{v1.3, May 14, 2022:} Removed hard-coded \pkg{minted}
+  options.
+
+\item \textbf{v1.2, May 3, 2022:} Added Python server and batch-mode
+  options.
+
+\item \textbf{v1.1, April 17, 2021:} Added \opt{nohup} option;
+  improved error handling for missing code files and zero-byte outputs.
+
+\end{itemize}
+
+%%--------------------------------------------------------------------
+\section{Contributing}
+\label{sec:contributing}
+
+We welcome contributions by opening issues or pull requests on
+\href{https://github.com/Ossifragus/runcode}{GitHub}.  Additional
+example documents written using \pkg{runcode} are especially
+appreciated.
+
+\bigskip\noindent
+\textbf{Citing \pkg{runcode}:}
+Haim Bar and HaiYing Wang (2021).
+\href{https://jds-online.org/journal/JDS/article/103/info}{Reproducible
+Science with \LaTeX{}}.
+\textit{Journal of Data Science} 19(1), 111--125.
+DOI:~10.6339/21-JDS998.
+
+\end{document}

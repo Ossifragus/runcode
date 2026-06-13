@@ -5,12 +5,12 @@ library(e1071)
 library(kableExtra)
 
 loadData <- function() {
-  loc <- "http://archive.ics.uci.edu/ml/machine-learning-databases/"
+  loc <- "https://archive.ics.uci.edu/"
   ds  <- "breast-cancer-wisconsin/breast-cancer-wisconsin.data"
   url <- paste(loc, ds, sep="")
   breast <- read.table(url, sep=",", header=FALSE, na.strings="?")
   names(breast) <- c("ID", "clumpThickness", "sizeUniformity",
-                     "shapeUniformity", "maginalAdhesion", 
+                     "shapeUniformity", "marginalAdhesion", 
                      "singleEpithelialCellSize", "bareNuclei", 
                      "blandChromatin", "normalNucleoli", "mitosis", "class")
   df <- breast[-1]

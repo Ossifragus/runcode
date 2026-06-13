@@ -1,7 +1,7 @@
 \documentclass{caesar_book}
 
 \usepackage{marginnote}
-\usepackage[run]{runcode}
+\usepackage[run]{../../runcode}
 %\usepackage[nominted]{runcode}
 \usepackage{hyperref}
 
@@ -16,14 +16,14 @@ In this example \marginnote{We use runExtCode to read and pre-process the data a
 The data for this example has been downloaded from the web-site `Our World in Data'
  on Sept. 25, 2020. The dataset contains the share of obese people in each country from 1975 to 2016. Obesity is defined as having a body-mass index equal to or greater than 30.\marginnote{\url{https://ourworldindata.org}}
 
-\begin{filecontents*}{tmp/fifteenfold.R}
+\begin{filecontents*}{generated/fifteenfold.R}
 library(xtable)
 fifteenfold <- which(widedata$"2016" > 15*widedata$"1975")
 print(xtable(widedata[fifteenfold,c(3,44)], caption = "Countries in which the share of obese people increased more than 15-fold from 1975 to 2016", label="fifteenfold"))
 \end{filecontents*}
-\runExtCode{Rscript --save --restore}{tmp/fifteenfold.R}{fifteenFold}{}
+\runExtCode{Rscript --save --restore}{generated/fifteenfold.R}{fifteenFold}{}
 
-In the United states, the share of obese people rose from  \inln{Rscript --save --restore}{cat(as.numeric(widedata[which(widedata$Code == "USA"),3]))} percent in 1975, to \inln{Rscript --save --restore}{cat(as.numeric(widedata[which(widedata$Code == "USA"),44]))} in 2016. 
+In the United states, the share of obese people rose from  \inln{Rscript --save --restore}{cat(as.numeric(widedata[which(widedata$Code == "USA"),3]))}[wide1] percent in 1975, to \inln{Rscript --save --restore}{cat(as.numeric(widedata[which(widedata$Code == "USA"),44]))}[wide2] in 2016. 
 \marginnote{We used the inln command to generate this output.}
 In all countries the share of obese people has increased between 1975 and 2016, but 24 saw more than a ten-fold increase (many of which in South-East Asia, where the share of obese people grew from 0.4\% of the population to 4.7\%).
 \includeOutput{fifteenFold}[tex]
@@ -34,7 +34,7 @@ Figure \ref{sharegain} shows the change in share-obese from 1975 to 2016 vs. the
 \runExtCode{Rscript --save --restore}{Code/obesityPlot1.R}{obesityPlot}
 \begin{figure}[t]
 \begin{center}
-\includegraphics{tmp/shareDelta.pdf}
+\includegraphics{generated/shareDelta.pdf}
 \caption{The change in share-obese from 1975 to 2016 vs. the rate in 1975}
 \label{sharegain}
 \end{center}
