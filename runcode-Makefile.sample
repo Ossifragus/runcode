@@ -49,7 +49,7 @@ SYNC_CMD_matlab = disp('')
 # Targets
 ##############################################################################
 
-.PHONY: all fast clean stopserver
+.PHONY: all fast clean stopserver consolidate
 
 all: $(MAIN).pdf
 
@@ -85,3 +85,6 @@ stopserver:
 	$(foreach lang,$(LANGS),\
 	  -python3 -c 'from talk2stat.talk2stat import client; client("./","$(lang)","QUIT")' ;)
 	rm -f serverPID*.txt *debug.txt talk2stat.log nohup.out
+
+consolidate:
+	python3 consolidate.py --engine $(LATEX) $(MAIN).tex
