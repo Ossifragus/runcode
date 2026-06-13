@@ -164,13 +164,15 @@ def read_args(text: str, pos: int, sig: str) -> tuple:
 CATALOG = [
     # IncOut: run + display — replace with cached output
     # \runRIncOut[cmd]{src}[displayopts][label][type]  sig: O m O O O
+    # label_idx=3; None → auto-numbered (left as-is)
     ({"\\runRIncOut", "\\runPythonIncOut", "\\runJuliaIncOut", "\\runMatLabIncOut"},
      "OmOOO", "inline", 3),
 
     # Chunk: run chunk + display — replace with cached output
     # \runRChunk[cmd]{src}{chunk}[displayopts][label][type]  sig: O m m O O O
+    # handler="chunk": label derived as src-chunk when args[4] is absent
     ({"\\runRChunk", "\\runPythonChunk", "\\runJuliaChunk", "\\runMatLabChunk"},
-     "OmmOOO", "inline", 4),
+     "OmmOOO", "chunk", 4),
 
     # runCodeIncOut: {cmd}{src}[displayopts][label][type]  sig: m m O O O
     ({"\\runCodeIncOut"},
@@ -261,6 +263,13 @@ def try_replace(text: str, i: int, generated_dir: Path) -> tuple:
             if handler == "drop":
                 return "", new_i
 
+            if handler == "chunk":
+                # Label is explicit (args[4]) or derived as src-chunk (args[1]-args[2])
+                label = (args[4] if len(args) > 4 and args[4] else None) or \
+                        f"{args[1]}-{args[2]}"
+                dtype = args[5] if len(args) > 5 else None
+                return render_cached(generated_dir, label, dtype, original), new_i
+
             # handler == "inline"
             label = args[label_idx] if label_idx < len(args) else None
             if not label:
@@ -313,9 +322,16 @@ def transform_tex(text: str, generated_dir: Path) -> str:
     return "".join(result)
 
 
+_USEPACKAGE_RE = re.compile(r"\\usepackage(\[[^\]]*\])?\{[^}]*runcode\}")
+
 def patch_usepackage(text: str) -> str:
-    """Replace \\usepackage[...]{runcode} with the standalone shim."""
-    return re.sub(r"\\usepackage(\[[^\]]*\])?\{runcode\}", RUNCODE_SHIM, text)
+    """Replace \\usepackage[...]{...runcode} with the shim, skipping comment lines."""
+    lines = text.split("\n")
+    for idx, line in enumerate(lines):
+        if line.lstrip().startswith("%"):
+            continue
+        lines[idx] = _USEPACKAGE_RE.sub(lambda _: RUNCODE_SHIM, line)
+    return "\n".join(lines)
 
 
 # ── Project copy ───────────────────────────────────────────────────────────────
