@@ -1,0 +1,87 @@
+# runcode-Makefile.sample
+#
+# Sample Makefile for LaTeX documents that use the runcode package with nohup
+# server mode.  Copy this file to your project directory as "Makefile", then
+# set MAIN and LANGS below to match your document.
+#
+# Usage:
+#   make          full build: restarts server(s), compiles, caches outputs
+#   make fast     compile only (server must already be running)
+#   make clean    remove auxiliary and generated output files
+#   make stopserver  shut down all talk2stat server(s)
+#
+# Requirements:
+#   pip install talk2stat
+#   Copy wait_for_rserver.py from the runcode package into this directory.
+#
+# PIPETIMEOUT note:
+#   The default PIPETIMEOUT in the generated <LANG>.config is 60 seconds.
+#   If any script takes longer (e.g. heavy plots, simulations), raise it:
+#     PIPETIMEOUT = 3600
+#   Edit the .config file after the first compilation creates it, then run
+#   "make stopserver" so the fresh server picks up the new value.
+
+##############################################################################
+# Configuration — edit these for your project
+##############################################################################
+
+MAIN  = main          # base name of your .tex file (no .tex extension)
+LANGS = R             # space-separated list of active languages: R python julia matlab
+LATEX = pdflatex      # or xelatex or lualatex
+
+# Draft-mode flag: skips PDF rendering on the first pass (collects file names
+# only).  xelatex uses --no-pdf; pdflatex and lualatex use -draftmode.
+ifeq ($(LATEX),xelatex)
+  DRAFT_FLAG = --no-pdf
+else
+  DRAFT_FLAG = -draftmode
+endif
+
+# Sync-barrier no-op for each language.  The barrier sends a trivial command
+# that the server executes in order, guaranteeing all previous scripts have
+# finished before the second LaTeX pass begins.
+SYNC_CMD_R      = invisible(NULL)
+SYNC_CMD_python = pass
+SYNC_CMD_julia  = nothing
+SYNC_CMD_matlab = disp('')
+
+##############################################################################
+# Targets
+##############################################################################
+
+.PHONY: all fast clean stopserver
+
+all: $(MAIN).pdf
+
+$(MAIN).pdf: $(MAIN).tex
+	# 1. Stop any existing servers so fresh ones pick up the current .config
+	$(foreach lang,$(LANGS),\
+	  -python3 -c 'from talk2stat.talk2stat import client; client("./","$(lang)","QUIT")' ;)
+	# 2. Start fresh servers and wait until each one accepts connections
+	$(foreach lang,$(LANGS),\
+	  python3 -c 'from talk2stat.talk2stat import server,client; \
+	    server("./","$(lang)") if not client("./","$(lang)","``` ```") \
+	    else print("$(lang) server already running")' ; \
+	  python3 wait_for_rserver.py $(lang) ;)
+	# 3. First pass: sends all \run* commands to the server without rendering PDF
+	$(LATEX) -shell-escape $(DRAFT_FLAG) $(MAIN).tex
+	# 4. Sync barrier: block until every queued script has finished running
+	$(foreach lang,$(LANGS),\
+	  python3 -c 'from talk2stat.talk2stat import client; \
+	    client("./","$(lang)","``` $(SYNC_CMD_$(lang)) ```")' ;)
+	# 5. Final passes: output files exist, so no code is re-executed
+	$(LATEX) -shell-escape $(MAIN).tex
+	$(LATEX) -shell-escape $(MAIN).tex
+
+fast:
+	$(LATEX) -shell-escape $(MAIN).tex
+
+clean:
+	rm -f $(MAIN).aux $(MAIN).log $(MAIN).out $(MAIN).toc \
+	       $(MAIN).bbl $(MAIN).blg $(MAIN).idx $(MAIN).ind \
+	       generated/*.txt generated/*.md5
+
+stopserver:
+	$(foreach lang,$(LANGS),\
+	  -python3 -c 'from talk2stat.talk2stat import client; client("./","$(lang)","QUIT")' ;)
+	rm -f serverPID*.txt *debug.txt talk2stat.log nohup.out
