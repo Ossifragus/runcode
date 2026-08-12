@@ -197,7 +197,10 @@ be customized with =\tcbset=,
   is compared to the one recorded the last time the chunk was extracted,
   and the (otherwise slow, line-by-line) extraction is skipped whenever
   the source is unchanged. Editing the source automatically invalidates
-  the cache, so no manual cleanup is needed.
+  the cache, so no manual cleanup is needed. As of v2.6.2, the checksum
+  check itself is skipped under the =cache= package option (e.g. on
+  Overleaf): an existing cached file is trusted outright with zero
+  subprocess calls, matching ~\runExtCode~/~\inln~'s behavior in that mode.
 
   - =Arg1= is the programming language.
   - =Arg2= is the source file name.
@@ -278,6 +281,18 @@ Specifically for [[https://www.python.org/][Python]],
 
 
 ** Revisions
+- v2.6.2, August 2026: the v2.6.1 MD5 checksum check fixed ~\writeChunk~'s
+  missing cache, but the checksum subprocess itself ran unconditionally —
+  including under the =cache= package option, where it defeats the point:
+  on Overleaf (put into =cache= mode by workflows like
+  ~make_overleaf.py~) this meant one ~python3~ spawn per ~\showChunk~
+  call, on every compile, even with a warm cache. ~\writeChunk~ now
+  checks ~\ifruncode~ first, matching ~\runExtCode~ and ~\inln~: in
+  =cache= mode it trusts an existing cached file outright with zero
+  subprocess calls; the checksum check only runs in normal mode. Verified
+  against the full factorial design (~\ifruncode~ true/false ×
+  missing/fresh/stale cached file) in the new
+  =examples/WriteChunkCacheTest/= regression test.
 - v2.6.1, August 2026: ~\writeChunk~ re-scanned its whole source file,
   line by line, via a slow TeX-native loop on every call, with no
   caching — unlike every other command in the package. On documents

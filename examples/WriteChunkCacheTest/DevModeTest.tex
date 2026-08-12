@@ -1,0 +1,12 @@
+% -*- TeX-command-extra-options: "-shell-escape" -*-
+% DevModeTest.tex -- dev-mode (\ifruncode true) half of the writeChunk
+% caching regression test. Run via run_tests.sh, not directly; see that
+% script and README.md for the full factorial design this covers.
+\documentclass[12pt]{article}
+\usepackage[listings]{../../runcode}
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+\showChunk{R}{code/stats.R}{chunk_a}
+\showChunk{R}{code/stats.R}{chunk_b}
+\end{document}
