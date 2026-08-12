@@ -1,0 +1,11 @@
+% -*- TeX-command-extra-options: "-shell-escape" -*-
+% CacheModeTest.tex -- cache-mode (\ifruncode false) half of the writeChunk
+% caching regression test. Run via run_tests.sh, not directly; see that
+% script and README.md for the full factorial design this covers.
+\documentclass[12pt]{article}
+\usepackage[cache,listings]{../../runcode}
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+\showChunk{R}{code/stats.R}{chunk_a}
+\end{document}

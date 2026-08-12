@@ -4,7 +4,7 @@ using Suppressor
 
 
 # load data
-loc = "http://archive.ics.uci.edu/ml/machine-learning-databases/"
+loc = "https://archive.ics.uci.edu/"
 ds  = "breast-cancer-wisconsin/breast-cancer-wisconsin.data"
 url = loc * ds
 dat = readdlm(download(url), ',')
@@ -12,7 +12,7 @@ keep = mapreduce(x->x, &, dat .!= "?", dims=2)
 df = convert(Array{Float64,2}, dat[vec(keep), 2:end])
 df[:,10] = 1(df[:,10] .== 2.0)
 
-# partion for traing and testing sets
+# partition for training and testing sets
 Random.seed!(1)
 function partitionTrainTest(dat::Array{Float64,2}, at::Float64 = 0.7)
     n = size(dat)[1]

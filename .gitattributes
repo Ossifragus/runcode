@@ -1,0 +1,7 @@
+.gitattributes export-ignore
+.github        export-ignore
+.gitignore     export-ignore
+LICENSE        export-ignore
+FAQ.md         export-ignore
+paper          export-ignore
+examples       export-ignore
