@@ -4,7 +4,7 @@
 %
 %  This package is based on an ongoing work by Haim Bar and HaiYing Wang, and comments and questions are welcome!
 
-\ProvidesPackage{runcode}[2026/06/13 runcode v2.6]
+\ProvidesPackage{runcode}[2026/08/11 runcode v2.6.1]
 
 \def \langs {}
 
@@ -322,7 +322,12 @@
 
 \NewDocumentCommand{\writeChunk}{m m O{label===} O{===end}} {
   \IfFileExists{#1}{
-    \immediate\write18{python3 -c "import os; os.makedirs(os.path.join('\generated', os.path.dirname('#1')), exist_ok=True)"}%
+    % Checksum-based cache: rescanning #1 line by line (below) is far
+    % slower than hashing it, so skip the scan unless #1 has actually
+    % changed since generated/#1-#2.txt was last written. Mirrors the
+    % MD5 staleness check used by \runExtCode elsewhere in this file.
+    \immediate\write18{python3 -c "import hashlib,os; os.makedirs(os.path.join('\generated', os.path.dirname('#1')), exist_ok=True); h=hashlib.md5(open('#1','rb').read()).hexdigest(); mf='\generated/#1-#2.txt.md5'; stale=not os.path.exists('\generated/#1-#2.txt') or not os.path.exists(mf) or open(mf).read().strip()!=h; (open('\generated/#1-#2.txt.stale','w').close() if stale else (os.remove('\generated/#1-#2.txt.stale') if os.path.exists('\generated/#1-#2.txt.stale') else None))"}%
+    \IfFileExists{\generated/#1-#2.txt.stale}{
     \endlinechar=-1
     \def\printcode{0} % don't print until we see the begin-block string
     \openin\runcodeReadStream=#1
@@ -345,6 +350,8 @@
     \ifnum\printcode=0
       \textcolor{red}{\textbf{Label $#2$ not found in #1}}
     \fi
+    \immediate\write18{python3 -c "import hashlib,os; open('\generated/#1-#2.txt.md5','w').write(hashlib.md5(open('#1','rb').read()).hexdigest()); os.remove('\generated/#1-#2.txt.stale')"}%
+    }{}
   }{\textcolor{red}{\textbf{Source file $#1$ not found}}}
 }
 
