@@ -4,7 +4,7 @@
 %
 %  This package is based on an ongoing work by Haim Bar and HaiYing Wang, and comments and questions are welcome!
 
-\ProvidesPackage{runcode}[2026/08/11 runcode v2.6.1]
+\ProvidesPackage{runcode}[2026/08/12 runcode v2.6.2]
 
 \def \langs {}
 
@@ -320,38 +320,58 @@
 % Arg #2 is the chunk identifier
 % Args #3 and #4 are the beginning and end markings of a chunk (optional).
 
+% \WriteChunkScan does the actual line-by-line extraction of chunk #2 from
+% file #1 into generated/#1-#2.txt. This is the slow part of writeChunk;
+% callers below only invoke it when the cache can't be trusted as-is.
+\NewDocumentCommand{\WriteChunkScan}{m m m m}{
+  \immediate\write18{python3 -c "import os; os.makedirs(os.path.join('\generated', os.path.dirname('#1')), exist_ok=True)"}%
+  \endlinechar=-1
+  \def\printcode{0} % don't print until we see the begin-block string
+  \openin\runcodeReadStream=#1
+  \immediate\openout\runcodeWriteStream=\generated/#1-#2.txt
+  \loop\unless\ifeof\runcodeReadStream
+    \immediate\readline\runcodeReadStream to\fileline
+    \ifnum\printcode=1
+      \IfSubStr{\fileline}{\detokenize{#4}}{
+        \renewcommand{\printcode}{-1}}{\immediate\write\runcodeWriteStream{\fileline}}
+    \fi
+    \IfSubStr{\fileline}{\detokenize{#3}}{
+        \StrBehind{\fileline}{\detokenize{#3}}[\chunkname]
+        \IfStrEq*{\detokenize{#2}}{\chunkname}{\renewcommand{\printcode}{1}}{}
+    }
+    {}
+  \repeat
+  \closein\runcodeReadStream
+  \immediate\closeout\runcodeWriteStream
+  \endlinechar=13
+  \ifnum\printcode=0
+    \textcolor{red}{\textbf{Label $#2$ not found in #1}}
+  \fi
+}
+
 \NewDocumentCommand{\writeChunk}{m m O{label===} O{===end}} {
   \IfFileExists{#1}{
-    % Checksum-based cache: rescanning #1 line by line (below) is far
-    % slower than hashing it, so skip the scan unless #1 has actually
-    % changed since generated/#1-#2.txt was last written. Mirrors the
-    % MD5 staleness check used by \runExtCode elsewhere in this file.
-    \immediate\write18{python3 -c "import hashlib,os; os.makedirs(os.path.join('\generated', os.path.dirname('#1')), exist_ok=True); h=hashlib.md5(open('#1','rb').read()).hexdigest(); mf='\generated/#1-#2.txt.md5'; stale=not os.path.exists('\generated/#1-#2.txt') or not os.path.exists(mf) or open(mf).read().strip()!=h; (open('\generated/#1-#2.txt.stale','w').close() if stale else (os.remove('\generated/#1-#2.txt.stale') if os.path.exists('\generated/#1-#2.txt.stale') else None))"}%
-    \IfFileExists{\generated/#1-#2.txt.stale}{
-    \endlinechar=-1
-    \def\printcode{0} % don't print until we see the begin-block string
-    \openin\runcodeReadStream=#1
-    \immediate\openout\runcodeWriteStream=\generated/#1-#2.txt
-    \loop\unless\ifeof\runcodeReadStream
-      \immediate\readline\runcodeReadStream to\fileline
-      \ifnum\printcode=1
-        \IfSubStr{\fileline}{\detokenize{#4}}{
-          \renewcommand{\printcode}{-1}}{\immediate\write\runcodeWriteStream{\fileline}}
-      \fi
-      \IfSubStr{\fileline}{\detokenize{#3}}{
-          \StrBehind{\fileline}{\detokenize{#3}}[\chunkname]
-          \IfStrEq*{\detokenize{#2}}{\chunkname}{\renewcommand{\printcode}{1}}{}
-      }
-      {}
-    \repeat
-    \closein\runcodeReadStream
-    \immediate\closeout\runcodeWriteStream
-    \endlinechar=13
-    \ifnum\printcode=0
-      \textcolor{red}{\textbf{Label $#2$ not found in #1}}
+    \ifruncode
+      % Dev mode: checksum-based cache, mirroring \runExtCode's MD5
+      % staleness check elsewhere in this file. Rescanning #1 line by
+      % line is far slower than hashing it, so skip the scan unless #1
+      % has actually changed since generated/#1-#2.txt was last written.
+      \immediate\write18{python3 -c "import hashlib,os; os.makedirs(os.path.join('\generated', os.path.dirname('#1')), exist_ok=True); h=hashlib.md5(open('#1','rb').read()).hexdigest(); mf='\generated/#1-#2.txt.md5'; stale=not os.path.exists('\generated/#1-#2.txt') or not os.path.exists(mf) or open(mf).read().strip()!=h; (open('\generated/#1-#2.txt.stale','w').close() if stale else (os.remove('\generated/#1-#2.txt.stale') if os.path.exists('\generated/#1-#2.txt.stale') else None))"}%
+      \IfFileExists{\generated/#1-#2.txt.stale}{
+        \WriteChunkScan{#1}{#2}{#3}{#4}
+        \immediate\write18{python3 -c "import hashlib,os; open('\generated/#1-#2.txt.md5','w').write(hashlib.md5(open('#1','rb').read()).hexdigest()); os.remove('\generated/#1-#2.txt.stale')"}%
+      }{}
+    \else
+      % Cache mode (the "cache" package option — used for Overleaf
+      % submission via make_overleaf.py, and for repeated xelatex passes
+      % once ForceCache is set): skip the checksum subprocess entirely
+      % and trust whatever is already in generated/, so no python3 call
+      % happens per \showChunk on Overleaf's compile servers at all.
+      % Correctness here relies on the caller (make clean, or
+      % make_overleaf.py's pre-extraction) to have populated the cache,
+      % not on writeChunk re-verifying freshness.
+      \IfFileExists{\generated/#1-#2.txt}{}{\WriteChunkScan{#1}{#2}{#3}{#4}}
     \fi
-    \immediate\write18{python3 -c "import hashlib,os; open('\generated/#1-#2.txt.md5','w').write(hashlib.md5(open('#1','rb').read()).hexdigest()); os.remove('\generated/#1-#2.txt.stale')"}%
-    }{}
   }{\textcolor{red}{\textbf{Source file $#1$ not found}}}
 }
 

@@ -1,4 +1,4 @@
-% LaTeX Package: runcode v2.6.1
+% LaTeX Package: runcode v2.6.2
 %
 % Copyright (C) 2020-2026 by Haim Bar and HaiYing Wang
 %
@@ -35,7 +35,7 @@
 \author{Haim Bar and HaiYing Wang \\
   \href{mailto:haim.bar@uconn.edu}{haim.bar@uconn.edu},
   \href{mailto:haiying.wang@uconn.edu}{haiying.wang@uconn.edu}}
-\date{v2.6.1, 2026}
+\date{v2.6.2, 2026}
 
 \begin{document}
 \maketitle
@@ -243,11 +243,15 @@ extracts the chunk identified by \meta{id} from \meta{src} and writes it
 to \file{generated/}\meta{src}\texttt{-}\meta{id} on disk.  This is
 called internally by \cs{showChunk} and \cs{runLANGChunk}, but can also
 be used standalone when only the extraction step is needed.
-Extraction is skipped and the cached file reused whenever \meta{src}'s
-MD5 checksum matches the one recorded the last time it was extracted, so
-repeated \cs{showChunk} calls against an unchanged source are effectively
-free; editing \meta{src} automatically invalidates every chunk cached
-from it, so no manual cache-clearing step is needed.
+In normal (non-cache) mode, extraction is skipped and the cached file
+reused whenever \meta{src}'s MD5 checksum matches the one recorded the
+last time it was extracted, so repeated \cs{showChunk} calls against an
+unchanged source are effectively free; editing \meta{src} automatically
+invalidates every chunk cached from it, so no manual cache-clearing step
+is needed. In \opt{cache} mode, the checksum check itself is skipped: an
+existing cached file is trusted outright with no subprocess call at all,
+matching \cs{runExtCode}'s and \cs{inln}'s behaviour in that mode (see
+Section~\ref{sec:usage}).
 
 \subsection{Extended commands}
 
@@ -384,6 +388,21 @@ A \texttt{make consolidate} target is provided in
 \label{sec:revisions}
 
 \begin{itemize}
+
+\item \textbf{v2.6.2, August 2026:}
+  The v2.6.1 MD5 checksum check fixed \cs{writeChunk}'s missing cache,
+  but the checksum subprocess itself ran unconditionally --- including
+  under the \opt{cache} package option, where it defeats the point: on
+  Overleaf (which \file{make\_overleaf.py}-style workflows put into
+  \opt{cache} mode) this meant one \texttt{python3} spawn per
+  \cs{showChunk} call, on every compile, even with a warm cache.
+  \cs{writeChunk} now checks \cs{ifruncode} first, matching
+  \cs{runExtCode} and \cs{inln}: in \opt{cache} mode it trusts an
+  existing cached file outright with zero subprocess calls; the
+  checksum check only runs in normal mode. Verified against the full
+  factorial design (\cs{ifruncode} true/false $\times$
+  missing/fresh/stale cached file) in the new
+  \file{examples/WriteChunkCacheTest/} regression test.
 
 \item \textbf{v2.6.1, August 2026:}
   \cs{writeChunk} re-scanned its whole source file, line by line, via a
