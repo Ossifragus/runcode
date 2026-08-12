@@ -1,4 +1,4 @@
-% LaTeX Package: runcode v2.6
+% LaTeX Package: runcode v2.6.1
 %
 % Copyright (C) 2020-2026 by Haim Bar and HaiYing Wang
 %
@@ -35,7 +35,7 @@
 \author{Haim Bar and HaiYing Wang \\
   \href{mailto:haim.bar@uconn.edu}{haim.bar@uconn.edu},
   \href{mailto:haiying.wang@uconn.edu}{haiying.wang@uconn.edu}}
-\date{v2.6, 2026}
+\date{v2.6.1, 2026}
 
 \begin{document}
 \maketitle
@@ -243,6 +243,11 @@ extracts the chunk identified by \meta{id} from \meta{src} and writes it
 to \file{generated/}\meta{src}\texttt{-}\meta{id} on disk.  This is
 called internally by \cs{showChunk} and \cs{runLANGChunk}, but can also
 be used standalone when only the extraction step is needed.
+Extraction is skipped and the cached file reused whenever \meta{src}'s
+MD5 checksum matches the one recorded the last time it was extracted, so
+repeated \cs{showChunk} calls against an unchanged source are effectively
+free; editing \meta{src} automatically invalidates every chunk cached
+from it, so no manual cache-clearing step is needed.
 
 \subsection{Extended commands}
 
@@ -379,6 +384,19 @@ A \texttt{make consolidate} target is provided in
 \label{sec:revisions}
 
 \begin{itemize}
+
+\item \textbf{v2.6.1, August 2026:}
+  \cs{writeChunk} re-scanned its whole source file, line by line, via a
+  slow \TeX-native loop on every call, with no caching --- unlike every
+  other command in the package. On documents with many \cs{showChunk}
+  calls against large source files, across the multiple \LaTeX{} passes
+  a typical build requires, this dominated compile time (in one
+  real-world document, a single pass went from 3m33s to 11s once
+  \cs{showChunk} calls were disabled). \cs{writeChunk} now applies the
+  same MD5 checksum-based staleness check used elsewhere in the package
+  (see the v2.6 entry below): the scan is skipped and the cached
+  \file{generated/}\meta{src}\texttt{-}\meta{id} file reused whenever
+  \meta{src} is unchanged since it was last extracted.
 
 \item \textbf{v2.6, June 2026:}
   \begin{enumerate}
