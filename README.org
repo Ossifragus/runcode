@@ -1,5 +1,12 @@
 # -*- org-latex-hyperref-template: ""; org-latex-prefer-user-labels: t -*-
 
+# NOTE: this file is the GitHub repo landing page (there is no README.md).
+# It no longer generates runcode.tex — that file is hand-maintained
+# directly since v2.6 (see runcode.tex and .github/workflows/ctan.yml).
+# The old org -> LaTeX export pipeline (.org2tex.sh / .org2tex.el) was
+# removed since it produced a lower-quality manual than the hand-written
+# version and was no longer wired into the release workflow.
+
 #+startup: content hideblocks
 #+options: H:2 timestamp:nil tex:t toc:nil author:nil
 #+EXPORT_FILE_NAME: runcode.tex
@@ -184,6 +191,14 @@ be customized with =\tcbset=,
   ~===end~. In the code, these markers should appear after a comment character, so
   that the code will run.
 
+  Internally, ~\showChunk~ calls ~\writeChunk~ to extract the chunk into
+  =generated/<src>-<id>.txt=. As of v2.6.1, this extraction is
+  checksum-cached like every other runcode command: the source file's MD5
+  is compared to the one recorded the last time the chunk was extracted,
+  and the (otherwise slow, line-by-line) extraction is skipped whenever
+  the source is unchanged. Editing the source automatically invalidates
+  the cache, so no manual cleanup is needed.
+
   - =Arg1= is the programming language.
   - =Arg2= is the source file name.
   - =Arg3= is is the chunk identifier.
@@ -263,6 +278,17 @@ Specifically for [[https://www.python.org/][Python]],
 
 
 ** Revisions
+- v2.6.1, August 2026: ~\writeChunk~ re-scanned its whole source file,
+  line by line, via a slow TeX-native loop on every call, with no
+  caching — unlike every other command in the package. On documents
+  with many ~\showChunk~ calls against large source files, across the
+  multiple LaTeX passes a typical build requires, this dominated
+  compile time (in one real-world document, a single pass went from
+  3m33s to 11s once ~\showChunk~ calls were disabled). ~\writeChunk~
+  now applies the same MD5 checksum-based staleness check used
+  elsewhere in the package (see the v2.6 entry below): the scan is
+  skipped and the cached =generated/<src>-<id>.txt= file reused
+  whenever =<src>= is unchanged since it was last extracted.
 - v2.6, June 2026:
   1. Checksum-based cache invalidation: source files are now fingerprinted
      with MD5; a script is re-executed only when its source has changed (or

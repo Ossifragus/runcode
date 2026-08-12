@@ -11,13 +11,6 @@ jobs:
     - uses: actions/checkout@master
       with:
         fetch-depth: 1
-    - name: seupEmacs
-      uses: purcell/setup-emacs@master
-      with:
-        version: 28.1
-
-    - name: generate runcode.tex
-      run: ./.org2tex.sh
 
     - name: Compile LaTeX document
       uses: xu-cheng/latex-action@v2
