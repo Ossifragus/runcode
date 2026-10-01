@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=2cm]
+
+    % Main Menu
+    \node (start) [startstop] {Start};
+    \node (mainmenu) [process, below of=start] {Main Menu};
+    \node (attendance) [process, below of=mainmenu, yshift=-0.5cm] {Take Attendance};
+    \node (rota) [process, right of=attendance, xshift=5cm] {Check ROTA};
+    \node (benefits) [process, left of=attendance, xshift=-5cm] {Employee Benefits};
+    \node (end) [startstop, below of=attendance, yshift=-0.5cm] {End};
+
+    % Arrows for main menu
+    \draw [arrow] (start) -- (mainmenu);
+    \draw [arrow] (mainmenu) -- node[anchor=east] {1} (attendance);
+    \draw [arrow] (mainmenu) -- node[anchor=south] {2} (rota);
+    \draw [arrow] (mainmenu) -- node[anchor=south] {3} (benefits);
+    \draw [arrow] (attendance) -- (end);
+    \draw [arrow] (rota) -- (end);
+    \draw [arrow] (benefits) -- (end);
+
+    % Attendance Record Flow
+    \node (input) [process, below of=attendance, yshift=-1cm] {Input Employee Name};
+    \node (valid) [decision, below of=input, yshift=-1cm] {Valid Name?};
+    \node (record) [process, below of=valid, yshift=-1cm] {Record Attendance};
+    \node (writefile) [process, below of=record, yshift=-1cm] {Write to CSV};
+
+    % Arrows for attendance record
+    \draw [arrow] (attendance) -- (input);
+    \draw [arrow] (input) -- (valid);
+    \draw [arrow] (valid) -- node[anchor=east] {Yes} (record);
+    \draw [arrow] (valid.east) -- ++(1,0) node[anchor=north] {No} |- (input.east);
+    \draw [arrow] (record) -- (writefile);
+    \draw [arrow] (writefile) -- (end);
+
+    % Rota Flow
+    \node (allocate) [process, below of=rota, yshift=-1cm] {Allocate Shifts};
+
+    % Arrows for rota
+    \draw [arrow] (rota) -- (allocate);
+    \draw [arrow] (allocate) -- (end);
+
+    % Employee Benefits Flow
+    \node (inputname) [process, below of=benefits, yshift=-1cm] {Input Employee Name};
+    \node (display) [process, below of=inputname, yshift=-1cm] {Display Benefits};
+
+    % Arrows for benefits
+    \draw [arrow] (benefits) -- (inputname);
+    \draw [arrow] (inputname) -- (display);
+    \draw [arrow] (display) -- (end);
+
+\end{tikzpicture}
+
+\end{document}
